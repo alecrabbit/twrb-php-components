@@ -46,16 +46,16 @@
         },
         {
             "name": "alecrabbit/php-helpers",
-            "version": "0.0.7",
+            "version": "0.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-helpers.git",
-                "reference": "f1cc8dc994745be59da662854e0184cc5f145b5c"
+                "reference": "2265eccce8bc71d318a41096872527b528c85942"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-helpers/zipball/f1cc8dc994745be59da662854e0184cc5f145b5c",
-                "reference": "f1cc8dc994745be59da662854e0184cc5f145b5c",
+                "url": "https://api.github.com/repos/alecrabbit/php-helpers/zipball/2265eccce8bc71d318a41096872527b528c85942",
+                "reference": "2265eccce8bc71d318a41096872527b528c85942",
                 "shasum": ""
             },
             "require": {
@@ -83,20 +83,20 @@
                 "MIT"
             ],
             "description": "PHP helpers functions",
-            "time": "2018-11-03T14:21:41+00:00"
+            "time": "2018-11-03T19:51:14+00:00"
         },
         {
             "name": "alecrabbit/php-simple-profiler",
-            "version": "0.0.3",
+            "version": "0.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-simple-profiler.git",
-                "reference": "a569a02017f7b5e1105583182dc4bb161bff0919"
+                "reference": "ac8d24cc9a0d625e76674793911d7997078b4dee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/a569a02017f7b5e1105583182dc4bb161bff0919",
-                "reference": "a569a02017f7b5e1105583182dc4bb161bff0919",
+                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/ac8d24cc9a0d625e76674793911d7997078b4dee",
+                "reference": "ac8d24cc9a0d625e76674793911d7997078b4dee",
                 "shasum": ""
             },
             "require": {
@@ -121,7 +121,7 @@
                 "MIT"
             ],
             "description": "PHP simple profiler",
-            "time": "2018-11-01T14:26:05+00:00"
+            "time": "2018-11-03T20:19:57+00:00"
         },
         {
             "name": "krowinski/bcmath-extended",

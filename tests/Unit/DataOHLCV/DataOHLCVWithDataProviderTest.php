@@ -10,36 +10,17 @@ namespace Unit;
 
 use AlecRabbit\DataOHLCV;
 use PHPUnit\Framework\TestCase;
+use Unit\DataProiders\OHLCBasicDataProvider;
 
-class DataOHLCVFileTest extends TestCase
+class DataOHLCVWithDataProviderTest extends TestCase
 {
-    protected static $fp;
-    protected static $data;
-
     /** @var DataOHLCV */
     protected $ohlcv;
-
-    public static function setUpBeforeClass()
-    {
-        self::$fp = fopen(__DIR__ . '/../../../resources/data.csv', 'rb');
-        foreach (self::fileData() as $item) {
-            self::$data[] = $item;
-        }
-        fclose(self::$fp);
-    }
-
-    private static function fileData(): ?\Generator
-    {
-        // Read in some d from a CSV file
-        while ($d = fgetcsv(self::$fp, 1000)) {
-            yield [$d[1], $d[5], $d[2], $d[3]];
-        }
-    }
 
     public function setUp()
     {
         $this->ohlcv = new DataOHLCV('btc_usd', 1440);
-        foreach (self::$data as $item) {
+        foreach (OHLCBasicDataProvider::data() as $item) {
             [$timestamp, $type, $price, $amount] = $item;
             $this->ohlcv->addTrade($timestamp, $type, $price, $amount);
         }
@@ -50,7 +31,6 @@ class DataOHLCVFileTest extends TestCase
      */
     public function check(): void
     {
-
         foreach ($this->dataToCheckVolumes() as $resolution => $expected) {
             $this->assertEquals($expected, $this->ohlcv->getVolumes($resolution));
         }

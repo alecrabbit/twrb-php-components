@@ -12,52 +12,54 @@ namespace AlecRabbit;
 class EventCounter
 {
     protected const DEFAULT_NAME = 'default';
-    protected const DEFAULT_SIZE = 3600;
-    protected const DEFAULT_LENGTH = 60;
+    protected const DEFAULT_LENGTH = 3600;
+    protected const DEFAULT_GROUP_BY = 60;
 
     protected $events = [];
-    /** @var int */
-    protected $size;
     /** @var int */
     protected $length;
     /** @var string */
     protected $name;
+    /** @var int */
+    protected $groupBy;
+    /** @var int */
+    protected $lastTimestamp;
+    /** @var bool */
+    private $relative;
 
     /**
      * EventCounter constructor.
-     * @param null|int $size Element count
-     * @param null|int $length Period in seconds
+     * @param int|null $length
+     * @param int|null $groupBy
      * @param null|string $name
      */
-    public function __construct(?int $size = null, ?int $length = null, ?string $name = null)
+    public function __construct(?int $length = null, ?int $groupBy = null, ?string $name = null)
     {
         $this->name = $name ?? static::DEFAULT_NAME;
-        $this->size = $size ?? static::DEFAULT_SIZE;
         $this->length = $length ?? static::DEFAULT_LENGTH;
+        $this->groupBy = $groupBy;
+        $this->relative = false;
     }
-
 
     public function addEvent(?int $time = null): void
     {
         $time = $time ?? time();
+        $this->lastTimestamp = $time;
+        if($this->groupBy) {
+            $time = base_timestamp($time, $this->groupBy);
+        }
         // Is there any event during [$time] second if not initialize with 0
         $this->events[$time] = $this->events[$time] ?? 0;
         $this->events[$time]++;
-        if (\count($this->events) > $this->size) {
-            reset($this->events);
-            $key = key($this->events);
-            unset($this->events[$key]);
-        }
+        $this->trim();
     }
 
     /**
      * @param bool|null $reset
-     * @param bool|null $relative
      * @return int
      */
-    public function getCalculatedEvents(?bool $reset = null, ?bool $relative = null): int
+    public function getCalculatedEvents(?bool $reset = null): int
     {
-        $this->trim($relative);
         $r = 0;
         if (0 < ($sum = array_sum($this->events))) {
             $r = $sum;
@@ -65,26 +67,16 @@ class EventCounter
         if ($reset) {
             $this->events = [];
         }
-
         return $r;
     }
 
-    public function trim(?bool $relative = null): void
+    private function trim(): void
     {
-        $time = $relative ? $this->lastTimestamp() : time();
+        $time = $this->relative ? $this->lastTimestamp : time();
         $threshold = $time - $this->length;
-        foreach ($this->events as $t => $count) {
-            if ($t < $threshold) {
-                unset($this->events[$t]);
-            }
+        if(($key = array_key_first($this->events)) <= $threshold){
+            unset($this->events[$key]);
         }
-
-    }
-
-    private function lastTimestamp(): int
-    {
-        end($this->events);
-        return key($this->events);
     }
 
     /**
@@ -93,6 +85,26 @@ class EventCounter
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Set to this mode to count events by timestamps.
+     *
+     * @param bool $relative
+     * @return EventCounter
+     */
+    public function setRelativeMode(bool $relative = true): EventCounter
+    {
+        $this->relative = $relative;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getEvents(): array
+    {
+        return $this->events;
     }
 
 }

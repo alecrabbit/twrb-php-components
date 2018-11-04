@@ -18,6 +18,7 @@ class DataOHLCVNextResolutionTest extends TestCase
      * @test
      * @dataProvider forNextResolution
      * @param $expected
+
      * @param $param
      * @throws \ReflectionException
      */
