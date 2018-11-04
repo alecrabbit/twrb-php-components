@@ -10,7 +10,7 @@ namespace Unit;
 
 use AlecRabbit\DataOHLCV;
 use PHPUnit\Framework\TestCase;
-use Unit\DataProiders\OHLCBasicDataProvider;
+use Unit\DataProviders\OHLCBasicDataProvider;
 
 class DataOHLCVWithDataProviderTest extends TestCase
 {

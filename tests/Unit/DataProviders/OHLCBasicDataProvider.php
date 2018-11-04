@@ -5,7 +5,7 @@
  * Time: 13:05
  */
 
-namespace Unit\DataProiders;
+namespace Unit\DataProviders;
 
 
 use AlecRabbit\Circular;

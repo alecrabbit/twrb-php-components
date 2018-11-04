@@ -50,13 +50,15 @@ class DataOHLCVSimpleTest extends TestCase
     /**
      * @test
      * @dataProvider simpleDataProvider
+     * @param $expected
+     * @param $resolution
      */
     public function simpleDataCheck($expected, $resolution): void
     {
         $this->assertEquals($expected, $this->ohlcv->getTimestamps($resolution));
     }
 
-    public function simpleDataProvider()
+    public function simpleDataProvider():array
     {
         return [
             [
