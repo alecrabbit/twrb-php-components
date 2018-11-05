@@ -29,13 +29,12 @@ class EventCounter
 
     /**
      * EventCounter constructor.
-     * @param int|null $length
-     * @param int|null $groupBy
-     * @param null|string $name
+     * @param int|null $length Time length in seconds e.g. 3600 => 1 hour
+     * @param int|null $groupBy Group by period of time in seconds e.g. 60 => 1 min
      */
-    public function __construct(?int $length = null, ?int $groupBy = null, ?string $name = null)
+    public function __construct(?int $length = null, ?int $groupBy = null)
     {
-        $this->name = $name ?? static::DEFAULT_NAME;
+        $this->name = static::DEFAULT_NAME;
         $this->length = $length ?? static::DEFAULT_LENGTH;
         $this->groupBy = $groupBy;
         $this->relative = false;
@@ -43,12 +42,11 @@ class EventCounter
 
     public function addEvent(?int $time = null): void
     {
-        $time = $time ?? time();
-        $this->lastTimestamp = $time;
+        $this->lastTimestamp = $time = $time ?? time();
         if($this->groupBy) {
             $time = base_timestamp($time, $this->groupBy);
         }
-        // Is there any event during [$time] second if not initialize with 0
+        // Is there any event during [$time] second/period if not initialize with 0
         $this->events[$time] = $this->events[$time] ?? 0;
         $this->events[$time]++;
         $this->trim();
@@ -105,6 +103,16 @@ class EventCounter
     public function getEvents(): array
     {
         return $this->events;
+    }
+
+    /**
+     * @param string $name
+     * @return EventCounter
+     */
+    public function setName(string $name): EventCounter
+    {
+        $this->name = $name;
+        return $this;
     }
 
 }

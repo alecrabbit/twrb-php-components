@@ -16,7 +16,8 @@ class EventCounterTest extends TestCase
     /** @test */
     public function creationEventCounter(): void
     {
-        $ec = new EventCounter(3600, 60, 'new');
+        $ec = new EventCounter(3600, 60);
+        $ec->setName('new');
         $this->assertEquals('new', $ec->getName());
         $this->assertEquals([], $ec->getEvents());
         $ec->addEvent();
