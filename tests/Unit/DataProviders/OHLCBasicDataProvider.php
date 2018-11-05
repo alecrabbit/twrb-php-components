@@ -15,21 +15,24 @@ class OHLCBasicDataProvider
     protected static $timestamp = 1514764800;
     protected static $step = 15;
     protected static $lines = 5760;
+
     /** @var Circular */
     protected static $price;
     /** @var Circular */
     protected static $type;
     /** @var Circular */
     protected static $amount;
-    private static $init = false;
+
+    /** @var bool */
+    protected static $initialized = false;
 
     public static function data(): ?\Generator
     {
-        if (!static::$init) {
+        if (!static::$initialized) {
             static::init();
         }
         while (static::$lines-- > 0) {
-            // [$timestamp, $type, $price, $amount] = $item;
+            // [$timestamp, $type, $price, $amount]
             yield
             [
                 static::$timestamp,
@@ -49,6 +52,6 @@ class OHLCBasicDataProvider
             );
         static::$type = new Circular(['ask', 'bid']);
         static::$amount = new Circular([0.001, 0.0001, 0.00001, 0.000001]);
-        static::$init = true;
+        static::$initialized = true;
     }
 }
