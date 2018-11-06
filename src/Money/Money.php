@@ -10,7 +10,6 @@ namespace AlecRabbit\Money;
 
 use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Contracts\Calculator;
-use Money\Number;
 
 /**
  * Money Value Object.
@@ -19,6 +18,8 @@ use Money\Number;
  */
 class Money implements \JsonSerializable
 {
+    use MoneyFactory;
+
     public const ROUND_HALF_UP = PHP_ROUND_HALF_UP;
     public const ROUND_HALF_DOWN = PHP_ROUND_HALF_DOWN;
 
@@ -50,13 +51,13 @@ class Money implements \JsonSerializable
         if (!\is_numeric($amount)) {
             throw new \InvalidArgumentException('Amount must be int|float|string');
         }
-        $this->amount = (string)$amount;
+        $this->amount = trim_zeros($amount);
         $this->currency = $currency;
     }
 
     /**
      * @param Money $first
-     * @param Money ...$collection
+     * @param Money[] $collection
      *
      * @return Money
      */
@@ -216,7 +217,6 @@ class Money implements \JsonSerializable
 
             $amount = $calculator->add($amount, $addend->amount);
         }
-
         return new self($amount, $this->currency);
     }
 
@@ -236,24 +236,20 @@ class Money implements \JsonSerializable
      * the divided value by the given factor.
      *
      * @param float|int|string $divisor
-     * @param int $roundingMode
      *
      * @return Money
      */
-    public function divide($divisor, $roundingMode = self::ROUND_HALF_UP): Money
+    public function divide($divisor): Money
     {
         $this->assertOperand($divisor);
-        $this->assertRoundingMode($roundingMode);
-
-        $divisor = (string)Number::fromNumber($divisor);
 
         if ($this->getCalculator()->compare($divisor, '0') === 0) {
             throw new \InvalidArgumentException('Division by zero');
         }
 
-        $quotient = $this->round($this->getCalculator()->divide($this->amount, $divisor), $roundingMode);
-
-        return $this->newInstance($quotient);
+        $quotient = $this->getCalculator()->divide($this->amount, $divisor);
+        return
+            $this->newInstance($quotient);
     }
 
     /**
@@ -289,26 +285,26 @@ class Money implements \JsonSerializable
         }
     }
 
-    /**
-     * @param string $amount
-     * @param int $rounding_mode
-     *
-     * @return string
-     */
-    private function round($amount, int $rounding_mode): string
-    {
-        $this->assertRoundingMode($rounding_mode);
-
-        if ($rounding_mode === self::ROUND_HALF_UP) {
-            return $this->getCalculator()->ceil($amount);
-        }
-
-        if ($rounding_mode === self::ROUND_HALF_DOWN) {
-            return $this->getCalculator()->floor($amount);
-        }
-
-        return $this->getCalculator()->round($amount);
-    }
+//    /**
+//     * @param string $amount
+//     * @param int $rounding_mode
+//     *
+//     * @return string
+//     */
+//    private function round($amount, int $rounding_mode): string
+//    {
+//        $this->assertRoundingMode($rounding_mode);
+//
+//        if ($rounding_mode === self::ROUND_HALF_UP) {
+//            return $this->getCalculator()->ceil($amount);
+//        }
+//
+//        if ($rounding_mode === self::ROUND_HALF_DOWN) {
+//            return $this->getCalculator()->floor($amount);
+//        }
+//
+//        return $this->getCalculator()->round($amount);
+//    }
 
     /**
      * Returns a new Money instance based on the current one using the Currency.
@@ -393,18 +389,17 @@ class Money implements \JsonSerializable
      * the multiplied value by the given factor.
      *
      * @param float|int|string $multiplier
-     * @param int $roundingMode
      *
      * @return Money
      */
-    public function multiply($multiplier, int $roundingMode = self::ROUND_HALF_UP): Money
+    public function multiply($multiplier): Money
     {
         $this->assertOperand($multiplier);
-        $this->assertRoundingMode($roundingMode);
 
-        $product = $this->round($this->getCalculator()->multiply($this->amount, $multiplier), $roundingMode);
+        $product = $this->getCalculator()->multiply($this->amount, $multiplier);
 
-        return $this->newInstance($product);
+        return
+            $this->newInstance($product);
     }
 
     /**
