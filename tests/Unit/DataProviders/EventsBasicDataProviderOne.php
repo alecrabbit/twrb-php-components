@@ -8,7 +8,7 @@
 namespace Unit\DataProviders;
 
 
-class EventsBasicDataProvider
+class EventsBasicDataProviderOne
 {
     protected static $timestamp = 1514764800;
     protected static $step = 15;

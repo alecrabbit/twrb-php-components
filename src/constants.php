@@ -50,3 +50,4 @@ define('RESOLUTION_ALIASES',
 );
 
 define('NORMAL_SCALE', 9);
+define('EXTENDED_SCALE', 14);

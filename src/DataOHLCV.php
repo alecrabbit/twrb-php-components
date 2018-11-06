@@ -17,6 +17,7 @@ class DataOHLCV
     protected const MAX_PERIOD_MULTIPLIER = 100;
     protected const DEFAULT_SIZE = 500;
     protected const MAX_SIZE = 1440;
+    protected const RESOLUTIONS = RESOLUTIONS;
 
     /** @var array */
     protected $current;
@@ -27,6 +28,7 @@ class DataOHLCV
     protected $closes = [];
     protected $volumes = [];
     protected $proxies = [];
+
     /** @var int */
     private $size;
     /** @var int */
@@ -115,8 +117,8 @@ class DataOHLCV
 
             } elseif ($ts < $this->current[$resolution]['timestamp']) {
                 throw new \RuntimeException(
-                    'Incoming data are in unsorted order. Current timestamp is greater then incoming data\'s. ' .
-                    $ts . ' < ' . $this->current[$resolution]['timestamp']
+                    'Incoming data are in unsorted order. Current timestamp is greater then incoming data\'s.' .
+                    ' (' . $ts . ' < ' . $this->current[$resolution]['timestamp'] . ')'
                 );
             }
         } else {
@@ -127,7 +129,6 @@ class DataOHLCV
             $this->current[$resolution]['close'] = $close;
             $this->current[$resolution]['volume'] = $volume;
         }
-
 
         $this->trim($resolution);
         if ($nextResolution = $this->nextResolution($resolution)) {
@@ -149,9 +150,9 @@ class DataOHLCV
 
     private function nextResolution($resolution): ?int
     {
-        $key = array_search($resolution, RESOLUTIONS, true);
-        if ($key !== false && array_key_exists(++$key, RESOLUTIONS)) {
-            return RESOLUTIONS[$key];
+        $key = array_search($resolution, static::RESOLUTIONS, true);
+        if ($key !== false && array_key_exists(++$key, static::RESOLUTIONS)) {
+            return static::RESOLUTIONS[$key];
         }
         return null;
     }
@@ -306,7 +307,7 @@ class DataOHLCV
         if (\defined('APP_DEBUG') && APP_DEBUG) {
             $result = [];
             $pair = $this->getPair();
-            foreach (RESOLUTIONS as $resolution) {
+            foreach (static::RESOLUTIONS as $resolution) {
                 $count = \count($this->timestamps[$resolution] ?? []);
                 $result[] = sprintf('%s [%s] %s %s %s %s %s %s %s',
                     $this->current[$resolution]['timestamp'],

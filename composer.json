@@ -5,6 +5,11 @@
   "license": "MIT",
   "require": {
     "php": ">=7.2",
+    "ext-bcmath": "*",
+    "ext-event": "*",
+    "ext-intl": "*",
+    "ext-json": "*",
+    "ext-trader": "*",
     "alecrabbit/accessories": "dev-master",
     "alecrabbit/php-helpers": "^0",
     "krowinski/bcmath-extended": "^4.1",
@@ -12,6 +17,7 @@
   },
   "require-dev": {
     "alecrabbit/php-output-a": "^0.0.1",
+    "moneyphp/money": "dev-master",
     "nunomaduro/collision": "^2.0",
     "phpunit/phpunit": "^7.4",
     "symfony/var-dumper": "^4.1"
@@ -19,7 +25,10 @@
   "autoload": {
     "psr-4": {
       "AlecRabbit\\": "src"
-    }
+    },
+    "files": [
+      "src/constants.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {

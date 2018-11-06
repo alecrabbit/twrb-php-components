@@ -9,7 +9,8 @@ namespace Unit\EventCounter;
 
 use AlecRabbit\EventCounter;
 use PHPUnit\Framework\TestCase;
-use Unit\DataProviders\EventsBasicDataProvider;
+use Unit\DataProviders\EventsBasicDataProviderOne;
+use Unit\DataProviders\EventsBasicDataProviderTwo;
 
 class EventCounterTest extends TestCase
 {
@@ -31,10 +32,22 @@ class EventCounterTest extends TestCase
     {
         $ec = new EventCounter(86400, 60);
         $ec->setRelativeMode();
-        foreach (EventsBasicDataProvider::data() as $timestamp) {
+        foreach (EventsBasicDataProviderOne::data() as $timestamp) {
             $ec->addEvent($timestamp);
         }
         $this->assertEquals(5760, $ec->getCalculatedEvents());
         $this->assertCount(1440, $ec->getEvents());
+    }
+
+    /** @test */
+    public function fillEventCounter2(): void
+    {
+        $ec = new EventCounter( 60);
+        $ec->setRelativeMode();
+        foreach (EventsBasicDataProviderTwo::data() as $timestamp) {
+            $ec->addEvent($timestamp);
+        }
+        $this->assertEquals(120, $ec->getCalculatedEvents());
+        $this->assertCount(60, $ec->getEvents());
     }
 }
