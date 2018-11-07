@@ -8,10 +8,10 @@
 namespace AlecRabbit\Money\Calculator;
 
 
-use AlecRabbit\Money\Contracts\Calculator;
+use AlecRabbit\Money\Contracts\CalculatorInterface;
 use BCMathExtended\BC;
 
-class BcMathCalculator implements Calculator
+class BcMathCalculatorInterface implements CalculatorInterface
 {
     /**
      * @var string
