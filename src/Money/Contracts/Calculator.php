@@ -116,9 +116,10 @@ interface Calculator
      * @param int|float|string $ratio
      * @param int|float|string $total
      *
+     * @param $precision
      * @return string
      */
-    public function share($amount, $ratio, $total);
+    public function share($amount, $ratio, $total, $precision);
 
     /**
      * Get the modulus of an amount.

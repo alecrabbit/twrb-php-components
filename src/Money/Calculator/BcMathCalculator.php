@@ -95,15 +95,15 @@ class BcMathCalculator implements Calculator
      */
     public function round($number, $precision = 0): string
     {
-        return BC::round($number, $precision);
+        return BC::round($number, $precision ?? 0);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function share($amount, $ratio, $total): string
+    public function share($amount, $ratio, $total, $precision): string
     {
-        return $this->floor(BC::div(BC::mul($amount, $ratio, $this->scale), $total, $this->scale));
+        return $this->round(BC::div(BC::mul($amount, $ratio, $this->scale), $total, $this->scale), $precision);
     }
 
     /**

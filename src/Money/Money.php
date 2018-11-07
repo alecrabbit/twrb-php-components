@@ -51,9 +51,23 @@ class Money implements \JsonSerializable
         if (!\is_numeric($amount)) {
             throw new \InvalidArgumentException('Amount must be int|float|string');
         }
+        $this->setAmount($amount);
+        $this->setCurrency($currency);
+    }
+
+    private function setAmount(string $amount): void
+    {
         $this->amount = trim_zeros($amount);
+    }
+
+    /**
+     * @param Currency $currency
+     */
+    private function setCurrency(Currency $currency): void
+    {
         $this->currency = $currency;
     }
+
 
     /**
      * @param Money $first
@@ -269,21 +283,21 @@ class Money implements \JsonSerializable
         }
     }
 
-    /**
-     * Asserts that rounding mode is a valid integer value.
-     *
-     * @param int $roundingMode
-     *
-     * @throws \InvalidArgumentException If $roundingMode is not valid
-     */
-    private function assertRoundingMode($roundingMode): void
-    {
-        if (!\in_array($roundingMode, [self::ROUND_HALF_DOWN, self::ROUND_HALF_UP,], true)) {
-            throw new \InvalidArgumentException(
-                'Rounding mode should be Money::ROUND_HALF_DOWN | Money::ROUND_HALF_UP '
-            );
-        }
-    }
+//    /**
+//     * Asserts that rounding mode is a valid integer value.
+//     *
+//     * @param int $roundingMode
+//     *
+//     * @throws \InvalidArgumentException If $roundingMode is not valid
+//     */
+//    private function assertRoundingMode($roundingMode): void
+//    {
+//        if (!\in_array($roundingMode, [self::ROUND_HALF_DOWN, self::ROUND_HALF_UP,], true)) {
+//            throw new \InvalidArgumentException(
+//                'Rounding mode should be Money::ROUND_HALF_DOWN | Money::ROUND_HALF_UP '
+//            );
+//        }
+//    }
 
 //    /**
 //     * @param string $amount
@@ -423,11 +437,12 @@ class Money implements \JsonSerializable
      *
      * @param int $n
      *
+     * @param int|null $precision
      * @return Money[]
      *
-     * @throws \InvalidArgumentException If number of targets is not an integer
      */
-    public function allocateTo($n): array
+
+    public function allocateTo($n, ?int $precision = null): array
     {
         if (!\is_int($n)) {
             throw new \InvalidArgumentException('Number of targets must be an integer.');
@@ -436,7 +451,7 @@ class Money implements \JsonSerializable
             throw new \InvalidArgumentException('Cannot allocate to none, target must be greater than zero.');
         }
 
-        return $this->allocate(array_fill(0, $n, 1));
+        return $this->allocate(array_fill(0, $n, 1), $precision);
     }
 
     /**
@@ -444,11 +459,13 @@ class Money implements \JsonSerializable
      *
      * @param array $ratios
      *
+     * @param int|null $precision
      * @return iterable
      */
-    public function allocate(array $ratios): iterable
+    public function allocate(array $ratios, ?int $precision = null): iterable
     {
-        if (\count($ratios) === 0) {
+        $precision = $precision ?? 2;
+        if (0 === $allocations = \count($ratios)) {
             throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array');
         }
 
@@ -465,20 +482,32 @@ class Money implements \JsonSerializable
                 throw new \InvalidArgumentException('Cannot allocate to none, ratio must be zero or positive');
             }
 
-            $share = $this->getCalculator()->share($this->amount, $ratio, $total);
+            $share = $this->getCalculator()->share($this->amount, $ratio, $total, $precision);
             $results[] = $this->newInstance($share);
             $remainder = $this->getCalculator()->subtract($remainder, $share);
         }
-
-        for ($i = 0; $this->getCalculator()->compare($remainder, 0) === 1; ++$i) {
-            if (!$ratios[$i]) {
-                continue;
-            }
-
-            $results[$i]->amount = (string)$this->getCalculator()->add($results[$i]->amount, 1);
-            $remainder = $this->getCalculator()->subtract($remainder, 1);
+        switch ($this->getCalculator()->compare($remainder, 0)) {
+            case -1:
+                for ($i = $allocations - 1; $i >= 0; $i--) {
+                    if (!$ratios[$i]) {
+                        continue;
+                    }
+                    $results[$i]->setAmount($this->getCalculator()->add($results[$i]->amount, $remainder));
+                    break;
+                }
+                break;
+            case 1:
+                for ($i = 0; $i < $allocations; $i++) {
+                    if (!$ratios[$i]) {
+                        continue;
+                    }
+                    $results[$i]->setAmount($this->getCalculator()->add($results[$i]->amount, $remainder));
+                    break;
+                }
+                break;
+            default:
+                break;
         }
-
         return $results;
     }
 

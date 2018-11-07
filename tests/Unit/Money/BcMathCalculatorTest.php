@@ -201,11 +201,11 @@ class BcMathCalculatorTest extends TestCase
      * @param $ratio
      * @param $total
      * @param $expected
-     * @param $scale
+     * @param $precision
      */
-    public function it_shares_a_value($value, $ratio, $total, $expected, $scale): void
+    public function it_shares_a_value($value, $ratio, $total, $expected, $precision): void
     {
-        $this->assertEquals($expected, $this->getCalculator($scale)->share($value, $ratio, $total));
+        $this->assertEquals($expected, $this->getCalculator($precision)->share($value, $ratio, $total,$precision));
     }
 
     /**

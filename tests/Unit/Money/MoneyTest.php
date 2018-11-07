@@ -191,15 +191,16 @@ class MoneyTest extends TestCase
      * @param $amount
      * @param $ratios
      * @param $results
+     * @param $precision
      */
-    public function it_allocates_amount($amount, $ratios, $results): void
+    public function it_allocates_amount($amount, $ratios, $results, $precision): void
     {
         $money = new Money($amount, new Currency('EUR'));
-        $allocated = $money->allocate($ratios);
+        $allocated = $money->allocate($ratios, $precision);
         /** @var Money $money */
         foreach ($allocated as $key => $money) {
             $compareTo = new Money($results[$key], $money->getCurrency());
-            $this->assertEquals($money, $compareTo);
+            $this->assertEquals($compareTo, $money);
         }
     }
 
@@ -210,25 +211,28 @@ class MoneyTest extends TestCase
      * @param $amount
      * @param $target
      * @param $results
+     * @param $precision
      */
-    public function it_allocates_amount_to_n_targets($amount, $target, $results): void
+    public function it_allocates_amount_to_n_targets($amount, $target, $results, $precision): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
-        $allocated = $money->allocateTo($target);
-
+        $allocated = $money->allocateTo($target, $precision);
         foreach ($allocated as $key => $money) {
             $compareTo = new Money($results[$key], $money->getCurrency());
-
-            $this->assertEquals($money, $compareTo);
+            $this->assertEquals($compareTo, $money);
         }
     }
 
     /**
      * @dataProvider comparatorExamples
      * @test
+     * @param $amount
+     * @param $isZero
+     * @param $isPositive
+     * @param $isNegative
      */
-    public function it_has_comparators($amount, $isZero, $isPositive, $isNegative)
+    public function it_has_comparators($amount, $isZero, $isPositive, $isNegative): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
@@ -443,29 +447,45 @@ class MoneyTest extends TestCase
     public function allocationExamples(): array
     {
         return [
-            [100, [1, 1, 1], [34, 33, 33]],
-            [101, [1, 1, 1], [34, 34, 33]],
-            [5, [3, 7], [2, 3]],
-            [5, [7, 3], [4, 1]],
-            [5, [7, 3, 0], [4, 1, 0]],
-            [-5, [7, 3], [-3, -2]],
-            [5, [0, 7, 3], [0, 4, 1]],
-            [5, [7, 0, 3], [4, 0, 1]],
-            [5, [0, 0, 1], [0, 0, 5]],
-            [5, [0, 3, 7], [0, 2, 3]],
-            [0, [0, 0, 1], [0, 0, 0]],
-            [2, [1, 1, 1], [1, 1, 0]],
-            [1, [1, 1], [1, 0]],
+            [32453.34, [1, 1, 1], [10818, 10818, 10817.34], 0],
+            [32453, [1, 1, 1], [10818, 10818, 10817], 0],
+            [32453, [1, 1, 1], [10817.67, 10817.67, 10817.66], null],
+            [100, [1, 1, 1], [33.34, 33.33, 33.33], null],
+            [100, [1, 1, 1], [34, 33, 33], 0],
+            [101, [1, 1, 1], [33.67, 33.67, 33.66], null],
+            [-101, [1, 1, 1], [-33.66, -33.67, -33.67], null],
+            [5, [3, 7], [2, 3], 0],
+            [5, [3, 7], [1.5, 3.5], 2],
+            [5, [3, 8], [1.36, 3.64], 2],
+            [5, [7, 3], [4, 1], 0],
+            [5, [7, 3], [3.5, 1.5], 2],
+            [5, [0, 5, 3], [0, 3.13, 1.87], 2],
+            [5, [7, 3, 0], [4, 1, 0], 0],
+            [5, [7, 3, 0], [3.5, 1.5, 0], 3],
+            [6.34, [7, 3, 0], [4.438, 1.902, 0], 5],
+            [6.34456456, [5, 3, 1], [3.52475809, 2.11485485, 0.70495162], 8],
+            [-5, [7, 3], [-3, -2], 0],
+            [-5, [7, 3], [-3.5, -1.5], 2],
+            [-2, [3, 5], [-0.75, -1.25], 4],
+            [5, [0, 7, 3], [0, 4, 1], 0],
+            [5, [7, 0, 3], [4, 0, 1], 0],
+            [7, [7, 0, 3], [4.9, 0, 2.1], 2],
+            [5, [0, 0, 1], [0, 0, 5], 0],
+            [5, [0, 3, 7], [0, 2, 3], 0],
+            [0, [0, 0, 1], [0, 0, 0], 0],
+            [2, [1, 1, 1], [1, 1, 0], 0],
+            [1, [1, 1], [1, 0], 0],
         ];
     }
 
     public function allocationTargetExamples(): array
     {
         return [
-            [15, 2, [8, 7]],
-            [10, 2, [5, 5]],
-            [15, 3, [5, 5, 5]],
-            [10, 3, [4, 3, 3]],
+            [15, 2, [7.5, 7.5], null],
+            [10, 2, [5, 5], null],
+            [15, 3, [5, 5, 5], null],
+            [10, 3, [3.34, 3.33, 3.33], null],
+            [10, 3, [3.33333334, 3.33333333, 3.33333333], 8],
         ];
     }
 
