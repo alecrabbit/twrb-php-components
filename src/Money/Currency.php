@@ -4,11 +4,11 @@
  * Date: 05.11.18
  * Time: 20:27
  */
+
 namespace AlecRabbit\Money;
 
 
 use AlecRabbit\Money\Contracts\CurrencyInterface;
-use Money\Currencies\ISOCurrencies;
 
 class Currency implements CurrencyInterface, \JsonSerializable
 {
@@ -26,7 +26,7 @@ class Currency implements CurrencyInterface, \JsonSerializable
             throw new \InvalidArgumentException('Currency code must be string.');
         }
         if (\strlen($code) > static::_CODE_LENGTH) {
-            throw new \InvalidArgumentException('Currency code must be not longer then ' . static::_CODE_LENGTH );
+            throw new \InvalidArgumentException('Currency code must be not longer then ' . static::_CODE_LENGTH);
         }
         $this->code = strtoupper($code);
     }

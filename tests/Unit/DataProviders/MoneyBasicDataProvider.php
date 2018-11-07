@@ -15,7 +15,7 @@ class MoneyBasicDataProvider
     public static function equalityDataProvider(): array
     {
         return [
-//            [$amount, $currency, $resulted_amount, $resulted_currency, $equality],
+            // [$amount, $currency, $resulted_amount, $resulted_currency, $equality],
             [null, 'eUr', '0', 'EUR', true],
             [6, 'usdEt', '5', 'USDET', false],
             [5.2, 'eUr', '5.2', 'EUR', true],
@@ -27,7 +27,6 @@ class MoneyBasicDataProvider
 
         ];
     }
-
 
     public static function divideDataProvider(): array
     {
@@ -44,7 +43,7 @@ class MoneyBasicDataProvider
     public static function comparisonDataProvider(): array
     {
         return [
-//            [$expected, $amount, $currency, $second_amount]
+            // [$expected, $amount, $currency, $second_amount]
             [0, 1, 'eur', 1],
             [1, 2, 'eur', 1],
             [-1, 0, 'eur', 1],
@@ -110,7 +109,7 @@ class MoneyBasicDataProvider
     public static function comparatorDataProvider(): array
     {
         return [
-//            [$amount, $isZero, $isPositive, $isNegative],
+            // [$amount, $isZero, $isPositive, $isNegative],
             [1, false, true, false],
             [0, true, false, false],
             [-1, false, false, true],
@@ -192,13 +191,14 @@ class MoneyBasicDataProvider
             [[Money::EUR(5), Money::EUR(10), Money::EUR(15)], Money::EUR(10)],
             [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-10)],
             [[Money::EUR(0)], Money::EUR(0)],
+            [[Money::EUR(1)], Money::EUR(1)],
         ];
     }
 
     public static function multiplyDataProvider(): array
     {
         return [
-//            [$result, $amount, $multiplier],
+            // [$result, $amount, $multiplier],
             ['1', 1, 1],
             ['1.24124', 1, 1.24124],
             ['7.1955528', 2.22, 3.24124],
@@ -209,7 +209,7 @@ class MoneyBasicDataProvider
     public static function newInstanceDataProvider(): array
     {
         return [
-//            [$amount, $currency, $resulted_amount, $resulted_currency],
+            // [$amount, $currency, $resulted_amount, $resulted_currency],
             [null, 'eUr', '0', 'EUR'],
             [5.2, 'eUr', '5.2', 'EUR'],
             [-0.1232, 'usd', '-0.1232', 'USD'],
@@ -221,12 +221,11 @@ class MoneyBasicDataProvider
     public function newInstanceBadDataProvider(): array
     {
         return [
-            //            [$amount, $currency, $resulted_amount, $resulted_currency],
+            // [$amount, $currency],
             [false, 'eUr'],
             [new \stdClass(), 'eUr'],
             [null, true],
             [1, 'CODETOOLONG'],
         ];
     }
-
 }

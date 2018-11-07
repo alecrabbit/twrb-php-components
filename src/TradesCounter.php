@@ -11,6 +11,7 @@ namespace AlecRabbit;
 
 class TradesCounter
 {
+    // todo ****************    NOT IMPLEMENTED!    ****************
 
     private const RES = [
 
