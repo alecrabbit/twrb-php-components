@@ -11,8 +11,10 @@ namespace AlecRabbit\Money\Calculator;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use BCMathExtended\BC;
 
-class BcMathCalculatorInterface implements CalculatorInterface
+class BcMathCalculator implements CalculatorInterface
 {
+    private const _SCALE = EXTENDED_SCALE;
+
     /**
      * @var string
      */
@@ -23,7 +25,7 @@ class BcMathCalculatorInterface implements CalculatorInterface
      */
     public function __construct(?int $scale = null)
     {
-        $this->scale = $scale ?? EXTENDED_SCALE;
+        $this->scale = $scale ?? static::_SCALE;
     }
 
     /**

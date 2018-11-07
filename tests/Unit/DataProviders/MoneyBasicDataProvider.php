@@ -218,4 +218,15 @@ class MoneyBasicDataProvider
         ];
     }
 
+    public function newInstanceBadDataProvider(): array
+    {
+        return [
+            //            [$amount, $currency, $resulted_amount, $resulted_currency],
+            [false, 'eUr'],
+            [new \stdClass(), 'eUr'],
+            [null, true],
+            [1, 'CODETOOLONG'],
+        ];
+    }
+
 }

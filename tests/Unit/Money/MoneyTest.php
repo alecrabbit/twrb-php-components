@@ -28,6 +28,17 @@ class MoneyTest extends TestCase
         $this->assertEquals($resulted_currency, $money->getCurrency());
     }
 
+    /** @test
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::newInstanceBadDataProvider()
+     * @param $amount
+     * @param $currency
+     */
+    public function throwsWhenCreatesNewInstance($amount, $currency): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        new Money($amount, new Currency($currency));
+    }
+
     /**
      * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::equalityDataProvider()
      * @test
@@ -134,6 +145,7 @@ class MoneyTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $money->multiply($operand);
     }
+
     /**
      * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::invalidOperandDataProvider()
      * @test

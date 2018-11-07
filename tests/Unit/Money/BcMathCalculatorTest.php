@@ -8,7 +8,7 @@
 namespace Unit\Money;
 
 
-use AlecRabbit\Money\Calculator\BcMathCalculatorInterface;
+use AlecRabbit\Money\Calculator\BcMathCalculator;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -30,9 +30,9 @@ class BcMathCalculatorTest extends TestCase
         $this->assertEquals($expected, $this->getCalculator($scale)->add($value1, $value2));
     }
 
-    protected function getCalculator($scale = null): BcMathCalculatorInterface
+    protected function getCalculator($scale = null): BcMathCalculator
     {
-        return new BcMathCalculatorInterface($scale);
+        return new BcMathCalculator($scale);
     }
 
     /**

@@ -8,7 +8,7 @@
 namespace AlecRabbit\Money;
 
 
-use AlecRabbit\Money\Calculator\BcMathCalculatorInterface;
+use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use AlecRabbit\Money\Contracts\MoneyInterface;
 
@@ -21,15 +21,12 @@ class Money implements MoneyInterface, \JsonSerializable
 {
     use MoneyFactory;
 
-    public const ROUND_HALF_UP = PHP_ROUND_HALF_UP;
-    public const ROUND_HALF_DOWN = PHP_ROUND_HALF_DOWN;
-
     /** @var CalculatorInterface */
     private static $calculator;
 
     /** @var array */
     private static $calculators = [
-        BcMathCalculatorInterface::class,
+        BcMathCalculator::class,
     ];
 
     /** @var string */
