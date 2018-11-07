@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 class MoneyTest extends TestCase
 {
     /** @test
-     * @dataProvider dataForNewInstance
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::newInstanceDataProvider()
      * @param $amount
      * @param $currency
      * @param $resulted_amount
@@ -28,20 +28,8 @@ class MoneyTest extends TestCase
         $this->assertEquals($resulted_currency, $money->getCurrency());
     }
 
-    public function dataForNewInstance(): array
-    {
-        return [
-//            [$amount, $currency, $resulted_amount, $resulted_currency],
-            [null, 'eUr', '0', 'EUR'],
-            [5.2, 'eUr', '5.2', 'EUR'],
-            [-0.1232, 'usd', '-0.1232', 'USD'],
-            [5, 'usd', '5', 'USD'],
-            [5, 'usdEt', '5', 'USDET'],
-        ];
-    }
-
     /**
-     * @dataProvider equalityExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::equalityDataProvider()
      * @test
      * @param $amount
      * @param $currency
@@ -49,78 +37,52 @@ class MoneyTest extends TestCase
      * @param $second_currency
      * @param $equality
      */
-    public function it_equals_to_another_money($amount, $currency, $second_amount, $second_currency, $equality): void
+    public function equals_to_another_money($amount, $currency, $second_amount, $second_currency, $equality): void
     {
         $money = new Money($amount, new Currency($currency));
 
         $this->assertEquals($equality, $money->equals(new Money($second_amount, new Currency($second_currency))));
     }
 
-    public function equalityExamples(): array
-    {
-        return [
-//            [$amount, $currency, $resulted_amount, $resulted_currency, $equality],
-            [null, 'eUr', '0', 'EUR', true],
-            [6, 'usdEt', '5', 'USDET', false],
-            [5.2, 'eUr', '5.2', 'EUR', true],
-            [-0.1232, 'usd', '-0.1232', 'USD', true],
-            [-0.1232, 'usd', null, 'USD', false],
-            [5, 'usd', '5', 'USD', true],
-            [5, 'usdEt', '5', 'USDET', true],
-            [5, 'usdEt', '5', 'eur', false],
-
-        ];
-    }
-
     /**
-     * @dataProvider comparisonExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::comparisonDataProvider()
      * @test
-     * @param $result
+     * @param $expected
      * @param $amount
      * @param $currency
      * @param $second_amount
      */
-    public function it_compares_two_amounts($result, $amount, $currency, $second_amount): void
+    public function compares_two_amounts($expected, $amount, $currency, $second_amount): void
     {
         $money = new Money($amount, new Currency($currency));
         $other = new Money($second_amount, new Currency($currency));
 
-        $this->assertEquals($result, $money->compare($other));
-        $this->assertEquals(1 === $result, $money->greaterThan($other));
-        $this->assertEquals(0 <= $result, $money->greaterThanOrEqual($other));
-        $this->assertEquals(-1 === $result, $money->lessThan($other));
-        $this->assertEquals(0 >= $result, $money->lessThanOrEqual($other));
+        $this->assertEquals($expected, $money->compare($other));
+        $this->assertEquals(1 === $expected, $money->greaterThan($other));
+        $this->assertEquals(0 <= $expected, $money->greaterThanOrEqual($other));
+        $this->assertEquals(-1 === $expected, $money->lessThan($other));
+        $this->assertEquals(0 >= $expected, $money->lessThanOrEqual($other));
 
-        if ($result === 0) {
+        if ($expected === 0) {
             $this->assertEquals($money, $other);
         } else {
             $this->assertNotEquals($money, $other);
         }
         $other = new Money($second_amount, new Currency($currency . 'o'));
         $this->expectException(\InvalidArgumentException::class);
-        $this->assertEquals($result, $money->compare($other));
+        $this->assertEquals($expected, $money->compare($other));
 
-    }
-
-    public function comparisonExamples(): array
-    {
-        return [
-//            [$result, $amount, $currency, $second_amount]
-            [0, 1, 'eur', 1],
-            [1, 2, 'eur', 1],
-            [-1, 0, 'eur', 1],
-        ];
     }
 
 
     /**
      * @test
-     * @dataProvider multiplyDataProvider
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::multiplyDataProvider()
      * @param $result
      * @param $amount
      * @param $multiplier
      */
-    public function it_multiplies_the_amount($result, $amount, $multiplier): void
+    public function multiplies_the_amount($result, $amount, $multiplier): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
@@ -132,15 +94,14 @@ class MoneyTest extends TestCase
 
     /**
      * @test
-     * @dataProvider divideDataProvider
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::divideDataProvider()()
      * @param $result
      * @param $amount
      * @param $divisor
      */
-    public function it_divides_the_amount($result, $amount, $divisor): void
+    public function divides_the_amount($result, $amount, $divisor): void
     {
         $money = new Money($amount, new Currency('EUR'));
-
         $money = $money->divide($divisor);
 
         $this->assertInstanceOf(Money::class, $money);
@@ -151,7 +112,7 @@ class MoneyTest extends TestCase
     /**
      * @test
      */
-    public function it_multiplies_the_amount_with_locale_that_uses_comma_separator(): void
+    public function multiplies_the_amount_with_locale_that_uses_comma_separator(): void
     {
         $this->setLocale(LC_ALL, 'es_ES.utf8');
 
@@ -164,21 +125,21 @@ class MoneyTest extends TestCase
 
     /**
      * @test
-     * @dataProvider invalidOperandExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::invalidOperandDataProvider()
      * @param $operand
      */
-    public function it_throws_an_exception_when_operand_is_invalid_during_multiplication($operand): void
+    public function throws_an_exception_when_operand_is_invalid_during_multiplication($operand): void
     {
         $money = new Money(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->multiply($operand);
     }
     /**
-     * @dataProvider invalidOperandExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::invalidOperandDataProvider()
      * @test
      * @param $operand
      */
-    public function it_throws_an_exception_when_operand_is_invalid_during_division($operand): void
+    public function throws_an_exception_when_operand_is_invalid_during_division($operand): void
     {
         $money = new Money(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
@@ -186,14 +147,14 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @dataProvider allocationExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::allocationDataProvider()
      * @test
      * @param $amount
      * @param $ratios
      * @param $results
      * @param $precision
      */
-    public function it_allocates_amount($amount, $ratios, $results, $precision): void
+    public function allocates_amount($amount, $ratios, $results, $precision): void
     {
         $money = new Money($amount, new Currency('EUR'));
         $allocated = $money->allocate($ratios, $precision);
@@ -206,14 +167,14 @@ class MoneyTest extends TestCase
 
 
     /**
-     * @dataProvider allocationTargetExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::allocationTargetDataProvider()
      * @test
      * @param $amount
      * @param $target
      * @param $results
      * @param $precision
      */
-    public function it_allocates_amount_to_n_targets($amount, $target, $results, $precision): void
+    public function allocates_amount_to_n_targets($amount, $target, $results, $precision): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
@@ -225,14 +186,14 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @dataProvider comparatorExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::comparatorDataProvider()
      * @test
      * @param $amount
      * @param $isZero
      * @param $isPositive
      * @param $isNegative
      */
-    public function it_has_comparators($amount, $isZero, $isPositive, $isNegative): void
+    public function has_comparators($amount, $isZero, $isPositive, $isNegative): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
@@ -242,27 +203,25 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @dataProvider absoluteExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::absoluteDataProvider()
      * @test
      * @param $amount
-     * @param $result
+     * @param $expected
      */
-    public function it_calculates_the_absolute_amount($amount, $result): void
+    public function calculates_the_absolute_amount($expected, $amount): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
-        $money = $money->absolute();
-
-        $this->assertEquals($result, $money->getAmount());
+        $this->assertEquals($expected, $money->absolute()->getAmount());
     }
 
     /**
-     * @dataProvider negativeExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::negativeDataProvider()
      * @test
      * @param $amount
      * @param $result
      */
-    public function it_calculates_the_negative_amount($amount, $result): void
+    public function calculates_the_negative_amount($amount, $result): void
     {
         $money = new Money($amount, new Currency('EUR'));
 
@@ -272,13 +231,13 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @dataProvider modExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::modDataProvider()
      * @test
      * @param $left
      * @param $right
      * @param $expected
      */
-    public function it_calculates_the_modulus_of_an_amount($left, $right, $expected): void
+    public function calculates_the_modulus_of_an_amount($left, $right, $expected): void
     {
         $money = new Money($left, new Currency('EUR'));
         $rightMoney = new Money($right, new Currency('EUR'));
@@ -292,7 +251,7 @@ class MoneyTest extends TestCase
     /**
      * @test
      */
-    public function it_converts_to_json(): void
+    public function converts_to_json(): void
     {
         $this->assertEquals(
             '{"amount":"350","currency":"EUR"}',
@@ -303,7 +262,7 @@ class MoneyTest extends TestCase
     /**
      * @test
      */
-    public function it_supports_max_int(): void
+    public function supports_max_int(): void
     {
         $one = new Money(1, new Currency('EUR'));
         $ten = new Money(10, new Currency('EUR'));
@@ -322,7 +281,7 @@ class MoneyTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_ratio_of(): void
+    public function returns_ratio_of(): void
     {
         $currency = new Currency('EUR');
         $zero = new Money(0, $currency);
@@ -338,7 +297,7 @@ class MoneyTest extends TestCase
     /**
      * @test
      */
-    public function it_throws_when_calculating_ratio_of_zero(): void
+    public function throws_when_calculating_ratio_of_zero(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -350,45 +309,45 @@ class MoneyTest extends TestCase
     }
 
     /**
-     * @dataProvider sumExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::sumDataProvider()
      * @test
      * @param $values
      * @param $sum
      */
-    public function it_calculates_sum($values, $sum): void
+    public function calculates_sum($values, $sum): void
     {
         $this->assertEquals($sum, Money::sum(...$values));
     }
 
     /**
-     * @dataProvider minExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::minDataProvider()
      * @test
      * @param $values
      * @param $min
      */
-    public function it_calculates_min($values, $min): void
+    public function calculates_min($values, $min): void
     {
         $this->assertEquals($min, Money::min(...$values));
     }
 
     /**
-     * @dataProvider maxExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::maxDataProvider()
      * @test
      * @param $values
      * @param $max
      */
-    public function it_calculates_max($values, $max): void
+    public function calculates_max($values, $max): void
     {
         $this->assertEquals($max, Money::max(...$values));
     }
 
     /**
-     * @dataProvider avgExamples
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::avgDataProvider()
      * @test
      * @param $values
      * @param $avg
      */
-    public function it_calculates_avg($values, $avg): void
+    public function calculates_avg($values, $avg): void
     {
         $this->assertEquals($avg, Money::avg(...$values));
     }
@@ -397,7 +356,7 @@ class MoneyTest extends TestCase
      * @test
      * @requires PHP 7.0
      */
-    public function it_throws_when_calculating_min_with_zero_arguments(): void
+    public function throws_when_calculating_min_with_zero_arguments(): void
     {
         $this->expectException(\Throwable::class);
         Money::min(...[]);
@@ -407,7 +366,7 @@ class MoneyTest extends TestCase
      * @test
      * @requires PHP 7.0
      */
-    public function it_throws_when_calculating_max_with_zero_arguments(): void
+    public function throws_when_calculating_max_with_zero_arguments(): void
     {
         $this->expectException(\Throwable::class);
         Money::max(...[]);
@@ -417,7 +376,7 @@ class MoneyTest extends TestCase
      * @test
      * @requires PHP 7.0
      */
-    public function it_throws_when_calculating_sum_with_zero_arguments(): void
+    public function throws_when_calculating_sum_with_zero_arguments(): void
     {
         $this->expectException(\Throwable::class);
         Money::sum(...[]);
@@ -427,174 +386,9 @@ class MoneyTest extends TestCase
      * @test
      * @requires PHP 7.0
      */
-    public function it_throws_when_calculating_avg_with_zero_arguments(): void
+    public function throws_when_calculating_avg_with_zero_arguments(): void
     {
         $this->expectException(\Throwable::class);
         Money::avg(...[]);
     }
-
-    public function invalidOperandExamples(): array
-    {
-        return [
-            [[]],
-            [false],
-            ['operand'],
-            [null],
-            [new \stdClass()],
-        ];
-    }
-
-    public function allocationExamples(): array
-    {
-        return [
-            [32453.34, [1, 1, 1], [10818, 10818, 10817.34], 0],
-            [32453, [1, 1, 1], [10818, 10818, 10817], 0],
-            [32453, [1, 1, 1], [10817.67, 10817.67, 10817.66], null],
-            [100, [1, 1, 1], [33.34, 33.33, 33.33], null],
-            [100, [1, 1, 1], [34, 33, 33], 0],
-            [101, [1, 1, 1], [33.67, 33.67, 33.66], null],
-            [-101, [1, 1, 1], [-33.66, -33.67, -33.67], null],
-            [5, [3, 7], [2, 3], 0],
-            [5, [3, 7], [1.5, 3.5], 2],
-            [5, [3, 8], [1.36, 3.64], 2],
-            [5, [7, 3], [4, 1], 0],
-            [5, [7, 3], [3.5, 1.5], 2],
-            [5, [0, 5, 3], [0, 3.13, 1.87], 2],
-            [5, [7, 3, 0], [4, 1, 0], 0],
-            [5, [7, 3, 0], [3.5, 1.5, 0], 3],
-            [6.34, [7, 3, 0], [4.438, 1.902, 0], 5],
-            [6.34456456, [5, 3, 1], [3.52475809, 2.11485485, 0.70495162], 8],
-            [-5, [7, 3], [-3, -2], 0],
-            [-5, [7, 3], [-3.5, -1.5], 2],
-            [-2, [3, 5], [-0.75, -1.25], 4],
-            [5, [0, 7, 3], [0, 4, 1], 0],
-            [5, [7, 0, 3], [4, 0, 1], 0],
-            [7, [7, 0, 3], [4.9, 0, 2.1], 2],
-            [5, [0, 0, 1], [0, 0, 5], 0],
-            [5, [0, 3, 7], [0, 2, 3], 0],
-            [0, [0, 0, 1], [0, 0, 0], 0],
-            [2, [1, 1, 1], [1, 1, 0], 0],
-            [1, [1, 1], [1, 0], 0],
-        ];
-    }
-
-    public function allocationTargetExamples(): array
-    {
-        return [
-            [15, 2, [7.5, 7.5], null],
-            [10, 2, [5, 5], null],
-            [15, 3, [5, 5, 5], null],
-            [10, 3, [3.34, 3.33, 3.33], null],
-            [10, 3, [3.33333334, 3.33333333, 3.33333333], 8],
-        ];
-    }
-
-    public function comparatorExamples(): array
-    {
-        return [
-            [1, false, true, false],
-            [0, true, false, false],
-            [-1, false, false, true],
-            ['1', false, true, false],
-            ['0', true, false, false],
-            ['-1', false, false, true],
-        ];
-    }
-
-    public function absoluteExamples(): array
-    {
-        return [
-            [1, 1],
-            [0, 0],
-            [-1, 1],
-            ['1', 1],
-            ['0', 0],
-            ['-1', 1],
-        ];
-    }
-
-    public function negativeExamples(): array
-    {
-        return [
-            [1, -1],
-            [0, 0],
-            [-1, 1],
-            ['1', -1],
-            ['0', 0],
-            ['-1', 1],
-        ];
-    }
-
-    public function modExamples(): array
-    {
-        return [
-            [11, 5, '1'],
-            [9, 3, '0'],
-            [1006, 10, '6'],
-            [1007, 10, '7'],
-        ];
-    }
-
-    public function sumExamples(): array
-    {
-        return [
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15)], Money::EUR(30.000)],
-            [[Money::EUR(-5), Money::EUR(-10.000), Money::EUR(-15)], Money::EUR(-30)],
-            [[Money::EUR(-5), Money::EUR(10.000), Money::EUR(-15)], Money::EUR(-10.0)],
-            [[Money::EUR(0)], Money::EUR(0)],
-            [[Money::EUR(0), Money::EUR(0), Money::EUR(0)], Money::EUR(0)],
-            [[Money::EUR(0), Money::EUR(0.001), Money::EUR(0)], Money::EUR('0.00100')],
-        ];
-    }
-
-    public function minExamples(): array
-    {
-        return [
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15.0032323000)], Money::EUR(5)],
-            [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-15)],
-            [[Money::EUR(0)], Money::EUR(0)],
-        ];
-    }
-
-    public function maxExamples(): array
-    {
-        return [
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15.0032323000)], Money::EUR('15.0032323')],
-            [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-5)],
-            [[Money::EUR(0)], Money::EUR(0)],
-        ];
-    }
-
-    public function avgExamples(): array
-    {
-        return [
-            [[Money::EUR(5), Money::EUR(1.5077), Money::EUR(8.2), Money::EUR(10), Money::EUR(15)], Money::EUR(7.94154)],
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15)], Money::EUR(10)],
-            [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-10)],
-            [[Money::EUR(0)], Money::EUR(0)],
-        ];
-    }
-
-    public function multiplyDataProvider(): array
-    {
-        return [
-//            [$result, $amount, $multiplier],
-            ['1', 1, 1],
-            ['1.24124', 1, 1.24124],
-            ['7.1955528', 2.22, 3.24124],
-            ['7.24267565101206', 2.23453462623452, 3.24124565624525],
-        ];
-    }
-    public function divideDataProvider(): array
-    {
-        return [
-//            [$result, $amount, $divisor],
-            ['1', 1, 1],
-            ['1.24124', 1.24124, 1],
-            ['0.5', 3, 6],
-            ['0.68492305413977', 2.22, 3.24124],
-            ['0.68940613061185', 2.23453462623452, 3.24124565624525],
-        ];
-    }
-
 }
