@@ -10,7 +10,6 @@ namespace AlecRabbit\Money;
 
 use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Contracts\Calculator;
-use Money\Number;
 
 /**
  * Money Value Object.
@@ -19,6 +18,8 @@ use Money\Number;
  */
 class Money implements \JsonSerializable
 {
+    use MoneyFactory;
+
     public const ROUND_HALF_UP = PHP_ROUND_HALF_UP;
     public const ROUND_HALF_DOWN = PHP_ROUND_HALF_DOWN;
 
@@ -50,13 +51,27 @@ class Money implements \JsonSerializable
         if (!\is_numeric($amount)) {
             throw new \InvalidArgumentException('Amount must be int|float|string');
         }
-        $this->amount = (string)$amount;
-        $this->currency = $currency;
+        $this->setAmount($amount);
+        $this->setCurrency($currency);
+    }
+
+    private function setAmount(string $amount): void
+    {
+        $this->amount = trim_zeros($amount);
     }
 
     /**
+     * @param Currency $currency
+     */
+    private function setCurrency(Currency $currency): void
+    {
+        $this->currency = $currency;
+    }
+
+
+    /**
      * @param Money $first
-     * @param Money ...$collection
+     * @param Money[] $collection
      *
      * @return Money
      */
@@ -216,7 +231,6 @@ class Money implements \JsonSerializable
 
             $amount = $calculator->add($amount, $addend->amount);
         }
-
         return new self($amount, $this->currency);
     }
 
@@ -236,24 +250,20 @@ class Money implements \JsonSerializable
      * the divided value by the given factor.
      *
      * @param float|int|string $divisor
-     * @param int $roundingMode
      *
      * @return Money
      */
-    public function divide($divisor, $roundingMode = self::ROUND_HALF_UP): Money
+    public function divide($divisor): Money
     {
         $this->assertOperand($divisor);
-        $this->assertRoundingMode($roundingMode);
-
-        $divisor = (string)Number::fromNumber($divisor);
 
         if ($this->getCalculator()->compare($divisor, '0') === 0) {
             throw new \InvalidArgumentException('Division by zero');
         }
 
-        $quotient = $this->round($this->getCalculator()->divide($this->amount, $divisor), $roundingMode);
-
-        return $this->newInstance($quotient);
+        $quotient = $this->getCalculator()->divide($this->amount, $divisor);
+        return
+            $this->newInstance($quotient);
     }
 
     /**
@@ -273,42 +283,42 @@ class Money implements \JsonSerializable
         }
     }
 
-    /**
-     * Asserts that rounding mode is a valid integer value.
-     *
-     * @param int $roundingMode
-     *
-     * @throws \InvalidArgumentException If $roundingMode is not valid
-     */
-    private function assertRoundingMode($roundingMode): void
-    {
-        if (!\in_array($roundingMode, [self::ROUND_HALF_DOWN, self::ROUND_HALF_UP,], true)) {
-            throw new \InvalidArgumentException(
-                'Rounding mode should be Money::ROUND_HALF_DOWN | Money::ROUND_HALF_UP '
-            );
-        }
-    }
+//    /**
+//     * Asserts that rounding mode is a valid integer value.
+//     *
+//     * @param int $roundingMode
+//     *
+//     * @throws \InvalidArgumentException If $roundingMode is not valid
+//     */
+//    private function assertRoundingMode($roundingMode): void
+//    {
+//        if (!\in_array($roundingMode, [self::ROUND_HALF_DOWN, self::ROUND_HALF_UP,], true)) {
+//            throw new \InvalidArgumentException(
+//                'Rounding mode should be Money::ROUND_HALF_DOWN | Money::ROUND_HALF_UP '
+//            );
+//        }
+//    }
 
-    /**
-     * @param string $amount
-     * @param int $rounding_mode
-     *
-     * @return string
-     */
-    private function round($amount, int $rounding_mode): string
-    {
-        $this->assertRoundingMode($rounding_mode);
-
-        if ($rounding_mode === self::ROUND_HALF_UP) {
-            return $this->getCalculator()->ceil($amount);
-        }
-
-        if ($rounding_mode === self::ROUND_HALF_DOWN) {
-            return $this->getCalculator()->floor($amount);
-        }
-
-        return $this->getCalculator()->round($amount);
-    }
+//    /**
+//     * @param string $amount
+//     * @param int $rounding_mode
+//     *
+//     * @return string
+//     */
+//    private function round($amount, int $rounding_mode): string
+//    {
+//        $this->assertRoundingMode($rounding_mode);
+//
+//        if ($rounding_mode === self::ROUND_HALF_UP) {
+//            return $this->getCalculator()->ceil($amount);
+//        }
+//
+//        if ($rounding_mode === self::ROUND_HALF_DOWN) {
+//            return $this->getCalculator()->floor($amount);
+//        }
+//
+//        return $this->getCalculator()->round($amount);
+//    }
 
     /**
      * Returns a new Money instance based on the current one using the Currency.
@@ -393,18 +403,17 @@ class Money implements \JsonSerializable
      * the multiplied value by the given factor.
      *
      * @param float|int|string $multiplier
-     * @param int $roundingMode
      *
      * @return Money
      */
-    public function multiply($multiplier, int $roundingMode = self::ROUND_HALF_UP): Money
+    public function multiply($multiplier): Money
     {
         $this->assertOperand($multiplier);
-        $this->assertRoundingMode($roundingMode);
 
-        $product = $this->round($this->getCalculator()->multiply($this->amount, $multiplier), $roundingMode);
+        $product = $this->getCalculator()->multiply($this->amount, $multiplier);
 
-        return $this->newInstance($product);
+        return
+            $this->newInstance($product);
     }
 
     /**
@@ -428,11 +437,12 @@ class Money implements \JsonSerializable
      *
      * @param int $n
      *
+     * @param int|null $precision
      * @return Money[]
      *
-     * @throws \InvalidArgumentException If number of targets is not an integer
      */
-    public function allocateTo($n): array
+
+    public function allocateTo($n, ?int $precision = null): array
     {
         if (!\is_int($n)) {
             throw new \InvalidArgumentException('Number of targets must be an integer.');
@@ -441,7 +451,7 @@ class Money implements \JsonSerializable
             throw new \InvalidArgumentException('Cannot allocate to none, target must be greater than zero.');
         }
 
-        return $this->allocate(array_fill(0, $n, 1));
+        return $this->allocate(array_fill(0, $n, 1), $precision);
     }
 
     /**
@@ -449,11 +459,13 @@ class Money implements \JsonSerializable
      *
      * @param array $ratios
      *
+     * @param int|null $precision
      * @return iterable
      */
-    public function allocate(array $ratios): iterable
+    public function allocate(array $ratios, ?int $precision = null): iterable
     {
-        if (\count($ratios) === 0) {
+        $precision = $precision ?? 2;
+        if (0 === $allocations = \count($ratios)) {
             throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array');
         }
 
@@ -470,20 +482,32 @@ class Money implements \JsonSerializable
                 throw new \InvalidArgumentException('Cannot allocate to none, ratio must be zero or positive');
             }
 
-            $share = $this->getCalculator()->share($this->amount, $ratio, $total);
+            $share = $this->getCalculator()->share($this->amount, $ratio, $total, $precision);
             $results[] = $this->newInstance($share);
             $remainder = $this->getCalculator()->subtract($remainder, $share);
         }
-
-        for ($i = 0; $this->getCalculator()->compare($remainder, 0) === 1; ++$i) {
-            if (!$ratios[$i]) {
-                continue;
-            }
-
-            $results[$i]->amount = (string)$this->getCalculator()->add($results[$i]->amount, 1);
-            $remainder = $this->getCalculator()->subtract($remainder, 1);
+        switch ($this->getCalculator()->compare($remainder, 0)) {
+            case -1:
+                for ($i = $allocations - 1; $i >= 0; $i--) {
+                    if (!$ratios[$i]) {
+                        continue;
+                    }
+                    $results[$i]->setAmount($this->getCalculator()->add($results[$i]->amount, $remainder));
+                    break;
+                }
+                break;
+            case 1:
+                for ($i = 0; $i < $allocations; $i++) {
+                    if (!$ratios[$i]) {
+                        continue;
+                    }
+                    $results[$i]->setAmount($this->getCalculator()->add($results[$i]->amount, $remainder));
+                    break;
+                }
+                break;
+            default:
+                break;
         }
-
         return $results;
     }
 
