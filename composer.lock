@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9d61557fda00b48549d78fffeddff122",
+    "content-hash": "9548f932ef847765fdbf14748f356e38",
     "packages": [
         {
             "name": "alecrabbit/accessories",
-            "version": "dev-master",
+            "version": "0.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/accessories.git",
-                "reference": "37a9828987abf3ad49cdd11e9b28ec84a2f83706"
+                "reference": "59bbc09c78218a0b43971a26c54d60de0dc47cf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/37a9828987abf3ad49cdd11e9b28ec84a2f83706",
-                "reference": "37a9828987abf3ad49cdd11e9b28ec84a2f83706",
+                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/59bbc09c78218a0b43971a26c54d60de0dc47cf2",
+                "reference": "59bbc09c78218a0b43971a26c54d60de0dc47cf2",
                 "shasum": ""
             },
             "require": {
@@ -42,20 +42,20 @@
                 "MIT"
             ],
             "description": "PHP accessories Classes etc.",
-            "time": "2018-11-01T14:36:50+00:00"
+            "time": "2018-11-08T14:43:48+00:00"
         },
         {
             "name": "alecrabbit/php-helpers",
-            "version": "0.0.8",
+            "version": "0.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-helpers.git",
-                "reference": "2265eccce8bc71d318a41096872527b528c85942"
+                "reference": "9ed88f33ce5d252739a992854399a4ccc5c5352c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-helpers/zipball/2265eccce8bc71d318a41096872527b528c85942",
-                "reference": "2265eccce8bc71d318a41096872527b528c85942",
+                "url": "https://api.github.com/repos/alecrabbit/php-helpers/zipball/9ed88f33ce5d252739a992854399a4ccc5c5352c",
+                "reference": "9ed88f33ce5d252739a992854399a4ccc5c5352c",
                 "shasum": ""
             },
             "require": {
@@ -83,20 +83,20 @@
                 "MIT"
             ],
             "description": "PHP helpers functions",
-            "time": "2018-11-03T19:51:14+00:00"
+            "time": "2018-11-07T21:56:06+00:00"
         },
         {
             "name": "alecrabbit/php-simple-profiler",
-            "version": "0.0.4",
+            "version": "0.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-simple-profiler.git",
-                "reference": "ac8d24cc9a0d625e76674793911d7997078b4dee"
+                "reference": "4b4bf36ffc85c4e9221ef4744a5a5df3f331200a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/ac8d24cc9a0d625e76674793911d7997078b4dee",
-                "reference": "ac8d24cc9a0d625e76674793911d7997078b4dee",
+                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/4b4bf36ffc85c4e9221ef4744a5a5df3f331200a",
+                "reference": "4b4bf36ffc85c4e9221ef4744a5a5df3f331200a",
                 "shasum": ""
             },
             "require": {
@@ -121,7 +121,7 @@
                 "MIT"
             ],
             "description": "PHP simple profiler",
-            "time": "2018-11-03T20:19:57+00:00"
+            "time": "2018-11-08T14:58:00+00:00"
         },
         {
             "name": "krowinski/bcmath-extended",
@@ -181,16 +181,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.5.0",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "790f2bc8c560541cc5a12e506195e3df4ee2c862"
+                "reference": "1e0feb9741e6449feb18f5fb3a5542421fb4a865"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/790f2bc8c560541cc5a12e506195e3df4ee2c862",
-                "reference": "790f2bc8c560541cc5a12e506195e3df4ee2c862",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/1e0feb9741e6449feb18f5fb3a5542421fb4a865",
+                "reference": "1e0feb9741e6449feb18f5fb3a5542421fb4a865",
                 "shasum": ""
             },
             "require": {
@@ -199,8 +199,11 @@
                 "symfony/translation": "^4.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.11",
                 "phpunit/phpunit": "^7.1.5"
+            },
+            "suggest": {
+                "friendsofphp/php-cs-fixer": "Needed for the `composer phpcs` command. Allow to automatically fix code style.",
+                "phpstan/phpstan": "Needed for the `composer phpstan` command. Allow to detect potential errors."
             },
             "type": "library",
             "extra": {
@@ -233,7 +236,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-10-26T20:15:03+00:00"
+            "time": "2018-11-08T13:33:56+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -2522,7 +2525,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "alecrabbit/accessories": 20,
         "moneyphp/money": 20
     },
     "prefer-stable": true,
