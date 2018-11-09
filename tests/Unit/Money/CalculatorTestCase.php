@@ -8,7 +8,7 @@
 namespace Unit\Money;
 
 
-use AlecRabbit\Money\Contracts\Calculator;
+use AlecRabbit\Money\Contracts\CalculatorInterface;
 use PHPUnit\Framework\TestCase;
 
 abstract class CalculatorTestCase extends TestCase

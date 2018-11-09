@@ -13,7 +13,7 @@ namespace AlecRabbit\Money\Contracts;
  *
  * @author Frederik Bosch <f.bosch@genkgo.nl>
  */
-interface Calculator
+interface CalculatorInterface
 {
     /**
      * Returns whether the calculator is supported in

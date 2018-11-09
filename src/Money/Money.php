@@ -9,21 +9,19 @@ namespace AlecRabbit\Money;
 
 
 use AlecRabbit\Money\Calculator\BcMathCalculator;
-use AlecRabbit\Money\Contracts\Calculator;
+use AlecRabbit\Money\Contracts\CalculatorInterface;
+use AlecRabbit\Money\Contracts\MoneyInterface;
 
 /**
  * Money Value Object.
  *
  * @author Mathias Verraes
  */
-class Money implements \JsonSerializable
+class Money implements MoneyInterface, \JsonSerializable
 {
     use MoneyFactory;
 
-    public const ROUND_HALF_UP = PHP_ROUND_HALF_UP;
-    public const ROUND_HALF_DOWN = PHP_ROUND_HALF_DOWN;
-
-    /** @var Calculator */
+    /** @var CalculatorInterface */
     private static $calculator;
 
     /** @var array */
@@ -143,9 +141,9 @@ class Money implements \JsonSerializable
     }
 
     /**
-     * @return Calculator
+     * @return CalculatorInterface
      */
-    private function getCalculator(): Calculator
+    private function getCalculator(): CalculatorInterface
     {
         if (null === self::$calculator) {
             self::$calculator = self::initializeCalculator();
@@ -155,14 +153,14 @@ class Money implements \JsonSerializable
     }
 
     /**
-     * @return Calculator
+     * @return CalculatorInterface
      *
      * @throws \RuntimeException If cannot find calculator for money calculations
      */
-    private static function initializeCalculator(): Calculator
+    private static function initializeCalculator(): CalculatorInterface
     {
         foreach (self::$calculators as $calculator) {
-            /** @var Calculator $calculator */
+            /** @var CalculatorInterface $calculator */
             if ($calculator::supported()) {
                 return new $calculator();
             }
@@ -339,8 +337,8 @@ class Money implements \JsonSerializable
      */
     public static function registerCalculator($calculator): void
     {
-        if (is_a($calculator, Calculator::class, true) === false) {
-            throw new \InvalidArgumentException('Calculator must implement ' . Calculator::class);
+        if (is_a($calculator, CalculatorInterface::class, true) === false) {
+            throw new \InvalidArgumentException('Calculator must implement ' . CalculatorInterface::class);
         }
 
         array_unshift(self::$calculators, $calculator);

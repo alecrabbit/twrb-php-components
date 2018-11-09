@@ -10,7 +10,7 @@
     "ext-intl": "*",
     "ext-json": "*",
     "ext-trader": "*",
-    "alecrabbit/accessories": "dev-master",
+    "alecrabbit/accessories": "^0",
     "alecrabbit/php-helpers": "^0",
     "krowinski/bcmath-extended": "^4.1",
     "nesbot/carbon": "^2.3"
@@ -27,7 +27,7 @@
       "AlecRabbit\\": "src"
     },
     "files": [
-      "src/constants.php",
+      "src/helpers/constants.php",
       "src/helpers/functions.php"
     ]
   },
