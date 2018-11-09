@@ -8,9 +8,9 @@
 namespace AlecRabbit\Money;
 
 
-use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use AlecRabbit\Money\Contracts\MoneyInterface;
+use AlecRabbit\Money\CalculatorFactory as Factory;
 
 /**
  * Money Value Object.
@@ -22,12 +22,7 @@ class Money implements MoneyInterface, \JsonSerializable
     use MoneyFactory;
 
     /** @var CalculatorInterface */
-    private static $calculator;
-
-    /** @var array */
-    private static $calculators = [
-        BcMathCalculator::class,
-    ];
+    private $calculator;
 
     /** @var string */
     private $amount;
@@ -49,6 +44,8 @@ class Money implements MoneyInterface, \JsonSerializable
         if (!\is_numeric($amount)) {
             throw new \InvalidArgumentException('Amount must be int|float|string');
         }
+        $this->calculator = Factory::getCalculator();
+
         $this->setAmount($amount);
         $this->setCurrency($currency);
     }
@@ -111,7 +108,7 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $this->assertSameCurrency($other);
 
-        return $this->getCalculator()->compare($this->amount, $other->amount);
+        return $this->calculator->compare($this->amount, $other->amount);
     }
 
     /**
@@ -138,35 +135,6 @@ class Money implements MoneyInterface, \JsonSerializable
     public function isSameCurrency(Money $other): bool
     {
         return $this->currency->equals($other->currency);
-    }
-
-    /**
-     * @return CalculatorInterface
-     */
-    private function getCalculator(): CalculatorInterface
-    {
-        if (null === self::$calculator) {
-            self::$calculator = self::initializeCalculator();
-        }
-
-        return self::$calculator;
-    }
-
-    /**
-     * @return CalculatorInterface
-     *
-     * @throws \RuntimeException If cannot find calculator for money calculations
-     */
-    private static function initializeCalculator(): CalculatorInterface
-    {
-        foreach (self::$calculators as $calculator) {
-            /** @var CalculatorInterface $calculator */
-            if ($calculator::supported()) {
-                return new $calculator();
-            }
-        }
-
-        throw new \RuntimeException('Cannot find calculator for money calculations.');
     }
 
     /**
@@ -222,7 +190,7 @@ class Money implements MoneyInterface, \JsonSerializable
     public function add(Money ...$addends): Money
     {
         $amount = $this->amount;
-        $calculator = $this->getCalculator();
+        $calculator = $this->calculator;
 
         foreach ($addends as $addend) {
             $this->assertSameCurrency($addend);
@@ -255,11 +223,11 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $this->assertOperand($divisor);
 
-        if ($this->getCalculator()->compare($divisor, '0') === 0) {
-            throw new \InvalidArgumentException('Division by zero');
+        if ($this->calculator->compare($divisor, '0') === 0) {
+            throw new \InvalidArgumentException('Division by zero.');
         }
 
-        $quotient = $this->getCalculator()->divide($this->amount, $divisor);
+        $quotient = $this->calculator->divide($this->amount, $divisor);
         return
             $this->newInstance($quotient);
     }
@@ -281,43 +249,6 @@ class Money implements MoneyInterface, \JsonSerializable
         }
     }
 
-//    /**
-//     * Asserts that rounding mode is a valid integer value.
-//     *
-//     * @param int $roundingMode
-//     *
-//     * @throws \InvalidArgumentException If $roundingMode is not valid
-//     */
-//    private function assertRoundingMode($roundingMode): void
-//    {
-//        if (!\in_array($roundingMode, [self::ROUND_HALF_DOWN, self::ROUND_HALF_UP,], true)) {
-//            throw new \InvalidArgumentException(
-//                'Rounding mode should be Money::ROUND_HALF_DOWN | Money::ROUND_HALF_UP '
-//            );
-//        }
-//    }
-
-//    /**
-//     * @param string $amount
-//     * @param int $rounding_mode
-//     *
-//     * @return string
-//     */
-//    private function round($amount, int $rounding_mode): string
-//    {
-//        $this->assertRoundingMode($rounding_mode);
-//
-//        if ($rounding_mode === self::ROUND_HALF_UP) {
-//            return $this->getCalculator()->ceil($amount);
-//        }
-//
-//        if ($rounding_mode === self::ROUND_HALF_DOWN) {
-//            return $this->getCalculator()->floor($amount);
-//        }
-//
-//        return $this->getCalculator()->round($amount);
-//    }
-
     /**
      * Returns a new Money instance based on the current one using the Currency.
      *
@@ -330,18 +261,6 @@ class Money implements MoneyInterface, \JsonSerializable
     private function newInstance($amount): Money
     {
         return new self($amount, $this->currency);
-    }
-
-    /**
-     * @param string $calculator
-     */
-    public static function registerCalculator($calculator): void
-    {
-        if (is_a($calculator, CalculatorInterface::class, true) === false) {
-            throw new \InvalidArgumentException('Calculator must implement ' . CalculatorInterface::class);
-        }
-
-        array_unshift(self::$calculators, $calculator);
     }
 
     /**
@@ -408,7 +327,7 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $this->assertOperand($multiplier);
 
-        $product = $this->getCalculator()->multiply($this->amount, $multiplier);
+        $product = $this->calculator->multiply($this->amount, $multiplier);
 
         return
             $this->newInstance($product);
@@ -427,7 +346,7 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $this->assertSameCurrency($divisor);
 
-        return new self($this->getCalculator()->mod($this->amount, $divisor->amount), $this->currency);
+        return new self($this->calculator->mod($this->amount, $divisor->amount), $this->currency);
     }
 
     /**
@@ -439,14 +358,10 @@ class Money implements MoneyInterface, \JsonSerializable
      * @return Money[]
      *
      */
-
-    public function allocateTo($n, ?int $precision = null): array
+    public function allocateTo(int $n, ?int $precision = null): array
     {
-        if (!\is_int($n)) {
-            throw new \InvalidArgumentException('Number of targets must be an integer.');
-        }
         if ($n <= 0) {
-            throw new \InvalidArgumentException('Cannot allocate to none, target must be greater than zero.');
+            throw new \InvalidArgumentException('Number to allocateTo must be greater than zero.');
         }
 
         return $this->allocate(array_fill(0, $n, 1), $precision);
@@ -464,7 +379,7 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $precision = $precision ?? 2;
         if (0 === $allocations = \count($ratios)) {
-            throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array');
+            throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array.');
         }
 
         $remainder = $this->amount;
@@ -472,25 +387,25 @@ class Money implements MoneyInterface, \JsonSerializable
         $total = array_sum($ratios);
 
         if ($total <= 0) {
-            throw new \InvalidArgumentException('Cannot allocate to none, sum of ratios must be greater than zero');
+            throw new \InvalidArgumentException('Sum of ratios must be greater than zero.');
         }
 
         foreach ($ratios as $ratio) {
             if ($ratio < 0) {
-                throw new \InvalidArgumentException('Cannot allocate to none, ratio must be zero or positive');
+                throw new \InvalidArgumentException('Ratio must be zero or positive.');
             }
 
-            $share = $this->getCalculator()->share($this->amount, $ratio, $total, $precision);
+            $share = $this->calculator->share($this->amount, $ratio, $total, $precision);
             $results[] = $this->newInstance($share);
-            $remainder = $this->getCalculator()->subtract($remainder, $share);
+            $remainder = $this->calculator->subtract($remainder, $share);
         }
-        switch ($this->getCalculator()->compare($remainder, 0)) {
+        switch ($this->calculator->compare($remainder, 0)) {
             case -1:
                 for ($i = $allocations - 1; $i >= 0; $i--) {
                     if (!$ratios[$i]) {
                         continue;
                     }
-                    $results[$i]->setAmount($this->getCalculator()->add($results[$i]->amount, $remainder));
+                    $results[$i]->setAmount($this->calculator->add($results[$i]->amount, $remainder));
                     break;
                 }
                 break;
@@ -499,7 +414,7 @@ class Money implements MoneyInterface, \JsonSerializable
                     if (!$ratios[$i]) {
                         continue;
                     }
-                    $results[$i]->setAmount($this->getCalculator()->add($results[$i]->amount, $remainder));
+                    $results[$i]->setAmount($this->calculator->add($results[$i]->amount, $remainder));
                     break;
                 }
                 break;
@@ -520,7 +435,7 @@ class Money implements MoneyInterface, \JsonSerializable
             throw new \InvalidArgumentException('Cannot calculate a ratio of zero.');
         }
 
-        return $this->getCalculator()->divide($this->amount, $money->amount);
+        return $this->calculator->divide($this->amount, $money->amount);
     }
 
     /**
@@ -530,7 +445,7 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function isZero(): bool
     {
-        return $this->getCalculator()->compare($this->amount, 0) === 0;
+        return $this->calculator->compare($this->amount, 0) === 0;
     }
 
     /**
@@ -538,7 +453,7 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function absolute(): Money
     {
-        return $this->newInstance($this->getCalculator()->absolute($this->amount));
+        return $this->newInstance($this->calculator->absolute($this->amount));
     }
 
     /**
@@ -560,7 +475,7 @@ class Money implements MoneyInterface, \JsonSerializable
     public function subtract(Money ...$subtrahends): Money
     {
         $amount = $this->amount;
-        $calculator = $this->getCalculator();
+        $calculator = $this->calculator;
 
         foreach ($subtrahends as $subtrahend) {
             $this->assertSameCurrency($subtrahend);
@@ -578,7 +493,7 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function isPositive(): bool
     {
-        return $this->getCalculator()->compare($this->amount, 0) === 1;
+        return $this->calculator->compare($this->amount, 0) === 1;
     }
 
     /**
@@ -588,7 +503,7 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function isNegative(): bool
     {
-        return $this->getCalculator()->compare($this->amount, 0) === -1;
+        return $this->calculator->compare($this->amount, 0) === -1;
     }
 
     /**

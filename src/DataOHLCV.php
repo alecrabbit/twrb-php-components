@@ -17,6 +17,7 @@ class DataOHLCV
     protected const MAX_PERIOD_MULTIPLIER = 100;
     protected const DEFAULT_SIZE = 500;
     protected const MAX_SIZE = 1440;
+    protected const MIN_SIZE = 60;
     protected const RESOLUTIONS = RESOLUTIONS;
 
     /** @var array */
@@ -44,10 +45,15 @@ class DataOHLCV
      */
     public function __construct(string $pair, ?int $size = null, int $coefficient = 1)
     {
-        $this->size = $size ?? static::DEFAULT_SIZE;
-        if ($this->size > static::MAX_SIZE) {
-            $this->size = static::MAX_SIZE;
-        }
+        $this->size =
+            (int)bounds(
+                $size ?? static::DEFAULT_SIZE,
+                static::MIN_SIZE,
+                static::MAX_SIZE
+            );
+//        if ($this->size > static::MAX_SIZE) {
+//            $this->size = static::MAX_SIZE;
+//        }
         $this->pair = $pair;
         $this->coefficient = $coefficient;
     }
@@ -302,6 +308,9 @@ class DataOHLCV
             $this->volumes[$resolution] ?? [];
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function dump(): void
     {
         if (\defined('APP_DEBUG') && APP_DEBUG) {

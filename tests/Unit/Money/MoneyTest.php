@@ -8,6 +8,7 @@
 namespace Unit\Money;
 
 
+use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Currency;
 use AlecRabbit\Money\Money;
 use PHPUnit\Framework\TestCase;
@@ -156,6 +157,67 @@ class MoneyTest extends TestCase
         $money = new Money(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->divide($operand);
+    }
+
+    /**
+     * @test
+     */
+    public function throwsAnExceptionWhenOperandIsZero(): void
+    {
+        $money = new Money(1, new Currency('EUR'));
+        $this->expectException(\InvalidArgumentException::class);
+        $money->divide(0);
+    }
+
+    /**
+     * @test
+     */
+    public function throwsAnExceptionWhenRatioIsIsEmptyArray(): void
+    {
+        $money = new Money(1, new Currency('EUR'));
+        $this->expectException(\InvalidArgumentException::class);
+        $money->allocate([]);
+    }
+
+    /**
+     * @test
+     */
+    public function throwsAnExceptionWhenRatioIsZero(): void
+    {
+        $money = new Money(1, new Currency('EUR'));
+        $this->expectException(\InvalidArgumentException::class);
+        $money->allocate([0]);
+    }
+
+    /**
+     * @test
+     */
+    public function throwsAnExceptionWhenNumberIsNegative(): void
+    {
+        $money = new Money(1, new Currency('EUR'));
+        $this->expectException(\InvalidArgumentException::class);
+        $money->allocateTo(-1);
+    }
+
+    /**
+     * @test
+     */
+    public function throwsAnExceptionWhenNumberIsZero(): void
+    {
+        $money = new Money(1, new Currency('EUR'));
+        $this->expectException(\InvalidArgumentException::class);
+        $money->allocateTo(0);
+    }
+
+
+    /**
+     * @test
+     */
+    public function throwsAnExceptionWhenRatioIsNegative(): void
+    {
+        $money = new Money(1, new Currency('EUR'));
+        $this->expectException(\InvalidArgumentException::class);
+        $money->allocate([2, -1]);
     }
 
     /**

@@ -46,7 +46,12 @@ class DataOHLCVWithDataProviderTest extends TestCase
         foreach ($this->dataToCheckCloses() as $resolution => $expected) {
             $this->assertEquals($expected, $this->ohlcv->getCloses($resolution));
         }
-
+        foreach ($this->dataToCheckHasPeriods() as $resolution => $expected) {
+            $this->assertEquals($expected, $this->ohlcv->hasPeriods($resolution, 1));
+        }
+//        foreach ($this->dataToCheckLastClose() as $resolution => $expected) {
+//            $this->assertEquals($expected, $this->ohlcv->getLastClose($resolution));
+//        }
     }
 
     private function dataToCheckVolumes(): array
@@ -134,9 +139,45 @@ class DataOHLCVWithDataProviderTest extends TestCase
         ];
     }
 
+    private function dataToCheckHasPeriods(): array
+    {
+        return [
+            RESOLUTION_01min => true,
+            RESOLUTION_03min => true,
+            RESOLUTION_05min => true,
+            RESOLUTION_15min => true,
+            RESOLUTION_30min => true,
+            RESOLUTION_45min => true,
+            RESOLUTION_01hour => true,
+            RESOLUTION_02hour => true,
+            RESOLUTION_03hour => true,
+            RESOLUTION_04hour => true,
+            RESOLUTION_01day => false,
+        ];
+    }
+
     protected function tearDown()
     {
         unset($this->ohlcv);
     }
+
+//    private function dataToCheckLastClose():array
+//
+//    {
+//        return [
+//            RESOLUTION_01min => 10000.0505,
+//            RESOLUTION_03min => 10000.0505,
+//            RESOLUTION_05min => 10000.0505,
+//            RESOLUTION_15min => 10000.0505,
+//            RESOLUTION_30min => 10000.0505,
+//            RESOLUTION_45min => 10000.0505,
+//            RESOLUTION_01hour => 10000.0505,
+//            RESOLUTION_02hour => 10000.0505,
+//            RESOLUTION_03hour => 10000.0505,
+//            RESOLUTION_04hour => 10000.0505,
+//            RESOLUTION_01day => 10000.0505,
+//        ];
+//
+//    }
 
 }
