@@ -8,29 +8,29 @@
 namespace AlecRabbit\StringList;
 
 
-use AlecRabbit\StringList\Contracts\ListInterface;
+use AlecRabbit\StringList\Contracts\StringListInterface;
 
-class StringList implements ListInterface
+class StringList implements StringListInterface
 {
     private $including;
     private $excluding;
 
     /**
      * StringList constructor.
-     * @param array $including
-     * @param array $excluding
+     * @param null|array $including
+     * @param null|array $excluding
      */
-    public function __construct(array $including, array $excluding)
+    public function __construct(?array $including = null, ?array $excluding = null)
     {
-        $this->including = $including;
-        $this->excluding = $excluding;
+        $this->including = $including ?? [];
+        $this->excluding = $excluding ?? [];
     }
 
     /**
      * @param string ...$including
      * @return StringList
      */
-    public function include(string ...$including): StringList
+    public function include(string ...$including): StringListInterface
     {
         $this->including = array_unique(array_merge($this->including, $including));
         $this->excluding = array_diff($this->excluding, $this->including);
@@ -42,7 +42,7 @@ class StringList implements ListInterface
      * @param string ...$excluding
      * @return StringList
      */
-    public function exclude(string ...$excluding): StringList
+    public function exclude(string ...$excluding): StringListInterface
     {
         $this->excluding = array_unique(array_merge($this->excluding, $excluding));
         $this->including = array_diff($this->including, $this->excluding);
