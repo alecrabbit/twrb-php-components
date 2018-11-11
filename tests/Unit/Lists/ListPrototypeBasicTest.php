@@ -5,12 +5,13 @@
  * Time: 15:42
  */
 
-namespace Tests\Unit\StringList;
+namespace Tests\Unit\Lists;
 
+use AlecRabbit\Lists\ListPrototype;
 use AlecRabbit\StringList\StringList;
 use PHPUnit\Framework\TestCase;
 
-class StringListBasicTest extends TestCase
+class ListPrototypeBasicTest extends TestCase
 {
     private $list;
 
@@ -41,8 +42,8 @@ class StringListBasicTest extends TestCase
      */
     public function simple($including, $excluding, $hasElement, $expected): void
     {
-        $this->list = new StringList($including, $excluding);
-        $this->assertEquals($expected, $this->list->has($hasElement));
+        $this->list = new ListPrototype($including, $excluding);
+        $this->assertEquals($expected, $this->list->allowed($hasElement));
     }
 
     /**
@@ -55,14 +56,14 @@ class StringListBasicTest extends TestCase
      */
     public function usingMethods($including, $excluding, $element, $expected): void
     {
-        $this->list = new StringList();
+        $this->list = new ListPrototype();
         foreach ($including as $value) {
             $this->list->include($value);
         }
         foreach ($excluding as $value) {
             $this->list->exclude($value);
         }
-        $this->assertEquals($expected, $this->list->has($element));
+        $this->assertEquals($expected, $this->list->allowed($element));
     }
 
     /**
