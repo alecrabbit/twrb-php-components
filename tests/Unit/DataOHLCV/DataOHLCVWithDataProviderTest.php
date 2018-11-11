@@ -49,9 +49,15 @@ class DataOHLCVWithDataProviderTest extends TestCase
         foreach ($this->dataToCheckHasPeriods() as $resolution => $expected) {
             $this->assertEquals($expected, $this->ohlcv->hasPeriods($resolution, 1));
         }
-//        foreach ($this->dataToCheckLastClose() as $resolution => $expected) {
-//            $this->assertEquals($expected, $this->ohlcv->getLastClose($resolution));
-//        }
+        foreach ($this->dataToCheckLastHigh() as $resolution => $expected) {
+            $this->assertEquals($expected, $this->ohlcv->getLastHigh($resolution), "Resolution: {$resolution}");
+        }
+        foreach ($this->dataToCheckLastLow() as $resolution => $expected) {
+            $this->assertEquals($expected, $this->ohlcv->getLastLow($resolution), "Resolution: {$resolution}");
+        }
+        foreach ($this->dataToCheckLastClose() as $resolution => $expected) {
+            $this->assertEquals($expected, $this->ohlcv->getLastClose($resolution), "Resolution: {$resolution}");
+        }
     }
 
     private function dataToCheckVolumes(): array
@@ -156,28 +162,60 @@ class DataOHLCVWithDataProviderTest extends TestCase
         ];
     }
 
+    private function dataToCheckLastHigh(): array
+    {
+        return [
+            RESOLUTION_01min => 10000.2022,
+            RESOLUTION_03min => 10000.2022,
+            RESOLUTION_05min => 10000.2022,
+            RESOLUTION_15min => 10000.2022,
+            RESOLUTION_30min => 10000.2022,
+            RESOLUTION_45min => 10000.2022,
+            RESOLUTION_01hour => 10000.2022,
+            RESOLUTION_02hour => 10000.2022,
+            RESOLUTION_03hour => 10000.2022,
+            RESOLUTION_04hour => 10000.2022,
+            RESOLUTION_01day => null,
+        ];
+    }
+
+    private function dataToCheckLastLow(): array
+    {
+        return [
+            RESOLUTION_01min => 10000.0001,
+            RESOLUTION_03min => 10000.0001,
+            RESOLUTION_05min => 10000.0001,
+            RESOLUTION_15min => 10000.0001,
+            RESOLUTION_30min => 10000.0001,
+            RESOLUTION_45min => 10000.0001,
+            RESOLUTION_01hour => 10000.0001,
+            RESOLUTION_02hour => 10000.0001,
+            RESOLUTION_03hour => 10000.0001,
+            RESOLUTION_04hour => 10000.0001,
+            RESOLUTION_01day => null,
+        ];
+    }
+
+    private function dataToCheckLastClose(): array
+    {
+        return [
+            RESOLUTION_01min => 10000.0505,
+            RESOLUTION_03min => 10000.0505,
+            RESOLUTION_05min => 10000.0505,
+            RESOLUTION_15min => 10000.0505,
+            RESOLUTION_30min => 10000.0505,
+            RESOLUTION_45min => 10000.0505,
+            RESOLUTION_01hour => 10000.0505,
+            RESOLUTION_02hour => 10000.0505,
+            RESOLUTION_03hour => 10000.0505,
+            RESOLUTION_04hour => 10000.0505,
+            RESOLUTION_01day => null,
+        ];
+    }
+
     protected function tearDown()
     {
         unset($this->ohlcv);
     }
-
-//    private function dataToCheckLastClose():array
-//
-//    {
-//        return [
-//            RESOLUTION_01min => 10000.0505,
-//            RESOLUTION_03min => 10000.0505,
-//            RESOLUTION_05min => 10000.0505,
-//            RESOLUTION_15min => 10000.0505,
-//            RESOLUTION_30min => 10000.0505,
-//            RESOLUTION_45min => 10000.0505,
-//            RESOLUTION_01hour => 10000.0505,
-//            RESOLUTION_02hour => 10000.0505,
-//            RESOLUTION_03hour => 10000.0505,
-//            RESOLUTION_04hour => 10000.0505,
-//            RESOLUTION_01day => 10000.0505,
-//        ];
-//
-//    }
 
 }

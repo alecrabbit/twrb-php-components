@@ -17,7 +17,7 @@ class DataOHLCV
     protected const MAX_PERIOD_MULTIPLIER = 100;
     protected const DEFAULT_SIZE = 500;
     protected const MAX_SIZE = 1440;
-    protected const MIN_SIZE = 60;
+    protected const MIN_SIZE = 10;
     protected const RESOLUTIONS = RESOLUTIONS;
 
     /** @var array */
@@ -38,7 +38,7 @@ class DataOHLCV
     private $pair;
 
     /**
-     * EData constructor.
+     * DataOHLCV constructor.
      * @param string $pair
      * @param integer $size
      * @param int $coefficient
@@ -51,9 +51,6 @@ class DataOHLCV
                 static::MIN_SIZE,
                 static::MAX_SIZE
             );
-//        if ($this->size > static::MAX_SIZE) {
-//            $this->size = static::MAX_SIZE;
-//        }
         $this->pair = $pair;
         $this->coefficient = $coefficient;
     }
@@ -219,16 +216,12 @@ class DataOHLCV
     /**
      * @param int $resolution
      * @param bool $useCoefficient
-     * @return float
+     * @return null|float
      */
-    public function getLastHigh(int $resolution, bool $useCoefficient = false): float
+    public function getLastHigh(int $resolution, bool $useCoefficient = false): ?float
     {
-        $d = $this->highs[$resolution] ?? [];
         return
-            $this->mul(
-                end($d),
-                $useCoefficient
-            );
+            $this->lastElement($this->highs[$resolution] ?? [], $useCoefficient);
     }
 
     private function mul(float $value, bool $useCoefficient): float
@@ -256,16 +249,12 @@ class DataOHLCV
     /**
      * @param int $resolution
      * @param bool $useCoefficient
-     * @return float
+     * @return null|float
      */
-    public function getLastLow(int $resolution, bool $useCoefficient = false): float
+    public function getLastLow(int $resolution, bool $useCoefficient = false): ?float
     {
-        $d = $this->lows[$resolution] ?? [];
         return
-            $this->mul(
-                end($d),
-                $useCoefficient
-            );
+            $this->lastElement($this->lows[$resolution] ?? [], $useCoefficient);
     }
 
     /**
@@ -286,16 +275,12 @@ class DataOHLCV
     /**
      * @param int $resolution
      * @param bool $useCoefficient
-     * @return float
+     * @return null|float
      */
-    public function getLastClose(int $resolution, bool $useCoefficient = false): float
+    public function getLastClose(int $resolution, bool $useCoefficient = false): ?float
     {
-        $d = $this->closes[$resolution] ?? [];
         return
-            $this->mul(
-                end($d),
-                $useCoefficient
-            );
+            $this->lastElement($this->closes[$resolution] ?? [], $useCoefficient);
     }
 
     /**
@@ -342,5 +327,20 @@ class DataOHLCV
         return $this->pair;
     }
 
-
+    /**
+     * @param array $element
+     * @param bool $useCoefficient
+     * @return null|float
+     */
+    private function lastElement(array $element, bool $useCoefficient = false): ?float
+    {
+        if (false !== $lastElement = end($element)) {
+            return
+                $this->mul(
+                    $lastElement,
+                    $useCoefficient
+                );
+        }
+        return null;
+    }
 }

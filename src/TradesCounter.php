@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
-
+/**
+ * @codeCoverageIgnore
+ */
 class TradesCounter
 {
     // todo ****************    NOT IMPLEMENTED!    ****************

@@ -16,15 +16,13 @@ class DataOHLCVSimpleUnsortedTest extends TestCase
     /** @var DataOHLCV */
     protected $ohlcv;
 
-    public function setUp()
-    {
-        $this->ohlcv = new DataOHLCV('btc_usd', 500);
-    }
     /**
      * @test
      */
     public function simpleDataCheck(): void
     {
+        $this->ohlcv = new DataOHLCV('btc_usd', 500);
+
         $this->expectException(\RuntimeException::class);
         foreach ($this->simpleData() as $item) {
             [$timestamp, $type, $price, $amount] = $item;
@@ -52,6 +50,29 @@ class DataOHLCVSimpleUnsortedTest extends TestCase
             [1512589380, 'bid', 12818.5, 0.00210018],
             [1513589380, 'bid', 12818.5, 0.00210018],
         ];
+    }
+    /**
+     * @test
+     */
+    public function simpleDataTrimCheck(): void
+    {
+        $this->ohlcv = new DataOHLCV('btc_usd', 10);
+
+        foreach ($this->simpleTrimData() as $item) {
+            [$timestamp, $type, $price, $amount] = $item;
+            $this->ohlcv->addTrade($timestamp, $type, $price, $amount);
+        }
+        $this->assertEquals(10, $this->ohlcv->getSize());
+    }
+
+    public function simpleTrimData(): \Generator
+    {
+        $n = 1000;
+        $timestamp = 1512570380;
+        for($i = 0; $i< $n; $i++) {
+            yield [$timestamp, 'bid', 10000.0, 0.0001];
+            $timestamp += 6400;
+        }
     }
 
 }

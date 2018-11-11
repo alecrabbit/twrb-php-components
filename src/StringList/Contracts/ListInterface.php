@@ -5,7 +5,7 @@
  * Time: 15:22
  */
 
-namespace AlecRabbit;
+namespace AlecRabbit\StringList\Contracts;
 
 
 interface ListInterface
