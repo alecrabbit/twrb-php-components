@@ -12,8 +12,8 @@ use AlecRabbit\StringList\Contracts\StringListInterface;
 
 class StringList implements StringListInterface
 {
-    private $including;
-    private $excluding;
+    private $including = [];
+    private $excluding = [];
 
     /**
      * StringList constructor.
@@ -22,8 +22,8 @@ class StringList implements StringListInterface
      */
     public function __construct(?array $including = null, ?array $excluding = null)
     {
-        $this->including = $including ?? [];
-        $this->excluding = $excluding ?? [];
+        $this->include(...$including ?? []);
+        $this->exclude(...$excluding ?? []);
     }
 
     /**
@@ -36,6 +36,18 @@ class StringList implements StringListInterface
         $this->excluding = $this->diff($this->excluding, $this->including);
 
         return $this;
+    }
+
+    private function process(array $first, array $second): iterable
+    {
+        return
+            array_unique(array_merge($first, $second));
+    }
+
+    private function diff(array $first, array $second): iterable
+    {
+        return
+            array_diff($first, $second);
     }
 
     /**
@@ -53,22 +65,19 @@ class StringList implements StringListInterface
     public function has(string $element): bool
     {
         return
-            (
-                (empty($this->excluding) || !\in_array($element, $this->excluding, true))
-                &&
-                (empty($this->including) || \in_array($element, $this->including, true))
-            );
+            $this->includes($element) && $this->notExcludes($element);
     }
 
-    private function process(array $first, array $second): iterable
+    private function notExcludes(string $element): bool
     {
         return
-            array_unique(array_merge($first, $second));
+            empty($this->excluding) || !\in_array($element, $this->excluding, true);
     }
 
-    private function diff(array $first, array $second): iterable
+    private function includes(string $element): bool
     {
         return
-            array_diff($first, $second);
+            empty($this->including) || \in_array($element, $this->including, true);
+
     }
 }
