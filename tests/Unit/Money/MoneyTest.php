@@ -277,6 +277,23 @@ class MoneyTest extends TestCase
     }
 
     /**
+     * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::comparatorDataProviderTwo()
+     * @test
+     * @param $amount
+     * @param $isNotZero
+     * @param $isNotPositive
+     * @param $isNotNegative
+     */
+    public function hasComparatorsTwo($amount, $isNotZero, $isNotPositive, $isNotNegative): void
+    {
+        $money = new Money($amount, new Currency('EUR'));
+
+        $this->assertEquals($isNotZero, $money->isNotZero());
+        $this->assertEquals($isNotPositive, $money->isNotPositive());
+        $this->assertEquals($isNotNegative, $money->isNotNegative());
+    }
+
+    /**
      * @dataProvider \Unit\DataProviders\MoneyBasicDataProvider::absoluteDataProvider()
      * @test
      * @param $amount

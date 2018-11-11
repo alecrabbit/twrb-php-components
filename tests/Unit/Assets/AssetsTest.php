@@ -31,7 +31,16 @@ class AssetsTest extends TestCase
     public function subtract(): void
     {
         $this->assertEquals(Money::EUR(10.532), $this->assets->subtract(Money::EUR(1)));
-        $this->assertNull($this->assets->subtract(Money::ZEC(1)));
+        $this->assertEquals(Money::EUR(-0.468), $this->assets->subtract(Money::EUR(11)));
+        $this->assertEquals(Money::ZEC(-1), $this->assets->subtract(Money::ZEC(1)));
+    }
+
+    /** @test */
+    public function take(): void
+    {
+        $this->assertEquals(Money::BTC(1.644), $this->assets->take(Money::BTC(1)));
+        $this->expectException(\RuntimeException::class);
+        $this->assertEquals(Money::BTC(-0.356), $this->assets->take(Money::BTC(3)));
     }
 
     /** @test */
@@ -48,12 +57,16 @@ class AssetsTest extends TestCase
     public function have(): void
     {
         $this->assertFalse($this->assets->have(Money::ZEC(1)));
+        $this->assertTrue($this->assets->have(Money::LTC(1.322)));
+        $this->assertTrue($this->assets->have(Money::EUR(10.322)));
+        $this->assertTrue($this->assets->have(Money::EUR(10.322)));
+        $this->assertFalse($this->assets->have(Money::LTC(1.422)));
     }
 
     /** @test */
     public function getAsset(): void
     {
-        $this->assertNull($this->assets->getAsset(new Currency('Zec')));
+        $this->assertEquals(Money::ZEC(0), $this->assets->getAsset(new Currency('Zec')));
     }
 
     /** @test */

@@ -8,9 +8,9 @@
 namespace AlecRabbit\Money;
 
 
+use AlecRabbit\Money\CalculatorFactory as Factory;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use AlecRabbit\Money\Contracts\MoneyInterface;
-use AlecRabbit\Money\CalculatorFactory as Factory;
 
 /**
  * Money Value Object.
@@ -487,16 +487,6 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Checks if the value represented by this object is positive.
-     *
-     * @return bool
-     */
-    public function isPositive(): bool
-    {
-        return $this->calculator->compare($this->amount, 0) === 1;
-    }
-
-    /**
      * Checks if the value represented by this object is negative.
      *
      * @return bool
@@ -504,6 +494,28 @@ class Money implements MoneyInterface, \JsonSerializable
     public function isNegative(): bool
     {
         return $this->calculator->compare($this->amount, 0) === -1;
+    }
+
+    /**
+     * Checks if the value represented by this object is not negative.
+     *
+     * @return bool
+     */
+    public function isNotNegative(): bool
+    {
+        return
+            !$this->isNegative();
+    }
+
+    /**
+     * Checks if the value represented by this object is not zero.
+     *
+     * @return bool
+     */
+    public function isNotZero(): bool
+    {
+        return
+            !$this->isZero();
     }
 
     /**
@@ -517,5 +529,26 @@ class Money implements MoneyInterface, \JsonSerializable
             'amount' => $this->amount,
             'currency' => $this->currency,
         ];
+    }
+
+    /**
+     * Checks if the value represented by this object is not positive.
+     *
+     * @return bool
+     */
+    public function isNotPositive(): bool
+    {
+        return
+            !$this->isPositive();
+    }
+
+    /**
+     * Checks if the value represented by this object is positive.
+     *
+     * @return bool
+     */
+    public function isPositive(): bool
+    {
+        return $this->calculator->compare($this->amount, 0) === 1;
     }
 }
