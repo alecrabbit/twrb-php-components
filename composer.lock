@@ -8,22 +8,23 @@
     "packages": [
         {
             "name": "alecrabbit/accessories",
-            "version": "0.0.8",
+            "version": "0.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/accessories.git",
-                "reference": "59bbc09c78218a0b43971a26c54d60de0dc47cf2"
+                "reference": "8d306884ce6ef61dd2d56aad8709058d387d23d1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/59bbc09c78218a0b43971a26c54d60de0dc47cf2",
-                "reference": "59bbc09c78218a0b43971a26c54d60de0dc47cf2",
+                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/8d306884ce6ef61dd2d56aad8709058d387d23d1",
+                "reference": "8d306884ce6ef61dd2d56aad8709058d387d23d1",
                 "shasum": ""
             },
             "require": {
                 "alecrabbit/php-helpers": "^0",
                 "alecrabbit/php-simple-profiler": "^0",
-                "php": ">=7.2"
+                "php": ">=7.2",
+                "spatie/typed": "^0.1.1"
             },
             "require-dev": {
                 "nunomaduro/collision": "^2.0",
@@ -42,7 +43,7 @@
                 "MIT"
             ],
             "description": "PHP accessories Classes etc.",
-            "time": "2018-11-08T14:43:48+00:00"
+            "time": "2018-11-08T21:19:45+00:00"
         },
         {
             "name": "alecrabbit/php-helpers",
@@ -87,16 +88,16 @@
         },
         {
             "name": "alecrabbit/php-simple-profiler",
-            "version": "0.0.7",
+            "version": "0.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-simple-profiler.git",
-                "reference": "4b4bf36ffc85c4e9221ef4744a5a5df3f331200a"
+                "reference": "a4fd1ee6539de1cf49d3a47ee8932a4aa01545f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/4b4bf36ffc85c4e9221ef4744a5a5df3f331200a",
-                "reference": "4b4bf36ffc85c4e9221ef4744a5a5df3f331200a",
+                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/a4fd1ee6539de1cf49d3a47ee8932a4aa01545f3",
+                "reference": "a4fd1ee6539de1cf49d3a47ee8932a4aa01545f3",
                 "shasum": ""
             },
             "require": {
@@ -121,7 +122,7 @@
                 "MIT"
             ],
             "description": "PHP simple profiler",
-            "time": "2018-11-08T14:58:00+00:00"
+            "time": "2018-11-08T19:01:48+00:00"
         },
         {
             "name": "krowinski/bcmath-extended",
@@ -237,6 +238,58 @@
                 "time"
             ],
             "time": "2018-11-08T13:33:56+00:00"
+        },
+        {
+            "name": "spatie/typed",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/typed.git",
+                "reference": "40e4ac886a95db5e2efe489be4c699ff307c4b2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/typed/zipball/40e4ac886a95db5e2efe489be4c699ff307c4b2b",
+                "reference": "40e4ac886a95db5e2efe489be4c699ff307c4b2b",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "larapack/dd": "^1.1",
+                "phpunit/phpunit": "^7.1",
+                "symfony/stopwatch": "^4.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Spatie\\Typed\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brent Roose",
+                    "email": "brent@spatie.be",
+                    "homepage": "https://spatie.be",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Improvements to PHP's type system in userland: generics, typed lists, tuples and structs",
+            "homepage": "https://github.com/spatie/typed",
+            "keywords": [
+                "generics",
+                "spatie",
+                "structs",
+                "tuple",
+                "typed",
+                "typed list"
+            ],
+            "time": "2018-07-23T13:34:33+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",

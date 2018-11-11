@@ -43,7 +43,7 @@ class DataOHLCVBasicTest extends TestCase
         return [
             [500, 500],
             [50, 50],
-            [0, 0],
+            [10, 0],
             [999,999],
             [1000, 1000],
             [1001, 1001],

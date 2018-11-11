@@ -37,6 +37,8 @@ class EventCounterTest extends TestCase
         }
         $this->assertEquals(5760, $ec->getCalculatedEvents());
         $this->assertCount(1440, $ec->getEvents());
+        $this->assertEquals(5760, $ec->getCalculatedEvents(true));
+        $this->assertCount(0, $ec->getEvents());
     }
 
     /** @test */
@@ -49,5 +51,7 @@ class EventCounterTest extends TestCase
         }
         $this->assertEquals(120, $ec->getCalculatedEvents());
         $this->assertCount(60, $ec->getEvents());
+        $this->assertEquals(120, $ec->getCalculatedEvents(true));
+        $this->assertCount(0, $ec->getEvents());
     }
 }
