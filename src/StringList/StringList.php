@@ -32,8 +32,8 @@ class StringList implements StringListInterface
      */
     public function include(string ...$including): StringListInterface
     {
-        $this->including = array_unique(array_merge($this->including, $including));
-        $this->excluding = array_diff($this->excluding, $this->including);
+        $this->including = $this->process($this->including, $including);
+        $this->excluding = $this->diff($this->excluding, $this->including);
 
         return $this;
     }
@@ -44,8 +44,8 @@ class StringList implements StringListInterface
      */
     public function exclude(string ...$excluding): StringListInterface
     {
-        $this->excluding = array_unique(array_merge($this->excluding, $excluding));
-        $this->including = array_diff($this->including, $this->excluding);
+        $this->excluding = $this->process($this->excluding, $excluding);
+        $this->including = $this->diff($this->including, $this->excluding);
 
         return $this;
     }
@@ -58,5 +58,17 @@ class StringList implements StringListInterface
                 &&
                 (empty($this->including) || \in_array($element, $this->including, true))
             );
+    }
+
+    private function process(array $first, array $second): iterable
+    {
+        return
+            array_unique(array_merge($first, $second));
+    }
+
+    private function diff(array $first, array $second): iterable
+    {
+        return
+            array_diff($first, $second);
     }
 }
