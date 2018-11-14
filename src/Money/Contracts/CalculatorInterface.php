@@ -36,7 +36,7 @@ interface CalculatorInterface
     /**
      * Add added to amount.
      *
-     * @param int|float|string $amount
+     * @param string $amount
      * @param int|float|string $addend
      *
      * @return string
@@ -46,7 +46,7 @@ interface CalculatorInterface
     /**
      * Subtract subtrahend from amount.
      *
-     * @param int|float|string $amount
+     * @param string $amount
      * @param int|float|string $subtrahend
      *
      * @return string
@@ -112,11 +112,11 @@ interface CalculatorInterface
     /**
      * Share amount among ratio / total portions.
      *
-     * @param int|float|string $amount
+     * @param string $amount
      * @param int|float|string $ratio
      * @param int|float|string $total
+     * @param int $precision
      *
-     * @param $precision
      * @return string
      */
     public function share($amount, $ratio, $total, $precision);
@@ -124,7 +124,7 @@ interface CalculatorInterface
     /**
      * Get the modulus of an amount.
      *
-     * @param int|float|string $amount
+     * @param string $amount
      * @param int|float|string $divisor
      *
      * @return string

@@ -23,7 +23,7 @@ class EventCounter
     /** @var string */
     protected $name;
 
-    /** @var int */
+    /** @var int|null */
     protected $groupBy;
 
     /** @var int */
@@ -75,7 +75,7 @@ class EventCounter
     public function getCalculatedEvents(?bool $reset = null): int
     {
         $r = 0;
-        if (0 < ($sum = array_sum($this->events))) {
+        if (0 < ($sum = (int)array_sum($this->events))) {
             $r = $sum;
         }
         if ($reset) {

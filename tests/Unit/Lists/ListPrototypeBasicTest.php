@@ -8,7 +8,6 @@
 namespace Tests\Unit\Lists;
 
 use AlecRabbit\Lists\ListPrototype;
-use AlecRabbit\StringList\StringList;
 use PHPUnit\Framework\TestCase;
 
 class ListPrototypeBasicTest extends TestCase
@@ -44,6 +43,7 @@ class ListPrototypeBasicTest extends TestCase
     {
         $this->list = new ListPrototype($including, $excluding);
         $this->assertEquals($expected, $this->list->allowed($hasElement));
+        $this->assertEquals(!$expected, $this->list->notAllowed($hasElement));
     }
 
     /**
@@ -51,10 +51,10 @@ class ListPrototypeBasicTest extends TestCase
      * @dataProvider simpleDataProvider
      * @param $including
      * @param $excluding
-     * @param $element
+     * @param $hasElement
      * @param $expected
      */
-    public function usingMethods($including, $excluding, $element, $expected): void
+    public function usingMethods($including, $excluding, $hasElement, $expected): void
     {
         $this->list = new ListPrototype();
         foreach ($including as $value) {
@@ -63,7 +63,8 @@ class ListPrototypeBasicTest extends TestCase
         foreach ($excluding as $value) {
             $this->list->exclude($value);
         }
-        $this->assertEquals($expected, $this->list->allowed($element));
+        $this->assertEquals($expected, $this->list->allowed($hasElement));
+        $this->assertEquals(!$expected, $this->list->notAllowed($hasElement));
     }
 
     /**
@@ -71,19 +72,20 @@ class ListPrototypeBasicTest extends TestCase
      * @dataProvider simpleDataProviderExcludeFirst
      * @param $including
      * @param $excluding
-     * @param $element
+     * @param $hasElement
      * @param $expected
      */
-    public function usingMethodsExcludeFirst($including, $excluding, $element, $expected): void
+    public function usingMethodsExcludeFirst($including, $excluding, $hasElement, $expected): void
     {
-        $this->list = new StringList();
+        $this->list = new ListPrototype();
         foreach ($excluding as $value) {
             $this->list->exclude($value);
         }
         foreach ($including as $value) {
             $this->list->include($value);
         }
-        $this->assertEquals($expected, $this->list->has($element));
+        $this->assertEquals($expected, $this->list->allowed($hasElement));
+        $this->assertEquals(!$expected, $this->list->notAllowed($hasElement));
     }
 
     public function simpleDataProviderExcludeFirst(): array

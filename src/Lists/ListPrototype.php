@@ -20,4 +20,13 @@ class ListPrototype extends StringList
     {
         return parent::has($element);
     }
+
+    /**
+     * @param string $element
+     * @return bool
+     */
+    public function notAllowed(string $element): bool
+    {
+        return !parent::has($element);
+    }
 }

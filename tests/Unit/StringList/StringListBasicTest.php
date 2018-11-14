@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 
 class StringListBasicTest extends TestCase
 {
+    /** @var StringList */
     private $list;
 
     public function simpleDataProvider(): array
@@ -55,7 +56,6 @@ class StringListBasicTest extends TestCase
      */
     public function usingMethods($including, $excluding, $element, $expected): void
     {
-        $this->list = new StringList();
         foreach ($including as $value) {
             $this->list->include($value);
         }
@@ -75,7 +75,6 @@ class StringListBasicTest extends TestCase
      */
     public function usingMethodsExcludeFirst($including, $excluding, $element, $expected): void
     {
-        $this->list = new StringList();
         foreach ($excluding as $value) {
             $this->list->exclude($value);
         }
@@ -84,6 +83,7 @@ class StringListBasicTest extends TestCase
         }
         $this->assertEquals($expected, $this->list->has($element));
     }
+
 
     public function simpleDataProviderExcludeFirst(): array
     {
@@ -101,6 +101,11 @@ class StringListBasicTest extends TestCase
             [['fix'], ['fix'], 'fix', true],
             [['fix'], [], 'fix', true],
         ];
+    }
+
+    protected function setUp()
+    {
+        $this->list = new StringList();
     }
 
     protected function tearDown()

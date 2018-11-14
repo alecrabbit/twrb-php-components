@@ -25,9 +25,9 @@ class TradesCounter
      */
     public function __construct()
     {
-        foreach (static::RES as $length => $groupBy) {
-            $this->counters[] = new EventCounter($length, $groupBy);
-        }
+//        foreach (static::RES as $length => $groupBy) {
+//            $this->counters[] = new EventCounter($length, $groupBy);
+//        }
     }
 
 //    public function format($events)
@@ -42,15 +42,15 @@ class TradesCounter
 //            );
 //    }
 
-    public function add(string $prefix): void
-    {
-        $this->addEvent($prefix);
-    }
-
-    public function getCalculated(bool $reset = true): array
-    {
-        return
-            $this->getCalculatedEvents($reset);
-    }
+//    public function add(string $prefix): void
+//    {
+//        $this->addEvent($prefix);
+//    }
+//
+//    public function getCalculated(bool $reset = true): array
+//    {
+//        return
+//            $this->getCalculatedEvents($reset);
+//    }
 
 }

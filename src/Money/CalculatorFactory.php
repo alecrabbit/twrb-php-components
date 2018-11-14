@@ -23,7 +23,7 @@ class CalculatorFactory
 
     public static function getCalculator(): CalculatorInterface
     {
-        if(static::$calculator) {
+        if(null !== static::$calculator) {
             return static::$calculator;
         }
         foreach (self::$calculators as $calculator) {

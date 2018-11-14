@@ -119,6 +119,18 @@ class MoneyBasicDataProvider
             ['-1', false, false, true],
         ];
     }
+    public static function comparatorDataProviderTwo(): array
+    {
+        return [
+            // [$amount, $isNotZero, $isNotPositive, $isNotNegative],
+            [1, true, false, true],
+            [0, false, true, true],
+            [-1, true, true, false],
+            ['1', true, false, true],
+            ['0', false, true, true],
+            ['-1', true, true, false],
+        ];
+    }
 
     public static function absoluteDataProvider(): array
     {
