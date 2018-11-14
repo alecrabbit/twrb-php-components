@@ -4,6 +4,7 @@
  * Date: 05.11.18
  * Time: 21:06
  */
+declare(strict_types=1);
 
 namespace AlecRabbit\Money\Calculator;
 
@@ -16,7 +17,7 @@ class BcMathCalculator implements CalculatorInterface
     private const _SCALE = EXTENDED_SCALE;
 
     /**
-     * @var string
+     * @var int
      */
     private $scale;
 
@@ -49,7 +50,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function add($amount, $addend): string
     {
-        return BC::add($amount, $addend, $this->scale);
+        return BC::add($amount, (string)$addend, $this->scale);
     }
 
     /**
@@ -57,7 +58,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function subtract($amount, $subtrahend): string
     {
-        return BC::sub($amount, $subtrahend, $this->scale);
+        return BC::sub($amount, (string)$subtrahend, $this->scale);
     }
 
     /**
@@ -65,7 +66,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function multiply($amount, $multiplier): string
     {
-        return BC::mul($amount, $multiplier, $this->scale);
+        return BC::mul($amount, (string)$multiplier, $this->scale);
     }
 
     /**
@@ -73,7 +74,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function divide($amount, $divisor): string
     {
-        return BC::div($amount, $divisor, $this->scale);
+        return BC::div($amount, (string)$divisor, $this->scale);
     }
 
     /**
@@ -81,7 +82,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function ceil($number): string
     {
-        return BC::ceil($number);
+        return BC::ceil((string)$number);
     }
 
     /**
@@ -89,15 +90,16 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function absolute($number): string
     {
-        return BC::abs($number);
+        return BC::abs((string)$number);
     }
 
     /**
      * {@inheritdoc}
+     * @param int $precision
      */
     public function round($number, $precision = 0): string
     {
-        return BC::round($number, $precision ?? 0);
+        return BC::round((string)$number, $precision ?? 0);
     }
 
     /**
@@ -105,7 +107,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function share($amount, $ratio, $total, $precision): string
     {
-        return $this->round(BC::div(BC::mul($amount, $ratio, $this->scale), $total, $this->scale), $precision);
+        return $this->round(BC::div(BC::mul($amount, (string)$ratio, $this->scale), (string)$total, $this->scale), $precision);
     }
 
     /**
@@ -121,7 +123,7 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function mod($amount, $divisor): string
     {
-        return BC::mod($amount, $divisor, $this->scale);
+        return BC::mod($amount, (string)$divisor, $this->scale);
     }
 
 }

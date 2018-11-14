@@ -116,7 +116,7 @@ class DataOHLCV
 
                 $this->current[$resolution]['close'] = $close;
                 $this->current[$resolution]['volume'] =
-                    (float)BC::add($this->current[$resolution]['volume'], $volume, NORMAL_SCALE);
+                    (float)BC::add((string)$this->current[$resolution]['volume'], (string)$volume, NORMAL_SCALE);
 
             } elseif ($ts < $this->current[$resolution]['timestamp']) {
                 throw new \RuntimeException(

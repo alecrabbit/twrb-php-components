@@ -31,7 +31,7 @@ class Money implements MoneyInterface, \JsonSerializable
     private $currency;
 
     /**
-     * @param int|float|string $amount
+     * @param null|int|float|string $amount
      * @param Currency $currency
      *
      * @throws \InvalidArgumentException If amount is not integer
@@ -46,7 +46,7 @@ class Money implements MoneyInterface, \JsonSerializable
         }
         $this->calculator = Factory::getCalculator();
 
-        $this->setAmount($amount);
+        $this->setAmount((string)$amount);
         $this->setCurrency($currency);
     }
 
@@ -66,7 +66,7 @@ class Money implements MoneyInterface, \JsonSerializable
 
     /**
      * @param Money $first
-     * @param Money[] $collection
+     * @param Money ...$collection
      *
      * @return Money
      */
@@ -183,7 +183,7 @@ class Money implements MoneyInterface, \JsonSerializable
      * Returns a new Money object that represents
      * the sum of this and an other Money object.
      *
-     * @param Money[] $addends
+     * @param Money ...$addends
      *
      * @return Money
      */
@@ -223,7 +223,7 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $this->assertOperand($divisor);
 
-        if ($this->calculator->compare($divisor, '0') === 0) {
+        if ($this->calculator->compare((string)$divisor, '0') === 0) {
             throw new \InvalidArgumentException('Division by zero.');
         }
 
@@ -373,9 +373,9 @@ class Money implements MoneyInterface, \JsonSerializable
      * @param array $ratios
      *
      * @param int|null $precision
-     * @return iterable
+     * @return Money[]
      */
-    public function allocate(array $ratios, ?int $precision = null): iterable
+    public function allocate(array $ratios, ?int $precision = null): array
     {
         $precision = $precision ?? 2;
         if (0 === $allocations = \count($ratios)) {
@@ -399,7 +399,7 @@ class Money implements MoneyInterface, \JsonSerializable
             $results[] = $this->newInstance($share);
             $remainder = $this->calculator->subtract($remainder, $share);
         }
-        switch ($this->calculator->compare($remainder, 0)) {
+        switch ($this->calculator->compare($remainder, '0')) {
             case -1:
                 for ($i = $allocations - 1; $i >= 0; $i--) {
                     if (!$ratios[$i]) {
@@ -445,7 +445,7 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function isZero(): bool
     {
-        return $this->calculator->compare($this->amount, 0) === 0;
+        return $this->calculator->compare($this->amount, '0') === 0;
     }
 
     /**
@@ -468,7 +468,7 @@ class Money implements MoneyInterface, \JsonSerializable
      * Returns a new Money object that represents
      * the difference of this and an other Money object.
      *
-     * @param Money[] $subtrahends
+     * @param Money ...$subtrahends
      *
      * @return Money
      */
@@ -493,7 +493,7 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function isNegative(): bool
     {
-        return $this->calculator->compare($this->amount, 0) === -1;
+        return $this->calculator->compare($this->amount, '0') === -1;
     }
 
     /**
@@ -549,6 +549,6 @@ class Money implements MoneyInterface, \JsonSerializable
      */
     public function isPositive(): bool
     {
-        return $this->calculator->compare($this->amount, 0) === 1;
+        return $this->calculator->compare($this->amount, '0') === 1;
     }
 }

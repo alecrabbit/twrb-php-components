@@ -105,4 +105,33 @@ class HelpersTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     * @dataProvider heartbeatDataProvider
+     * @param $expected
+     */
+    public function heartbeat($expected): void
+    {
+        $this->assertEquals($expected, heartbeat());
+    }
+
+    public function heartbeatDataProvider(): array
+    {
+        return [
+            // [$expected],
+            [HEARTBEAT_0],
+            [HEARTBEAT_1],
+            [HEARTBEAT_2],
+            [HEARTBEAT_3],
+            [HEARTBEAT_0],
+            [HEARTBEAT_1],
+            [HEARTBEAT_2],
+            [HEARTBEAT_3],
+            [HEARTBEAT_0],
+            [HEARTBEAT_1],
+            [HEARTBEAT_2],
+            [HEARTBEAT_3],
+        ];
+    }
+
 }

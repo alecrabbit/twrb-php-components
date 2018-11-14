@@ -13,7 +13,8 @@
     "alecrabbit/accessories": "^0",
     "alecrabbit/php-helpers": "^0",
     "krowinski/bcmath-extended": "^4.1",
-    "nesbot/carbon": "^2.3"
+    "nesbot/carbon": "^2.3",
+    "phpstan/phpstan": "^0.10.5"
   },
   "require-dev": {
     "alecrabbit/php-output-a": "^0.0.1",

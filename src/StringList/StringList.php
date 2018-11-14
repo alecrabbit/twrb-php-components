@@ -38,13 +38,13 @@ class StringList implements StringListInterface
         return $this;
     }
 
-    private function process(array $first, array $second): iterable
+    private function process(array $first, array $second): array
     {
         return
             array_unique(array_merge($first, $second));
     }
 
-    private function diff(array $first, array $second): iterable
+    private function diff(array $first, array $second): array
     {
         return
             array_diff($first, $second);

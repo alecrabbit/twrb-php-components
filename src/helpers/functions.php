@@ -5,6 +5,20 @@
  * Time: 12:07
  */
 
+if (!\defined('HEARTBEAT_0')) {
+    define('HEARTBEAT_0', "-\e[1D");
+}
+if (!\defined('HEARTBEAT_1')) {
+    define('HEARTBEAT_1', "\e[0;34m\\\e[1D\e[0;0m");
+}
+if (!\defined('HEARTBEAT_2')) {
+    define('HEARTBEAT_2', "|\e[1D");
+}
+if (!\defined('HEARTBEAT_3')) {
+    define('HEARTBEAT_3', "\e[0;33m/\e[1D\e[0;0m");
+}
+
+
 if (!function_exists('c_avg')) {
     /**
      * @param float $first
@@ -51,5 +65,27 @@ if (!function_exists('c_array_div')) {
                         $v / $divider;
                 },
                 $arr);
+    }
+}
+
+if (!function_exists('heartbeat')) {
+    /**
+     * @return string
+     */
+    function heartbeat(): string
+    {
+        static $heartCycle = 0;
+        if ($heartCycle >= 4) {
+            $heartCycle = 0;
+        }
+        switch (++$heartCycle) {
+            case 1:
+                return HEARTBEAT_0;
+            case 2:
+                return HEARTBEAT_1;
+            case 3:
+                return HEARTBEAT_2;
+        }
+        return HEARTBEAT_3;
     }
 }
