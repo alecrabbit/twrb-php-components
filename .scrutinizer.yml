@@ -3,7 +3,7 @@ build:
     analysis:
       dependencies:
         before:
-        - sudo apt-get install -y libssl-dev libevent-dev pkg-config
+        - sudo apt-get install -y libssl-dev libevent-dev libcurl4-openssl-dev pkg-config
       tests:
         override:
         - php-scrutinizer-run
