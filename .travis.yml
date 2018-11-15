@@ -13,11 +13,12 @@ addons:
   apt:
     packages:
     - libevent-dev
-    
+
 cache:
   bundler: true
 
 install:
+  - ./travis-init.sh
   travis_retry composer install --no-interaction --prefer-source
 
 script: vendor/bin/phpunit
