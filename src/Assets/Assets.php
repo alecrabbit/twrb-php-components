@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Assets;
 
-
 use AlecRabbit\Money\Currency;
 use AlecRabbit\Money\Money;
 

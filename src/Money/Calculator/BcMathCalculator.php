@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit\Money\Calculator;
 
-
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use BCMathExtended\BC;
 

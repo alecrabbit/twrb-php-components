@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
-
 use BCMathExtended\BC;
 
 class DataOHLCV
@@ -68,7 +67,9 @@ class DataOHLCV
         $multiplier =
             (int)bounds($multiplier ?? self::DEFAULT_PERIOD_MULTIPLIER, 1, self::MAX_PERIOD_MULTIPLIER);
 
-        return isset($this->timestamps[$resolution]) && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
+        return
+            isset($this->timestamps[$resolution])
+            && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
     }
 
     public function addTrade(int $timestamp, string $side, float $price, float $amount): void
@@ -84,8 +85,7 @@ class DataOHLCV
         float $close,
         float $volume,
         int $resolution = RESOLUTION_01MIN
-    ): void
-    {
+    ): void {
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
             if ($ts > $this->current[$resolution]['timestamp']) {
@@ -315,17 +315,19 @@ class DataOHLCV
             $pair = $this->getPair();
             foreach (static::RESOLUTIONS as $resolution) {
                 $count = \count($this->timestamps[$resolution] ?? []);
-                $result[] = sprintf('%s [%s] %s %s %s %s %s %s %s',
-                    $this->current[$resolution]['timestamp'],
-                    RESOLUTION_ALIASES[$resolution],
-                    $count,
-                    $pair,
-                    $this->current[$resolution]['opens'],
-                    $this->current[$resolution]['high'],
-                    $this->current[$resolution]['low'],
-                    $this->current[$resolution]['close'],
-                    $this->current[$resolution]['volume']
-                );
+                $result[] =
+                    sprintf(
+                        '%s [%s] %s %s %s %s %s %s %s',
+                        $this->current[$resolution]['timestamp'],
+                        RESOLUTION_ALIASES[$resolution],
+                        $count,
+                        $pair,
+                        $this->current[$resolution]['opens'],
+                        $this->current[$resolution]['high'],
+                        $this->current[$resolution]['low'],
+                        $this->current[$resolution]['close'],
+                        $this->current[$resolution]['volume']
+                    );
             }
             dump($result);
         }
