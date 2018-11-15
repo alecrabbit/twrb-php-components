@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4d1c9e25243f5dca40827a8c9ed27f91",
+    "content-hash": "b8f1557b84a89ae8ffc40f472259c47d",
     "packages": [
         {
             "name": "alecrabbit/accessories",
@@ -3369,8 +3369,7 @@
         "php": ">=7.2",
         "ext-bcmath": "*",
         "ext-intl": "*",
-        "ext-json": "*",
-        "ext-trader": "*"
+        "ext-json": "*"
     },
     "platform-dev": []
 }

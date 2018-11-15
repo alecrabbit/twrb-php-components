@@ -8,7 +8,6 @@
     "ext-bcmath": "*",
     "ext-intl": "*",
     "ext-json": "*",
-    "ext-trader": "*",
     "alecrabbit/accessories": "^0",
     "alecrabbit/php-helpers": "^0",
     "krowinski/bcmath-extended": "^4.1",
