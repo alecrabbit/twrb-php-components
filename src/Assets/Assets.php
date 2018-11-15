@@ -77,5 +77,4 @@ class Assets
         return
             array_keys($this->assets);
     }
-
 }

@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money;
 
-
 use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 
@@ -49,6 +48,4 @@ class CalculatorFactory
         return
             array_unshift(self::$calculators, $calculator);
     }
-
-
 }

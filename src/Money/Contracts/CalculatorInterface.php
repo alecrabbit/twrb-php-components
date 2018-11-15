@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money\Contracts;
 
-
 /**
  * Money calculations abstracted away from the Money value object.
  *
@@ -36,7 +35,7 @@ interface CalculatorInterface
     /**
      * Add added to amount.
      *
-     * @param string $amount
+     * @param string           $amount
      * @param int|float|string $addend
      *
      * @return string
@@ -46,7 +45,7 @@ interface CalculatorInterface
     /**
      * Subtract subtrahend from amount.
      *
-     * @param string $amount
+     * @param string           $amount
      * @param int|float|string $subtrahend
      *
      * @return string
@@ -56,7 +55,7 @@ interface CalculatorInterface
     /**
      * Multiply amount with multiplier.
      *
-     * @param string $amount
+     * @param string           $amount
      * @param int|float|string $multiplier
      *
      * @return string
@@ -66,7 +65,7 @@ interface CalculatorInterface
     /**
      * Divide amount with divisor.
      *
-     * @param string $amount
+     * @param string           $amount
      * @param int|float|string $divisor
      *
      * @return string
@@ -112,10 +111,10 @@ interface CalculatorInterface
     /**
      * Share amount among ratio / total portions.
      *
-     * @param string $amount
+     * @param string           $amount
      * @param int|float|string $ratio
      * @param int|float|string $total
-     * @param int $precision
+     * @param int              $precision
      *
      * @return string
      */
@@ -124,11 +123,10 @@ interface CalculatorInterface
     /**
      * Get the modulus of an amount.
      *
-     * @param string $amount
+     * @param string           $amount
      * @param int|float|string $divisor
      *
      * @return string
      */
     public function mod($amount, $divisor);
 }
-

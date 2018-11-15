@@ -17,7 +17,8 @@ define('RESOLUTION_03HOUR', 10800);
 define('RESOLUTION_04HOUR', 14400);
 define('RESOLUTION_01DAY', 86400);
 
-define('RESOLUTIONS',
+define(
+    'RESOLUTIONS',
     [
         RESOLUTION_01MIN,
         RESOLUTION_03MIN,
@@ -33,7 +34,8 @@ define('RESOLUTIONS',
     ]
 );
 
-define('RESOLUTION_ALIASES',
+define(
+    'RESOLUTION_ALIASES',
     [
         RESOLUTION_01MIN => '01m',
         RESOLUTION_03MIN => '03m',

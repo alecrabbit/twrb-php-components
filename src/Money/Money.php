@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money;
 
-
 use AlecRabbit\Money\CalculatorFactory as Factory;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use AlecRabbit\Money\Contracts\MoneyInterface;

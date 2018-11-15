@@ -7,7 +7,6 @@
 
 namespace App\Classes\Core\Models\Lists;
 
-
 use AlecRabbit\StringList\StringList;
 
 class PairsList extends StringList

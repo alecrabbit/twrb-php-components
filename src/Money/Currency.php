@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money;
 
-
 use AlecRabbit\Money\Contracts\CurrencyInterface;
 
 class Currency implements CurrencyInterface, \JsonSerializable

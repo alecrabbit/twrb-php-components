@@ -7,8 +7,6 @@
 
 namespace App\Classes\Core\Models\Lists;
 
-
-
 use AlecRabbit\Lists\ListPrototype;
 
 class StrategiesList extends ListPrototype

@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\StringList;
 
-
 use AlecRabbit\StringList\Contracts\StringListInterface;
 
 class StringList implements StringListInterface

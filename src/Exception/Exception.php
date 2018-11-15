@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Exception;
 
-
 interface Exception extends \Throwable
 {
 

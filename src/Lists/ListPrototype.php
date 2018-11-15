@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Lists;
 
-
 use AlecRabbit\StringList\StringList;
 
 class ListPrototype extends StringList

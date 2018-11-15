@@ -7,7 +7,11 @@
 
 namespace AlecRabbit\Exception;
 
-// Rename as needed & inherit from needed class
+/**
+ * Rename & inherit from needed class as needed
+ * Class TemplatePackageException
+ * @package AlecRabbit\Exception
+ */
 class TemplatePackageException extends \Exception implements Exception
 {
 

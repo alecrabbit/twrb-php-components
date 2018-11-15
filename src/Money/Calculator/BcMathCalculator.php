@@ -132,5 +132,4 @@ class BcMathCalculator implements CalculatorInterface
     {
         return BC::mod($amount, (string)$divisor, $this->scale);
     }
-
 }
