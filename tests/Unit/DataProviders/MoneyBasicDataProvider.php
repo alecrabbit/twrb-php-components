@@ -237,8 +237,8 @@ class MoneyBasicDataProvider
             // [$amount, $currency],
             [false, 'eUr'],
             [new \stdClass(), 'eUr'],
-            [null, true],
             [1, 'CODETOOLONG'],
+//            [null, true],
         ];
     }
 }
