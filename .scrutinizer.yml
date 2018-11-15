@@ -1,10 +1,10 @@
 build:
   nodes:
     analysis:
+      dependencies:
+        before:
+        - sudo apt-get install -y libevent-dev
       tests:
-        dependencies:
-          before:
-          - sudo apt-get install -y libevent-dev
         override:
         - php-scrutinizer-run
 
