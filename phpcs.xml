@@ -3,4 +3,5 @@
     <file>./</file>
     <exclude-pattern>./vendor/*</exclude-pattern>
     <exclude-pattern>./tests/*</exclude-pattern>
+    <rule ref="PSR2" />
 </ruleset>
