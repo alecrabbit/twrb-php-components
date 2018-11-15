@@ -83,7 +83,8 @@ class DataOHLCV
         float $low,
         float $close,
         float $volume,
-        int $resolution = RESOLUTION_01MIN): void
+        int $resolution = RESOLUTION_01MIN
+    ): void
     {
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
