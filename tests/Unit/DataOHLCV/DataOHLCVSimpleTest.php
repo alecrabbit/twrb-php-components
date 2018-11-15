@@ -79,7 +79,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512588360,
                     1512589380,
                 ],
-                RESOLUTION_01min
+                RESOLUTION_01MIN
             ],
             [
                 [
@@ -99,7 +99,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512588240,
                     1512589320,
                 ],
-                RESOLUTION_03min
+                RESOLUTION_03MIN
             ],
             [
                 [
@@ -119,7 +119,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512588300,
                     1512589200,
                 ],
-                RESOLUTION_05min
+                RESOLUTION_05MIN
             ],
             [
                 [
@@ -139,7 +139,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512587700,
                     1512588600,
                 ],
-                RESOLUTION_15min
+                RESOLUTION_15MIN
             ],
             [
                 [
@@ -153,7 +153,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512586800,
                     1512588600,
                 ],
-                RESOLUTION_30min
+                RESOLUTION_30MIN
             ],
             [
                 [
@@ -165,7 +165,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512585900,
                     1512588600,
                 ],
-                RESOLUTION_45min
+                RESOLUTION_45MIN
             ],
             [
                 [
@@ -175,12 +175,12 @@ class DataOHLCVSimpleTest extends TestCase
                     1512583200,
                     1512586800,
                 ],
-                RESOLUTION_01hour
+                RESOLUTION_01HOUR
             ],
-            [[1512568800, 1512576000,1512583200], RESOLUTION_02hour],
-            [[1512561600, 1512572400,1512583200], RESOLUTION_03hour],
-            [[1512561600,1512576000], RESOLUTION_04hour],
-            [[1512518400], RESOLUTION_01day],
+            [[1512568800, 1512576000,1512583200], RESOLUTION_02HOUR],
+            [[1512561600, 1512572400,1512583200], RESOLUTION_03HOUR],
+            [[1512561600,1512576000], RESOLUTION_04HOUR],
+            [[1512518400], RESOLUTION_01DAY],
         ];
     }
 

@@ -36,17 +36,17 @@ class DataOHLCVNextResolutionTest extends TestCase
     public function forNextResolution(): array
     {
         return [
-            [RESOLUTION_03min, RESOLUTION_01min],
-            [RESOLUTION_05min, RESOLUTION_03min],
-            [RESOLUTION_15min, RESOLUTION_05min],
-            [RESOLUTION_30min, RESOLUTION_15min],
-            [RESOLUTION_45min, RESOLUTION_30min],
-            [RESOLUTION_01hour, RESOLUTION_45min],
-            [RESOLUTION_02hour, RESOLUTION_01hour],
-            [RESOLUTION_03hour, RESOLUTION_02hour],
-            [RESOLUTION_04hour, RESOLUTION_03hour],
-            [RESOLUTION_01day, RESOLUTION_04hour],
-            [false, RESOLUTION_01day],
+            [RESOLUTION_03MIN, RESOLUTION_01MIN],
+            [RESOLUTION_05MIN, RESOLUTION_03MIN],
+            [RESOLUTION_15MIN, RESOLUTION_05MIN],
+            [RESOLUTION_30MIN, RESOLUTION_15MIN],
+            [RESOLUTION_45MIN, RESOLUTION_30MIN],
+            [RESOLUTION_01HOUR, RESOLUTION_45MIN],
+            [RESOLUTION_02HOUR, RESOLUTION_01HOUR],
+            [RESOLUTION_03HOUR, RESOLUTION_02HOUR],
+            [RESOLUTION_04HOUR, RESOLUTION_03HOUR],
+            [RESOLUTION_01DAY, RESOLUTION_04HOUR],
+            [false, RESOLUTION_01DAY],
         ];
     }
 

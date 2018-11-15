@@ -78,6 +78,5 @@ class StringList implements StringListInterface
     {
         return
             empty($this->including) || \in_array($element, $this->including, true);
-
     }
 }

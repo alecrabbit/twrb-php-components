@@ -83,12 +83,11 @@ class DataOHLCV
         float $low,
         float $close,
         float $volume,
-        int $resolution = RESOLUTION_01min): void
+        int $resolution = RESOLUTION_01MIN): void
     {
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
             if ($ts > $this->current[$resolution]['timestamp']) {
-
                 $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
                 $this->opens[$resolution][] = $this->current[$resolution]['opens'];
                 $this->highs[$resolution][] = $this->current[$resolution]['high'];
@@ -102,9 +101,7 @@ class DataOHLCV
                 $this->current[$resolution]['low'] = $low;
                 $this->current[$resolution]['close'] = $close;
                 $this->current[$resolution]['volume'] = $volume;
-
             } elseif ($ts === $this->current[$resolution]['timestamp']) {
-
                 if ($high > $this->current[$resolution]['high']) {
                     $this->current[$resolution]['high'] = $high;
                 }
@@ -115,7 +112,6 @@ class DataOHLCV
                 $this->current[$resolution]['close'] = $close;
                 $this->current[$resolution]['volume'] =
                     (float)BC::add((string)$this->current[$resolution]['volume'], (string)$volume, NORMAL_SCALE);
-
             } elseif ($ts < $this->current[$resolution]['timestamp']) {
                 throw new \RuntimeException(
                     'Incoming data are in unsorted order. Current timestamp is greater then incoming data\'s.' .

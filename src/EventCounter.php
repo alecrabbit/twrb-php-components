@@ -49,7 +49,7 @@ class EventCounter
     public function addEvent(?int $time = null): void
     {
         $this->lastTimestamp = $time = $time ?? time();
-        if ($this->groupBy) {
+        if (null !== $this->groupBy) {
             $time = base_timestamp($time, $this->groupBy);
         }
         // Is there any event during [$time] period?
