@@ -71,21 +71,19 @@ class DataOHLCV
         return isset($this->timestamps[$resolution]) && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
     }
 
-    public function addTrade(int $timestamp,
-                             string $side, // reserved for future
-                             float $price,
-                             float $amount): void
+    public function addTrade(int $timestamp, string $side, float $price, float $amount): void
     {
         $this->addOHLCV($timestamp, $price, $price, $price, $price, $amount);
     }
 
-    public function addOHLCV(int $timestamp,
-                             float $open,
-                             float $high,
-                             float $low,
-                             float $close,
-                             float $volume,
-                             int $resolution = RESOLUTION_01min): void
+    public function addOHLCV(
+        int $timestamp,
+        float $open,
+        float $high,
+        float $low,
+        float $close,
+        float $volume,
+        int $resolution = RESOLUTION_01min): void
     {
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
@@ -224,6 +222,23 @@ class DataOHLCV
             $this->lastElement($this->highs[$resolution] ?? [], $useCoefficient);
     }
 
+    /**
+     * @param array $element
+     * @param bool $useCoefficient
+     * @return null|float
+     */
+    private function lastElement(array $element, bool $useCoefficient = false): ?float
+    {
+        if (false !== $lastElement = end($element)) {
+            return
+                $this->mul(
+                    $lastElement,
+                    $useCoefficient
+                );
+        }
+        return null;
+    }
+
     private function mul(float $value, bool $useCoefficient): float
     {
         if ($useCoefficient && $this->coefficient !== 1) {
@@ -325,22 +340,5 @@ class DataOHLCV
     public function getPair(): string
     {
         return $this->pair;
-    }
-
-    /**
-     * @param array $element
-     * @param bool $useCoefficient
-     * @return null|float
-     */
-    private function lastElement(array $element, bool $useCoefficient = false): ?float
-    {
-        if (false !== $lastElement = end($element)) {
-            return
-                $this->mul(
-                    $lastElement,
-                    $useCoefficient
-                );
-        }
-        return null;
     }
 }
