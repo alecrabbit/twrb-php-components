@@ -89,19 +89,9 @@ class DataOHLCV
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
             if ($ts > $this->current[$resolution]['timestamp']) {
-                $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
-                $this->opens[$resolution][] = $this->current[$resolution]['opens'];
-                $this->highs[$resolution][] = $this->current[$resolution]['high'];
-                $this->lows[$resolution][] = $this->current[$resolution]['low'];
-                $this->closes[$resolution][] = $this->current[$resolution]['close'];
-                $this->volumes[$resolution][] = $this->current[$resolution]['volume'];
+                $this->updateLast($resolution);
 
-                $this->current[$resolution]['timestamp'] = $ts;
-                $this->current[$resolution]['opens'] = $open;
-                $this->current[$resolution]['high'] = $high;
-                $this->current[$resolution]['low'] = $low;
-                $this->current[$resolution]['close'] = $close;
-                $this->current[$resolution]['volume'] = $volume;
+                $this->setCurrent($resolution, $ts, $open, $high, $low, $close, $volume);
             } elseif ($ts === $this->current[$resolution]['timestamp']) {
                 if ($high > $this->current[$resolution]['high']) {
                     $this->current[$resolution]['high'] = $high;
@@ -120,12 +110,7 @@ class DataOHLCV
                 );
             }
         } else {
-            $this->current[$resolution]['timestamp'] = $ts;
-            $this->current[$resolution]['opens'] = $open;
-            $this->current[$resolution]['high'] = $high;
-            $this->current[$resolution]['low'] = $low;
-            $this->current[$resolution]['close'] = $close;
-            $this->current[$resolution]['volume'] = $volume;
+            $this->setCurrent($resolution, $ts, $open, $high, $low, $close, $volume);
         }
 
         $this->trim($resolution);
@@ -338,5 +323,32 @@ class DataOHLCV
     public function getPair(): string
     {
         return $this->pair;
+    }
+
+    private function setCurrent(
+        int $resolution,
+        int $timestamp,
+        float $open,
+        float $high,
+        float $low,
+        float $close,
+        float $volume
+    ): void {
+        $this->current[$resolution]['timestamp'] = $timestamp;
+        $this->current[$resolution]['opens'] = $open;
+        $this->current[$resolution]['high'] = $high;
+        $this->current[$resolution]['low'] = $low;
+        $this->current[$resolution]['close'] = $close;
+        $this->current[$resolution]['volume'] = $volume;
+    }
+
+    private function updateLast(int $resolution): void
+    {
+        $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
+        $this->opens[$resolution][] = $this->current[$resolution]['opens'];
+        $this->highs[$resolution][] = $this->current[$resolution]['high'];
+        $this->lows[$resolution][] = $this->current[$resolution]['low'];
+        $this->closes[$resolution][] = $this->current[$resolution]['close'];
+        $this->volumes[$resolution][] = $this->current[$resolution]['volume'];
     }
 }

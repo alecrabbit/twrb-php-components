@@ -5,6 +5,13 @@
  * Time: 15:25
  */
 
+// Trade constants
+define('T_SELL', 'sell');
+define('T_BUY', 'buy');
+
+define('T_ASK', 'ask');
+define('T_BID', 'bid');
+
 define('RESOLUTION_01MIN', 60);
 define('RESOLUTION_03MIN', 180);
 define('RESOLUTION_05MIN', 300);
