@@ -9,6 +9,11 @@ matrix:
   allow_failures:
   - php: nightly
 
+addons:
+  apt:
+    packages:
+    - libevent-dev
+    
 cache:
   bundler: true
 
