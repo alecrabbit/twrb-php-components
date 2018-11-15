@@ -72,9 +72,9 @@ class DataOHLCV
             && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
     }
 
-    public function addTrade(int $timestamp, string $side, float $price, float $amount): void
+    public function addTrade(int $timestamp, int $side, float $price, float $amount): void
     {
-        $this->addOHLCV($timestamp, $price, $price, $price, $price, $amount);
+        $this->addOHLCV($timestamp, $price, $price, $price, $price, $amount, $side);
     }
 
     public function addOHLCV(
@@ -84,39 +84,76 @@ class DataOHLCV
         float $low,
         float $close,
         float $volume,
+        int $side,
         int $resolution = RESOLUTION_01MIN
     ): void {
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
             if ($ts > $this->current[$resolution]['timestamp']) {
                 $this->updateLast($resolution);
-
                 $this->setCurrent($resolution, $ts, $open, $high, $low, $close, $volume);
             } elseif ($ts === $this->current[$resolution]['timestamp']) {
-                if ($high > $this->current[$resolution]['high']) {
-                    $this->current[$resolution]['high'] = $high;
-                }
-                if ($low < $this->current[$resolution]['low']) {
-                    $this->current[$resolution]['low'] = $low;
-                }
-
-                $this->current[$resolution]['close'] = $close;
-                $this->current[$resolution]['volume'] =
-                    (float)BC::add((string)$this->current[$resolution]['volume'], (string)$volume, NORMAL_SCALE);
+                $this->updateCurrent($resolution, $high, $low, $close, $volume);
             } elseif ($ts < $this->current[$resolution]['timestamp']) {
                 throw new \RuntimeException(
                     'Incoming data are in unsorted order. Current timestamp is greater then incoming data\'s.' .
                     ' (' . $ts . ' < ' . $this->current[$resolution]['timestamp'] . ')'
                 );
             }
+            $this->trim($resolution);
         } else {
             $this->setCurrent($resolution, $ts, $open, $high, $low, $close, $volume);
         }
 
-        $this->trim($resolution);
         if ($nextResolution = $this->nextResolution($resolution)) {
-            $this->addOHLCV($timestamp, $open, $high, $low, $close, $volume, $nextResolution);
+            $this->addOHLCV($timestamp, $open, $high, $low, $close, $volume, $side, $nextResolution);
         }
+    }
+
+    private function updateLast(int $resolution): void
+    {
+        $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
+        $this->opens[$resolution][] = $this->current[$resolution]['opens'];
+        $this->highs[$resolution][] = $this->current[$resolution]['high'];
+        $this->lows[$resolution][] = $this->current[$resolution]['low'];
+        $this->closes[$resolution][] = $this->current[$resolution]['close'];
+        $this->volumes[$resolution][] = $this->current[$resolution]['volume'];
+    }
+
+    private function setCurrent(
+        int $resolution,
+        int $timestamp,
+        float $open,
+        float $high,
+        float $low,
+        float $close,
+        float $volume
+    ): void {
+        $this->current[$resolution]['timestamp'] = $timestamp;
+        $this->current[$resolution]['opens'] = $open;
+        $this->current[$resolution]['high'] = $high;
+        $this->current[$resolution]['low'] = $low;
+        $this->current[$resolution]['close'] = $close;
+        $this->current[$resolution]['volume'] = $volume;
+    }
+
+    private function updateCurrent(
+        int $resolution,
+        float $high,
+        float $low,
+        float $close,
+        float $volume
+    ): void {
+        if ($high > $this->current[$resolution]['high']) {
+            $this->current[$resolution]['high'] = $high;
+        }
+        if ($low < $this->current[$resolution]['low']) {
+            $this->current[$resolution]['low'] = $low;
+        }
+
+        $this->current[$resolution]['close'] = $close;
+        $this->current[$resolution]['volume'] =
+            (float)BC::add((string)$this->current[$resolution]['volume'], (string)$volume, NORMAL_SCALE);
     }
 
     private function trim(int $resolution): void
@@ -323,32 +360,5 @@ class DataOHLCV
     public function getPair(): string
     {
         return $this->pair;
-    }
-
-    private function setCurrent(
-        int $resolution,
-        int $timestamp,
-        float $open,
-        float $high,
-        float $low,
-        float $close,
-        float $volume
-    ): void {
-        $this->current[$resolution]['timestamp'] = $timestamp;
-        $this->current[$resolution]['opens'] = $open;
-        $this->current[$resolution]['high'] = $high;
-        $this->current[$resolution]['low'] = $low;
-        $this->current[$resolution]['close'] = $close;
-        $this->current[$resolution]['volume'] = $volume;
-    }
-
-    private function updateLast(int $resolution): void
-    {
-        $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
-        $this->opens[$resolution][] = $this->current[$resolution]['opens'];
-        $this->highs[$resolution][] = $this->current[$resolution]['high'];
-        $this->lows[$resolution][] = $this->current[$resolution]['low'];
-        $this->closes[$resolution][] = $this->current[$resolution]['close'];
-        $this->volumes[$resolution][] = $this->current[$resolution]['volume'];
     }
 }

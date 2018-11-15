@@ -6,11 +6,21 @@
  */
 
 // Trade constants
-define('T_SELL', 'sell');
-define('T_BUY', 'buy');
+define('T_SELL', 100);
+define('T_BUY', -100);
 
-define('T_ASK', 'ask');
-define('T_BID', 'bid');
+define('T_ASK', T_SELL);
+define('T_BID', T_BUY);
+define(
+    'T_ALIASES',
+    [
+        T_SELL => 'sell',
+        T_BUY => 'buy',
+        T_ASK => 'ask',
+        T_BID => 'bid',
+    ]
+);
+
 
 define('RESOLUTION_01MIN', 60);
 define('RESOLUTION_03MIN', 180);
