@@ -7,6 +7,7 @@ if [[ "$TRAVIS_PHP_VERSION" != "hhvm" &&
 
     # install 'event' and 'ev' PHP extension
     if [[ "$TRAVIS_PHP_VERSION" != "5.3" ]]; then
+        echo "not 5.3"
 #        echo "yes" | pecl install event
 #        echo "yes" | pecl install trader
     fi
