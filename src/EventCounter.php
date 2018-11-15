@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
-
 class EventCounter
 {
     protected const DEFAULT_NAME = 'default';
@@ -121,5 +120,4 @@ class EventCounter
     {
         return $this->events;
     }
-
 }

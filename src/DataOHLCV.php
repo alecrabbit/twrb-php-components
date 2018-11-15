@@ -281,7 +281,6 @@ class DataOHLCV
                 $this->closes[$resolution] ?? [],
                 $useCoefficient
             );
-
     }
 
     /**
