@@ -4,27 +4,26 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b71d54b6c4c999c5a285642bfa737fbe",
+    "content-hash": "4d1c9e25243f5dca40827a8c9ed27f91",
     "packages": [
         {
             "name": "alecrabbit/accessories",
-            "version": "0.0.10",
+            "version": "0.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/accessories.git",
-                "reference": "8d306884ce6ef61dd2d56aad8709058d387d23d1"
+                "reference": "fdc5a72e36b4e9935a76dca3a750f4bdde6f0d75"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/8d306884ce6ef61dd2d56aad8709058d387d23d1",
-                "reference": "8d306884ce6ef61dd2d56aad8709058d387d23d1",
+                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/fdc5a72e36b4e9935a76dca3a750f4bdde6f0d75",
+                "reference": "fdc5a72e36b4e9935a76dca3a750f4bdde6f0d75",
                 "shasum": ""
             },
             "require": {
                 "alecrabbit/php-helpers": "^0",
                 "alecrabbit/php-simple-profiler": "^0",
-                "php": ">=7.2",
-                "spatie/typed": "^0.1.1"
+                "php": ">=7.2"
             },
             "require-dev": {
                 "nunomaduro/collision": "^2.0",
@@ -43,20 +42,20 @@
                 "MIT"
             ],
             "description": "PHP accessories Classes etc.",
-            "time": "2018-11-08T21:19:45+00:00"
+            "time": "2018-11-14T17:58:28+00:00"
         },
         {
             "name": "alecrabbit/php-helpers",
-            "version": "0.0.11",
+            "version": "0.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-helpers.git",
-                "reference": "9ed88f33ce5d252739a992854399a4ccc5c5352c"
+                "reference": "1fce76c4c06c5510ee4e4e4820154bc20490d0e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-helpers/zipball/9ed88f33ce5d252739a992854399a4ccc5c5352c",
-                "reference": "9ed88f33ce5d252739a992854399a4ccc5c5352c",
+                "url": "https://api.github.com/repos/alecrabbit/php-helpers/zipball/1fce76c4c06c5510ee4e4e4820154bc20490d0e3",
+                "reference": "1fce76c4c06c5510ee4e4e4820154bc20490d0e3",
                 "shasum": ""
             },
             "require": {
@@ -84,20 +83,20 @@
                 "MIT"
             ],
             "description": "PHP helpers functions",
-            "time": "2018-11-07T21:56:06+00:00"
+            "time": "2018-11-14T16:10:27+00:00"
         },
         {
             "name": "alecrabbit/php-simple-profiler",
-            "version": "0.0.11",
+            "version": "0.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-simple-profiler.git",
-                "reference": "a4fd1ee6539de1cf49d3a47ee8932a4aa01545f3"
+                "reference": "798dcf76955197e76021bc8fa9e5dcfca74ad4a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/a4fd1ee6539de1cf49d3a47ee8932a4aa01545f3",
-                "reference": "a4fd1ee6539de1cf49d3a47ee8932a4aa01545f3",
+                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/798dcf76955197e76021bc8fa9e5dcfca74ad4a7",
+                "reference": "798dcf76955197e76021bc8fa9e5dcfca74ad4a7",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +121,7 @@
                 "MIT"
             ],
             "description": "PHP simple profiler",
-            "time": "2018-11-08T19:01:48+00:00"
+            "time": "2018-11-14T12:09:54+00:00"
         },
         {
             "name": "composer/xdebug-handler",
@@ -277,16 +276,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.5.1",
+            "version": "2.5.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "1e0feb9741e6449feb18f5fb3a5542421fb4a865"
+                "reference": "92edfddcfe37b0d7956045d57f8ba714df8c0fb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/1e0feb9741e6449feb18f5fb3a5542421fb4a865",
-                "reference": "1e0feb9741e6449feb18f5fb3a5542421fb4a865",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/92edfddcfe37b0d7956045d57f8ba714df8c0fb8",
+                "reference": "92edfddcfe37b0d7956045d57f8ba714df8c0fb8",
                 "shasum": ""
             },
             "require": {
@@ -332,7 +331,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-11-08T13:33:56+00:00"
+            "time": "2018-11-15T06:40:11+00:00"
         },
         {
             "name": "nette/bootstrap",
@@ -1072,58 +1071,6 @@
                 "psr-3"
             ],
             "time": "2016-10-10T12:19:37+00:00"
-        },
-        {
-            "name": "spatie/typed",
-            "version": "0.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/typed.git",
-                "reference": "40e4ac886a95db5e2efe489be4c699ff307c4b2b"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/typed/zipball/40e4ac886a95db5e2efe489be4c699ff307c4b2b",
-                "reference": "40e4ac886a95db5e2efe489be4c699ff307c4b2b",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "larapack/dd": "^1.1",
-                "phpunit/phpunit": "^7.1",
-                "symfony/stopwatch": "^4.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\Typed\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Brent Roose",
-                    "email": "brent@spatie.be",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Improvements to PHP's type system in userland: generics, typed lists, tuples and structs",
-            "homepage": "https://github.com/spatie/typed",
-            "keywords": [
-                "generics",
-                "spatie",
-                "structs",
-                "tuple",
-                "typed",
-                "typed list"
-            ],
-            "time": "2018-07-23T13:34:33+00:00"
         },
         {
             "name": "symfony/console",
@@ -2458,16 +2405,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.4.3",
+            "version": "7.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "c151651fb6ed264038d486ea262e243af72e5e64"
+                "reference": "b1be2c8530c4c29c3519a052c9fb6cee55053bbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c151651fb6ed264038d486ea262e243af72e5e64",
-                "reference": "c151651fb6ed264038d486ea262e243af72e5e64",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b1be2c8530c4c29c3519a052c9fb6cee55053bbd",
+                "reference": "b1be2c8530c4c29c3519a052c9fb6cee55053bbd",
                 "shasum": ""
             },
             "require": {
@@ -2538,7 +2485,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2018-10-23T05:57:41+00:00"
+            "time": "2018-11-14T16:52:02+00:00"
         },
         {
             "name": "react/event-loop",
@@ -3421,7 +3368,6 @@
     "platform": {
         "php": ">=7.2",
         "ext-bcmath": "*",
-        "ext-event": "*",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-trader": "*"

@@ -1,9 +1,6 @@
 build:
   nodes:
     analysis:
-      dependencies:
-        before:
-        - sudo pecl install event 
       tests:
         override:
         - php-scrutinizer-run
