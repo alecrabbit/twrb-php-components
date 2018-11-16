@@ -47,6 +47,9 @@ class EventCounter
         $this->lastTimestamp = 0;
     }
 
+    /**
+     * @param int|null $time
+     */
     public function addEvent(?int $time = null): void
     {
         $this->lastTimestamp = $time = $time ?? time();
