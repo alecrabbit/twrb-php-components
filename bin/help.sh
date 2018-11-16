@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-echo "HERE IS HELP!!!"
+echo "Options:"
+echo "  --analyze  - enable analysis"
+echo "  --coverage - enable code coverage"

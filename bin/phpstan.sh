@@ -7,7 +7,12 @@ cd ${script_dir}
 info "PHPStan..."
 if [[ ${EXEC} == 1 ]]
 then
-  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpstan analyze ${SOURCE_DIR} --level=${PHPSTAN_LEVEL}
+    if [[ -z "$@" ]]
+    then
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpstan analyze ${SOURCE_DIR} --level=${PHPSTAN_LEVEL}
+    else
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpstan "$@"
+    fi
 else
   no-exec
 fi

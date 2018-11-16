@@ -6,6 +6,13 @@ cd ${script_dir}
 . imports.sh "$@"
 
 
+if [[ ${PROPAGATE} == 1 ]]
+then
+    error "Using --propagate option on this script may lead to unexpected results. "
+    comment "Exiting..."
+    exit 1
+fi
+
 if [[ ${HELP} == 1 ]]
 then
     ./help.sh

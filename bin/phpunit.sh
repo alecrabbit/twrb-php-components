@@ -13,8 +13,13 @@ then
     docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit --coverage-html ${PHPUNIT_COVERAGE_HTML_REPORT} --coverage-text  \
       --coverage-clover ${PHPUNIT_COVERAGE_CLOVER_REPORT}
   else
-    comment "Running tests..."
-    docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit
+    if [[ -z "$@" ]]
+    then
+        comment "Running tests..."
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit
+    else
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit "$@"
+    fi
   fi
 else
   no-exec

@@ -8,6 +8,10 @@ info () {
     printf "\n${GREEN}${1}${NC}\n\n"
 }
 
+error () {
+    printf "\n${RED}${1}${NC}\n\n"
+}
+
 comment () {
     printf "\n${YELLOW}${1}${NC}\n\n"
 }

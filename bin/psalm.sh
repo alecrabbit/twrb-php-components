@@ -20,7 +20,12 @@ fi
 info "Psalm..."
 if [[ ${EXEC} == 1 ]]
 then
-  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm
+    if [[ -z "$@" ]]
+    then
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm
+    else
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm "$@"
+    fi
 else
   no-exec
 fi

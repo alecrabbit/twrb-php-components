@@ -7,7 +7,12 @@ cd ${script_dir}
 info "PHP Code Sniffer..."
 if [[ ${EXEC} == 1 ]]
 then
-  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpcs
+    if [[ -z "$@" ]]
+    then
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpcs
+    else
+        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpcs "$@"
+    fi
 else
   no-exec
 fi
