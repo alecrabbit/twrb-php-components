@@ -39,7 +39,10 @@ then
     [[ $OPTION_BEAUTY ]] && echo "  --beautify      - enable code beautifier"
     [[ $OPTION_BEAUTY ]] && echo "  --beauty        - same as above"
     [[ $OPTION_PROPAGATE ]] && echo "  --propagate     - propagate unrecognized options to underlying script"
-    exit 0
+    if [[ ${PROPAGATE} == 0 ]]
+    then
+        exit 0
+    fi
 fi
 }
 
@@ -60,6 +63,13 @@ options_enabled () {
     fi
     printf "Beautifier"
     if [[ ${BEAUTY} == 1 ]]
+    then
+        enabled
+    else
+        disabled
+    fi
+    printf "Container restart"
+    if [[ ${RESTART_CONTAINER} == 1 ]]
     then
         enabled
     else

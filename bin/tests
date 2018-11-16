@@ -35,21 +35,21 @@ then
 fi
 info "Processing..."
 
-./phpunit.sh "$@"
+./phpunit "$@"
 
 if [[ ${ANALYZE} == 1 ]]
 then
-  ./phpmetrics.sh "$@"
+  ./phpmetrics "$@"
 
-  ./phpstan.sh "$@"
+  ./phpstan "$@"
 
-  ./psalm.sh "$@"
+  ./psalm "$@"
 
-  ./phpcs.sh "$@"
+  ./phpcs "$@"
 fi
 if [[ ${BEAUTY} == 1 ]]
 then
-  ./phpcbf.sh "$@"
+  ./phpcbf "$@"
 fi
 
 
