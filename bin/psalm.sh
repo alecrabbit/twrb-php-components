@@ -4,6 +4,11 @@ cd ${script_dir}
 
 . imports.sh
 
+OPTION_PROPAGATE=1
+
+help_message
+
+
 if [[ -e ${PSALM_CONFIG} ]]
 then
   comment "Psalm config found..."

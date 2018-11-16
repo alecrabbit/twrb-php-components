@@ -4,6 +4,10 @@ cd ${script_dir}
 
 . imports.sh
 
+OPTION_PROPAGATE=1
+
+help_message
+
 info "PHP Code Sniffer..."
 if [[ ${EXEC} == 1 ]]
 then

@@ -2,17 +2,15 @@
 COVERAGE=0
 PROPAGATE=0
 ANALYZE=0
+BEAUTY=0
 EXEC=1
 HELP=0
 
-echo "$@"
 for arg
 do
     case "$arg" in
         --propagate)
             PROPAGATE=1
-            ;;
-        *)
             ;;
      esac
 done
@@ -39,6 +37,16 @@ do
         --propagate)
             PROPAGATE=1
             ;;
+        --beauty)
+            BEAUTY=1
+            ;;
+        --beautify)
+            BEAUTY=1
+            ;;
+        --all)
+            ANALYZE=1
+            COVERAGE=1
+            ;;
         *)
             if [[ ${PROPAGATE} == 1 ]]
                 then
@@ -51,7 +59,7 @@ do
      esac
 done
 set -- "${params[@]}"  # overwrites the original positional params
-echo "$@"
+#echo "$@" # for debug
 
 SOURCE_DIR="src"
 PHPSTAN_LEVEL=7

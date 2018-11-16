@@ -5,6 +5,11 @@ cd ${script_dir}
 
 . imports.sh
 
+OPTION_PROPAGATE=1
+
+help_message
+
+
 info "PhpMetrics..."
 if [[ ${EXEC} == 1  ]]
 then

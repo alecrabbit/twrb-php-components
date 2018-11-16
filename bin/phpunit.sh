@@ -4,6 +4,10 @@ cd ${script_dir}
 
 . imports.sh
 
+OPTION_PROPAGATE=1
+
+help_message
+
 info "PhpUnit..."
 if [[ ${EXEC} == 1 ]]
 then
@@ -16,10 +20,8 @@ then
     if [[ -z "$@" ]]
     then
         comment "Running tests..."
-        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit
-    else
-        docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit "$@"
     fi
+    docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpunit "$@"
   fi
 else
   no-exec

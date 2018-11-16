@@ -26,3 +26,19 @@ enabled () {
 disabled () {
     echo " disabled."
 }
+
+help_message () {
+if [[ ${HELP} == 1 ]]
+then
+    echo "Options:"
+    echo "  --help      - show this message"
+    [[ $OPTION_ANALYZE ]] && echo "  --analyze   - enable analysis"
+    [[ $OPTION_COVERAGE ]] && echo "  --coverage  - enable code coverage"
+    [[ $OPTION_ALL ]] && echo "  --all       - enable analysis and code coverage"
+    [[ $OPTION_BEAUTY ]] && echo "  --beautify  - enable code beautifier"
+    [[ $OPTION_BEAUTY ]] && echo "  --beauty    - same as above"
+    [[ $OPTION_PROPAGATE ]] && echo "  --propagate - propagate unrecognized options to underlying script"
+    exit 0
+fi
+}
+

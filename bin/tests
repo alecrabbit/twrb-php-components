@@ -13,11 +13,13 @@ then
     exit 1
 fi
 
-if [[ ${HELP} == 1 ]]
-then
-    ./help.sh
-    exit 0
-fi
+# reassign variables
+OPTION_ANALYZE=1
+OPTION_COVERAGE=1
+OPTION_ALL=1
+
+help_message
+
 header "Tests and coverage script"
 if [[ ${EXEC} == 0 ]]
 then
@@ -37,7 +39,13 @@ else
     else
         disabled
     fi
-
+    printf "Beautifier"
+    if [[ ${BEAUTY} == 1 ]]
+    then
+        enabled
+    else
+        disabled
+    fi
 fi
 
 
@@ -56,6 +64,8 @@ then
   ./psalm.sh "$@"
 
   ./phpcs.sh "$@"
+
+  ./phpcbf.sh "$@"
 fi
 
 
