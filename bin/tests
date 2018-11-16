@@ -17,6 +17,7 @@ fi
 OPTION_ANALYZE=1
 OPTION_COVERAGE=1
 OPTION_ALL=1
+OPTION_NO_RESTART=1
 
 help_message
 
@@ -25,32 +26,13 @@ if [[ ${EXEC} == 0 ]]
 then
     echo "No-Exec selected."
 else
-    printf "Analysis"
-    if [[ ${ANALYZE} == 1 ]]
-    then
-        enabled
-    else
-        disabled
-    fi
-    printf "Coverage"
-    if [[ ${COVERAGE} == 1 ]]
-    then
-        enabled
-    else
-        disabled
-    fi
-    printf "Beautifier"
-    if [[ ${BEAUTY} == 1 ]]
-    then
-        enabled
-    else
-        disabled
-    fi
+    options_enabled
 fi
 
-
-./restart-container.sh "$@"
-
+if [[ ${RESTART_CONTAINER} == 1 ]]
+then
+    ./restart-container.sh "$@"
+fi
 info "Processing..."
 
 ./phpunit.sh "$@"
@@ -64,7 +46,9 @@ then
   ./psalm.sh "$@"
 
   ./phpcs.sh "$@"
-
+fi
+if [[ ${BEAUTY} == 1 ]]
+then
   ./phpcbf.sh "$@"
 fi
 

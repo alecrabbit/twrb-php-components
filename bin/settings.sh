@@ -5,7 +5,9 @@ ANALYZE=0
 BEAUTY=0
 EXEC=1
 HELP=0
+RESTART_CONTAINER=1
 
+#echo "$@" # for debug
 for arg
 do
     case "$arg" in
@@ -27,6 +29,9 @@ do
             ;;
         --no-exec)
             EXEC=0
+            ;;
+        --no-restart)
+            RESTART_CONTAINER=0
             ;;
         --analyze)
             ANALYZE=1
@@ -75,5 +80,4 @@ then
 else
   DOCKER_COMPOSE_FILE="./../docker-compose.yml"
 fi
-
 
