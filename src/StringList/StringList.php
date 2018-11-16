@@ -11,7 +11,9 @@ use AlecRabbit\StringList\Contracts\StringListInterface;
 
 class StringList implements StringListInterface
 {
+    /** @var array  */
     private $including = [];
+    /** @var array  */
     private $excluding = [];
 
     /**
@@ -67,15 +69,15 @@ class StringList implements StringListInterface
             $this->includes($element) && $this->notExcludes($element);
     }
 
-    private function notExcludes(string $element): bool
-    {
-        return
-            empty($this->excluding) || !\in_array($element, $this->excluding, true);
-    }
-
     private function includes(string $element): bool
     {
         return
             empty($this->including) || \in_array($element, $this->including, true);
+    }
+
+    private function notExcludes(string $element): bool
+    {
+        return
+            empty($this->excluding) || !\in_array($element, $this->excluding, true);
     }
 }

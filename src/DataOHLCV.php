@@ -20,13 +20,20 @@ class DataOHLCV
     protected const RESOLUTIONS = RESOLUTIONS;
 
     /** @var array */
-    protected $current;
+    protected $current = [];
+    /** @var array */
     protected $timestamps = [];
+    /** @var array */
     protected $opens = [];
+    /** @var array */
     protected $highs = [];
+    /** @var array */
     protected $lows = [];
+    /** @var array */
     protected $closes = [];
+    /** @var array */
     protected $volumes = [];
+    /** @var array */
     protected $proxies = [];
 
     /** @var int */
@@ -168,7 +175,7 @@ class DataOHLCV
         }
     }
 
-    private function nextResolution($resolution): ?int
+    private function nextResolution(int $resolution): ?int
     {
         $key = array_search($resolution, static::RESOLUTIONS, true);
         if ($key !== false && array_key_exists(++$key, static::RESOLUTIONS)) {

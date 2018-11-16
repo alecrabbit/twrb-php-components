@@ -14,6 +14,7 @@ class EventCounter
     protected const DEFAULT_LENGTH = 3600;
     protected const DEFAULT_GROUP_BY = 60;
 
+    /** @var array */
     protected $events = [];
 
     /** @var int */
@@ -43,6 +44,7 @@ class EventCounter
         $this->length = $length ?? static::DEFAULT_LENGTH;
         $this->groupBy = $groupBy;
         $this->relativeMode = $relativeMode ?? false;
+        $this->lastTimestamp = 0;
     }
 
     public function addEvent(?int $time = null): void
@@ -62,7 +64,7 @@ class EventCounter
     {
         $time = $this->relativeMode ? $this->lastTimestamp : time();
         $threshold = $time - $this->length;
-        if (($key = array_key_first($this->events)) <= $threshold) {
+        if (null !== ($key = array_key_first($this->events)) && ($key <= $threshold)) {
             unset($this->events[$key]);
         }
     }

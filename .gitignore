@@ -5,6 +5,7 @@
 /data/*
 /tmp/*
 /tests/coverage/*
+/tests/phpmetrics/*
 /.dockerignore
 
 /docker-compose*

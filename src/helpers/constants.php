@@ -14,10 +14,10 @@ define('T_BID', T_BUY);
 define(
     'T_ALIASES',
     [
-        T_SELL => 'sell',
-        T_BUY => 'buy',
-        T_ASK => 'ask',
-        T_BID => 'bid',
+        'sell'  => T_SELL,
+        'buy'  => T_BUY,
+        'ask'  => T_ASK,
+        'bid'  => T_BID,
     ]
 );
 

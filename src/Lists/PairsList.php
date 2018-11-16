@@ -5,11 +5,9 @@
  * Time: 16:52
  */
 
-namespace App\Classes\Core\Models\Lists;
+namespace AlecRabbit\Lists;
 
-use AlecRabbit\StringList\StringList;
-
-class PairsList extends StringList
+class PairsList extends ListPrototype
 {
 
 }

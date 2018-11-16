@@ -17,7 +17,7 @@ class CalculatorFactory
         BcMathCalculator::class,
     ];
 
-    /** @var CalculatorInterface */
+    /** @var null|CalculatorInterface */
     private static $calculator;
 
     public static function getCalculator(): CalculatorInterface
