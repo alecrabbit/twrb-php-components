@@ -12,3 +12,13 @@ comment () {
     printf "\n${YELLOW}${1}${NC}\n\n"
 }
 
+no-exec () {
+    comment "No-Exec..."
+}
+
+enabled () {
+    echo " enabled."
+}
+disabled () {
+    echo " disabled."
+}

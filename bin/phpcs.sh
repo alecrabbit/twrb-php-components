@@ -4,10 +4,10 @@ cd ${script_dir}
 
 . imports.sh
 
-info "PHPStan..."
+info "PHP Code Sniffer..."
 if [[ ${EXEC} == 1 ]]
 then
-  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpstan analyze ${SOURCE_DIR} --level=${PHPSTAN_LEVEL}
+  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app phpcs
 else
   no-exec
 fi

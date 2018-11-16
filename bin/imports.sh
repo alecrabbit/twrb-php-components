@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 script_dir="$(dirname "$0")"
-cd ${script_dir}
+if [[ ${script_dir} != './bin' ]]
+then
+  cd ${script_dir}
+fi
 
-. settings.sh
-. colors.sh
-. functions.sh
+. colors.sh "$@"
+. settings.sh "$@"
+. functions.sh "$@"

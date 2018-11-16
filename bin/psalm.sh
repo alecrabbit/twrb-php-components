@@ -2,18 +2,26 @@
 script_dir="$(dirname "$0")"
 cd ${script_dir}
 
-. settings.sh
-. functions.sh
+. imports.sh
 
 if [[ -e ${PSALM_CONFIG} ]]
 then
   comment "Psalm config found..."
 else
   comment "Creating psalm config..."
-#  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm --init src 3
-  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm --init ${SOURCE_DIR} ${PSALM_LEVEL}
+  if [[ ${EXEC} == 1  ]]
+    then
+      docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm --init ${SOURCE_DIR} ${PSALM_LEVEL}
+    else
+      no-exec
+  fi
 fi
 
 info "Psalm..."
+if [[ ${EXEC} == 1 ]]
+then
+  docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm
+else
+  no-exec
+fi
 
-docker-compose -f ${DOCKER_COMPOSE_FILE} exec app psalm
