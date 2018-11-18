@@ -7,7 +7,7 @@
 
 namespace Unit\EventCounter;
 
-use AlecRabbit\EventCounter;
+use AlecRabbit\Event\EventCounter;
 use PHPUnit\Framework\TestCase;
 use Unit\DataProviders\EventsBasicDataProviderOne;
 use Unit\DataProviders\EventsBasicDataProviderTwo;
