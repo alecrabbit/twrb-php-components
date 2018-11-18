@@ -37,9 +37,7 @@ class EventIndicator
      */
     private function current(): int
     {
-        $time = time();
-        dump($time);
-        return $time;
+        return time();
     }
 
     /**
@@ -56,7 +54,6 @@ class EventIndicator
      */
     public function isOk(): bool
     {
-        dump('>>>' . $this->lastEventTimestamp);
         return
             $this->current() - $this->lastEventTimestamp <= $this->threshold;
     }

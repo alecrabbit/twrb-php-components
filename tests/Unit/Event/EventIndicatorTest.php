@@ -11,9 +11,6 @@ use AlecRabbit\Event\EventIndicator;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\PhpUnit\ClockMock;
 
-/**
- * @group time-sensitive
- */
 class EventIndicatorTest extends TestCase
 {
     public static function setUpBeforeClass(): void
@@ -22,7 +19,7 @@ class EventIndicatorTest extends TestCase
         ClockMock::withClockMock(true);
     }
 
-    public static function tearDownAfterClass():void
+    public static function tearDownAfterClass(): void
     {
         ClockMock::withClockMock(false);
     }
@@ -66,18 +63,20 @@ class EventIndicatorTest extends TestCase
 
     /**
      * @test
+     *
+     * @group time-sensitive
      */
     public function isOkTwo(): void
     {
-//        time();
-        $object = new EventIndicator(2);
+        $object = new EventIndicator();
         $this->assertTrue($object->isOk());
         $this->assertFalse($object->isNotOk());
-//        dump(time());
-        sleep(3);
-//        dump(time());
+        sleep(70);
         $this->assertFalse($object->isOk());
         $this->assertTrue($object->isNotOk());
+        $object->countEvent();
+        $this->assertTrue($object->isOk());
+        $this->assertFalse($object->isNotOk());
     }
 
     public function countEventDataProvider(): array
