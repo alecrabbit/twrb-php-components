@@ -21,7 +21,9 @@
     "phpunit/phpunit": "^7.4",
     "squizlabs/php_codesniffer": "^3.3",
     "symfony/var-dumper": "^4.1",
-    "vimeo/psalm": "^2.0"
+    "vimeo/psalm": "^2.0",
+    "symfony/phpunit-bridge": "^4.1",
+    "symfony/stopwatch": "^4.1"
   },
   "suggest": {
     "ext-event": "Needed to improve perfomance"

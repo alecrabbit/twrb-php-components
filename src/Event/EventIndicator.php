@@ -13,21 +13,23 @@ class EventIndicator
 
     /** @var int */
     private $lastEventTimestamp;
+    /** @var int */
+    private $threshold;
 
     /**
      * EventIndicator constructor.
+     * @param int|null $threshold
      */
-    public function __construct()
+    public function __construct(? int $threshold = null)
     {
         $this->countEvent();
+        $this->threshold = $threshold ?? static::THRESHOLD;
     }
 
     public function countEvent($event = null)
     {
         $this->lastEventTimestamp = $this->current();
-        if (null !== $event) {
-            return $event;
-        }
+        return $event;
     }
 
     /**
@@ -35,7 +37,18 @@ class EventIndicator
      */
     private function current(): int
     {
-        return time();
+        $time = time();
+        dump($time);
+        return $time;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNotOk(): bool
+    {
+        return
+            !$this->isOk();
     }
 
     /**
@@ -43,7 +56,8 @@ class EventIndicator
      */
     public function isOk(): bool
     {
+        dump('>>>' . $this->lastEventTimestamp);
         return
-            $this->current() - $this->lastEventTimestamp >= static::THRESHOLD;
+            $this->current() - $this->lastEventTimestamp <= $this->threshold;
     }
 }
