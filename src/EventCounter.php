@@ -56,8 +56,7 @@ class EventCounter
         if (null !== $this->groupBy) {
             $time = base_timestamp($time, $this->groupBy);
         }
-        // Is there any event during [$time] period?
-        // If not initialize with 0
+        // Is there any event during [$time] period? If not initialize with 0
         $this->events[$time] = $this->events[$time] ?? 0;
         $this->events[$time]++;
         $this->trim();
