@@ -51,6 +51,7 @@ do
         --all)
             ANALYZE=1
             COVERAGE=1
+            BEAUTY=1
             ;;
         *)
             if [[ ${PROPAGATE} == 1 ]]
