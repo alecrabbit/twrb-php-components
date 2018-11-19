@@ -87,27 +87,29 @@
         },
         {
             "name": "alecrabbit/php-simple-profiler",
-            "version": "0.0.12",
+            "version": "0.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/php-simple-profiler.git",
-                "reference": "798dcf76955197e76021bc8fa9e5dcfca74ad4a7"
+                "reference": "23d6c43fd2e49733ce79a994cf0f5927e6c0686a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/798dcf76955197e76021bc8fa9e5dcfca74ad4a7",
-                "reference": "798dcf76955197e76021bc8fa9e5dcfca74ad4a7",
+                "url": "https://api.github.com/repos/alecrabbit/php-simple-profiler/zipball/23d6c43fd2e49733ce79a994cf0f5927e6c0686a",
+                "reference": "23d6c43fd2e49733ce79a994cf0f5927e6c0686a",
                 "shasum": ""
             },
             "require": {
                 "alecrabbit/php-helpers": "^0",
                 "krowinski/bcmath-extended": "^4.1",
-                "nesbot/carbon": "^2.3",
+                "nesbot/carbon": "^2.5",
                 "php": ">=7.2"
             },
             "require-dev": {
                 "nunomaduro/collision": "^2.0",
-                "phpunit/phpunit": "^7.3",
+                "phpunit/phpunit": "^7.4",
+                "squizlabs/php_codesniffer": "^3.3",
+                "symfony/phpunit-bridge": "^4.1",
                 "symfony/var-dumper": "^4.1"
             },
             "type": "library",
@@ -121,7 +123,7 @@
                 "MIT"
             ],
             "description": "PHP simple profiler",
-            "time": "2018-11-14T12:09:54+00:00"
+            "time": "2018-11-19T11:41:34+00:00"
         },
         {
             "name": "krowinski/bcmath-extended",
