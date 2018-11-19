@@ -6,8 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace AlecRabbit;
-
+namespace AlecRabbit\Event;
 
 class EventCounter
 {
@@ -15,6 +14,7 @@ class EventCounter
     protected const DEFAULT_LENGTH = 3600;
     protected const DEFAULT_GROUP_BY = 60;
 
+    /** @var array */
     protected $events = [];
 
     /** @var int */
@@ -44,16 +44,19 @@ class EventCounter
         $this->length = $length ?? static::DEFAULT_LENGTH;
         $this->groupBy = $groupBy;
         $this->relativeMode = $relativeMode ?? false;
+        $this->lastTimestamp = 0;
     }
 
+    /**
+     * @param int|null $time
+     */
     public function addEvent(?int $time = null): void
     {
         $this->lastTimestamp = $time = $time ?? time();
-        if ($this->groupBy) {
+        if (null !== $this->groupBy) {
             $time = base_timestamp($time, $this->groupBy);
         }
-        // Is there any event during [$time] period?
-        // If not initialize with 0
+        // Is there any event during [$time] period? If not initialize with 0
         $this->events[$time] = $this->events[$time] ?? 0;
         $this->events[$time]++;
         $this->trim();
@@ -63,7 +66,7 @@ class EventCounter
     {
         $time = $this->relativeMode ? $this->lastTimestamp : time();
         $threshold = $time - $this->length;
-        if (($key = array_key_first($this->events)) <= $threshold) {
+        if (null !== ($key = array_key_first($this->events)) && ($key <= $threshold)) {
             unset($this->events[$key]);
         }
     }
@@ -121,5 +124,4 @@ class EventCounter
     {
         return $this->events;
     }
-
 }

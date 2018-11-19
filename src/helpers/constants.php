@@ -5,47 +5,78 @@
  * Time: 15:25
  */
 
-define('RESOLUTION_01min', 60);
-define('RESOLUTION_03min', 180);
-define('RESOLUTION_05min', 300);
-define('RESOLUTION_15min', 900);
-define('RESOLUTION_30min', 1800);
-define('RESOLUTION_45min', 2700);
-define('RESOLUTION_01hour', 3600);
-define('RESOLUTION_02hour', 7200);
-define('RESOLUTION_03hour', 10800);
-define('RESOLUTION_04hour', 14400);
-define('RESOLUTION_01day', 86400);
+// Trade constants
+define('T_SELL', 100);
+define('T_BUY', -100);
 
-define('RESOLUTIONS',
+define('T_ASK', T_SELL);
+define('T_BID', T_BUY);
+define(
+    'T_ALIASES',
     [
-        RESOLUTION_01min,
-        RESOLUTION_03min,
-        RESOLUTION_05min,
-        RESOLUTION_15min,
-        RESOLUTION_30min,
-        RESOLUTION_45min,
-        RESOLUTION_01hour,
-        RESOLUTION_02hour,
-        RESOLUTION_03hour,
-        RESOLUTION_04hour,
-        RESOLUTION_01day,
+        'sell'  => T_SELL,
+        'buy'  => T_BUY,
+        'ask'  => T_ASK,
+        'bid'  => T_BID,
     ]
 );
 
-define('RESOLUTION_ALIASES',
+
+define('SECONDS_IN_01MIN', 60);
+define('SECONDS_IN_03MIN', 180);
+define('SECONDS_IN_05MIN', 300);
+define('SECONDS_IN_15MIN', 900);
+define('SECONDS_IN_30MIN', 1800);
+define('SECONDS_IN_45MIN', 2700);
+define('SECONDS_IN_01HOUR', 3600);
+define('SECONDS_IN_02HOUR', 7200);
+define('SECONDS_IN_03HOUR', 10800);
+define('SECONDS_IN_04HOUR', 14400);
+define('SECONDS_IN_01DAY', 86400);
+
+define('RESOLUTION_01MIN', SECONDS_IN_01MIN);
+define('RESOLUTION_03MIN', SECONDS_IN_03MIN);
+define('RESOLUTION_05MIN', SECONDS_IN_05MIN);
+define('RESOLUTION_15MIN', SECONDS_IN_15MIN);
+define('RESOLUTION_30MIN', SECONDS_IN_30MIN);
+define('RESOLUTION_45MIN', SECONDS_IN_45MIN);
+define('RESOLUTION_01HOUR', SECONDS_IN_01HOUR);
+define('RESOLUTION_02HOUR', SECONDS_IN_02HOUR);
+define('RESOLUTION_03HOUR', SECONDS_IN_03HOUR);
+define('RESOLUTION_04HOUR', SECONDS_IN_04HOUR);
+define('RESOLUTION_01DAY', SECONDS_IN_01DAY);
+
+define(
+    'RESOLUTIONS',
     [
-        RESOLUTION_01min => '01m',
-        RESOLUTION_03min => '03m',
-        RESOLUTION_05min => '05m',
-        RESOLUTION_15min => '15m',
-        RESOLUTION_30min => '30m',
-        RESOLUTION_45min => '45m',
-        RESOLUTION_01hour => '01h',
-        RESOLUTION_02hour => '02h',
-        RESOLUTION_03hour => '03h',
-        RESOLUTION_04hour => '04h',
-        RESOLUTION_01day => '01d',
+        RESOLUTION_01MIN,
+        RESOLUTION_03MIN,
+        RESOLUTION_05MIN,
+        RESOLUTION_15MIN,
+        RESOLUTION_30MIN,
+        RESOLUTION_45MIN,
+        RESOLUTION_01HOUR,
+        RESOLUTION_02HOUR,
+        RESOLUTION_03HOUR,
+        RESOLUTION_04HOUR,
+        RESOLUTION_01DAY,
+    ]
+);
+
+define(
+    'RESOLUTION_ALIASES',
+    [
+        RESOLUTION_01MIN => '01m',
+        RESOLUTION_03MIN => '03m',
+        RESOLUTION_05MIN => '05m',
+        RESOLUTION_15MIN => '15m',
+        RESOLUTION_30MIN => '30m',
+        RESOLUTION_45MIN => '45m',
+        RESOLUTION_01HOUR => '01h',
+        RESOLUTION_02HOUR => '02h',
+        RESOLUTION_03HOUR => '03h',
+        RESOLUTION_04HOUR => '04h',
+        RESOLUTION_01DAY => '01d',
     ]
 );
 

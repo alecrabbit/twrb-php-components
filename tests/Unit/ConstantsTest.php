@@ -16,17 +16,17 @@ class ConstantsTest extends TestCase
     /** @test */
     public function setProperly(): void
     {
-        $this->assertEquals(60, RESOLUTION_01min);
-        $this->assertEquals(180, RESOLUTION_03min);
-        $this->assertEquals(300, RESOLUTION_05min);
-        $this->assertEquals(900, RESOLUTION_15min);
-        $this->assertEquals(1800, RESOLUTION_30min);
-        $this->assertEquals(2700, RESOLUTION_45min);
-        $this->assertEquals(3600, RESOLUTION_01hour);
-        $this->assertEquals(7200, RESOLUTION_02hour);
-        $this->assertEquals(10800, RESOLUTION_03hour);
-        $this->assertEquals(14400, RESOLUTION_04hour);
-        $this->assertEquals(86400, RESOLUTION_01day);
+        $this->assertEquals(60, RESOLUTION_01MIN);
+        $this->assertEquals(180, RESOLUTION_03MIN);
+        $this->assertEquals(300, RESOLUTION_05MIN);
+        $this->assertEquals(900, RESOLUTION_15MIN);
+        $this->assertEquals(1800, RESOLUTION_30MIN);
+        $this->assertEquals(2700, RESOLUTION_45MIN);
+        $this->assertEquals(3600, RESOLUTION_01HOUR);
+        $this->assertEquals(7200, RESOLUTION_02HOUR);
+        $this->assertEquals(10800, RESOLUTION_03HOUR);
+        $this->assertEquals(14400, RESOLUTION_04HOUR);
+        $this->assertEquals(86400, RESOLUTION_01DAY);
         $this->assertEquals([60, 180, 300, 900, 1800, 2700, 3600, 7200, 10800, 14400, 86400], RESOLUTIONS);
         $this->assertEquals(
             [

@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money\Contracts;
 
-
 interface MoneyInterface
 {
 

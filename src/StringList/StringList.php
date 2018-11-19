@@ -7,12 +7,13 @@
 
 namespace AlecRabbit\StringList;
 
-
 use AlecRabbit\StringList\Contracts\StringListInterface;
 
 class StringList implements StringListInterface
 {
+    /** @var array */
     private $including = [];
+    /** @var array */
     private $excluding = [];
 
     /**
@@ -27,8 +28,7 @@ class StringList implements StringListInterface
     }
 
     /**
-     * @param string ...$including
-     * @return StringList
+     * {@inheritdoc}
      */
     public function include(string ...$including): StringListInterface
     {
@@ -38,12 +38,22 @@ class StringList implements StringListInterface
         return $this;
     }
 
+    /**
+     * @param array $first
+     * @param array $second
+     * @return array
+     */
     private function process(array $first, array $second): array
     {
         return
             array_unique(array_merge($first, $second));
     }
 
+    /**
+     * @param array $first
+     * @param array $second
+     * @return array
+     */
     private function diff(array $first, array $second): array
     {
         return
@@ -51,8 +61,7 @@ class StringList implements StringListInterface
     }
 
     /**
-     * @param string ...$excluding
-     * @return StringList
+     * {@inheritdoc}
      */
     public function exclude(string ...$excluding): StringListInterface
     {
@@ -62,22 +71,32 @@ class StringList implements StringListInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function has(string $element): bool
     {
         return
             $this->includes($element) && $this->notExcludes($element);
     }
 
-    private function notExcludes(string $element): bool
-    {
-        return
-            empty($this->excluding) || !\in_array($element, $this->excluding, true);
-    }
-
+    /**
+     * @param string $element
+     * @return bool
+     */
     private function includes(string $element): bool
     {
         return
             empty($this->including) || \in_array($element, $this->including, true);
+    }
 
+    /**
+     * @param string $element
+     * @return bool
+     */
+    private function notExcludes(string $element): bool
+    {
+        return
+            empty($this->excluding) || !\in_array($element, $this->excluding, true);
     }
 }

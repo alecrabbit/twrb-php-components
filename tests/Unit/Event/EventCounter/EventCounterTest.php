@@ -5,9 +5,9 @@
  * Time: 22:32
  */
 
-namespace Unit\EventCounter;
+namespace Unit\EventCounter\Event;
 
-use AlecRabbit\EventCounter;
+use AlecRabbit\Event\EventCounter;
 use PHPUnit\Framework\TestCase;
 use Unit\DataProviders\EventsBasicDataProviderOne;
 use Unit\DataProviders\EventsBasicDataProviderTwo;
@@ -44,7 +44,7 @@ class EventCounterTest extends TestCase
     /** @test */
     public function fillEventCounter2(): void
     {
-        $ec = new EventCounter( 60);
+        $ec = new EventCounter(60);
         $ec->setRelativeMode();
         foreach (EventsBasicDataProviderTwo::data() as $timestamp) {
             $ec->addEvent($timestamp);

@@ -5,11 +5,7 @@
  * Time: 16:52
  */
 
-namespace App\Classes\Core\Models\Lists;
-
-
-
-use AlecRabbit\Lists\ListPrototype;
+namespace AlecRabbit\Lists;
 
 class StrategiesList extends ListPrototype
 {

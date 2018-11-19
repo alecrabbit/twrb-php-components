@@ -52,5 +52,4 @@ class TradesCounter
 //        return
 //            $this->getCalculatedEvents($reset);
 //    }
-
 }

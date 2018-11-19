@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Assets;
 
-
 use AlecRabbit\Money\Currency;
 use AlecRabbit\Money\Money;
 
@@ -27,23 +26,61 @@ class Assets
         }
     }
 
+    /**
+     * @param Money $money
+     * @return Money
+     */
+    public function add(Money $money): Money
+    {
+        return
+            ($asset = $this->assetOf($money))->isZero() ?
+                $this->setAsset($money) :
+                $this->setAsset($asset->add($money));
+    }
+
+    /**
+     * @param Money $money
+     * @return Money
+     */
     private function assetOf(Money $money): Money
     {
         return $this->getAsset($money->getCurrency());
     }
 
+    /**
+     * @param Currency $currency
+     * @return Money
+     */
     public function getAsset(Currency $currency): Money
     {
         return
-            $this->assets[(string)$currency] ?? $this->setAsset(new Money(0, $currency)) ;
+            $this->assets[(string)$currency] ?? $this->setAsset(new Money(0, $currency));
     }
 
+    /**
+     * @param Money $money
+     * @return Money
+     */
+    private function setAsset(Money $money): Money
+    {
+        return
+            $this->assets[(string)$money->getCurrency()] = $money;
+    }
+
+    /**
+     * @param Money $money
+     * @return bool
+     */
     public function have(Money $money): bool
     {
         return
             $money->subtract($this->assetOf($money))->isNotPositive();
     }
 
+    /**
+     * @param Money $money
+     * @return Money
+     */
     public function take(Money $money): Money
     {
         $asset = $this->subtract($money);
@@ -53,30 +90,22 @@ class Assets
         return $asset;
     }
 
+    /**
+     * @param Money $money
+     * @return Money
+     */
     public function subtract(Money $money): Money
     {
         return
             $this->add($money->negative());
     }
 
-    private function setAsset(Money $money): Money
-    {
-        return
-            $this->assets[(string)$money->getCurrency()] = $money;
-    }
-
-    public function add(Money $money): Money
-    {
-        return
-            ($asset = $this->assetOf($money))->isZero() ?
-                $this->setAsset($money) :
-                $this->setAsset($asset->add($money));
-    }
-
+    /**
+     * @return iterable
+     */
     public function getCurrencies(): iterable
     {
         return
             array_keys($this->assets);
     }
-
 }

@@ -4,6 +4,7 @@
  * Date: 05.11.18
  * Time: 21:22
  */
+declare(strict_types=1);
 
 namespace Unit\Money;
 

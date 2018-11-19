@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit\Money\Calculator;
 
-
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use BCMathExtended\BC;
 
@@ -107,7 +106,15 @@ class BcMathCalculator implements CalculatorInterface
      */
     public function share($amount, $ratio, $total, $precision): string
     {
-        return $this->round(BC::div(BC::mul($amount, (string)$ratio, $this->scale), (string)$total, $this->scale), $precision);
+        return
+            $this->round(
+                BC::div(
+                    BC::mul($amount, (string)$ratio, $this->scale),
+                    (string)$total,
+                    $this->scale
+                ),
+                $precision
+            );
     }
 
     /**
@@ -125,5 +132,4 @@ class BcMathCalculator implements CalculatorInterface
     {
         return BC::mod($amount, (string)$divisor, $this->scale);
     }
-
 }

@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money;
 
-
 use AlecRabbit\Money\Calculator\BcMathCalculator;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 
@@ -18,19 +17,19 @@ class CalculatorFactory
         BcMathCalculator::class,
     ];
 
-    /** @var CalculatorInterface */
+    /** @var null|CalculatorInterface */
     private static $calculator;
 
     public static function getCalculator(): CalculatorInterface
     {
-        if(null !== static::$calculator) {
-            return static::$calculator;
+        if (null !== self::$calculator) {
+            return self::$calculator;
         }
         foreach (self::$calculators as $calculator) {
             /** @var CalculatorInterface $calculator */
             if ($calculator::supported()) {
                 return
-                    static::$calculator = new $calculator();
+                    self::$calculator = new $calculator();
             }
         }
 
@@ -49,6 +48,4 @@ class CalculatorFactory
         return
             array_unshift(self::$calculators, $calculator);
     }
-
-
 }

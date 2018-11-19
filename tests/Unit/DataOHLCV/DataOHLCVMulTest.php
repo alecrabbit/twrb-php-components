@@ -7,7 +7,6 @@
 
 namespace Unit;
 
-
 use AlecRabbit\DataOHLCV;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -44,6 +43,7 @@ class DataOHLCVMulTest extends TestCase
             [1, 1, false, 10],
         ];
     }
+
     /**
      * @test
      * @dataProvider mulArrDataProvider
@@ -55,7 +55,7 @@ class DataOHLCVMulTest extends TestCase
      */
     public function mulArr($expected, $param1, $param2, $coefficient): void
     {
-        $method = new ReflectionMethod(DataOHLCV::class, 'mulArr');
+        $method = new \ReflectionMethod(DataOHLCV::class, 'mulArr');
         $method->setAccessible(true);
 
         $object = new DataOHLCV('btc_usd', 500, $coefficient);
@@ -68,8 +68,8 @@ class DataOHLCVMulTest extends TestCase
     {
         return [
             [[1], [1], true, 1],
-            [[2,4,6], [1,2,3], true, 2],
-            [[1,2,3], [1,2,3], false, 2],
+            [[2, 4, 6], [1, 2, 3], true, 2],
+            [[1, 2, 3], [1, 2, 3], false, 2],
         ];
     }
 

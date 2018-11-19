@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\StringList\Contracts;
 
-
 interface StringListInterface
 {
     /**
@@ -27,5 +26,4 @@ interface StringListInterface
      * @return bool
      */
     public function has(string $element): bool;
-
 }

@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
-
 use BCMathExtended\BC;
 
 class DataOHLCV
@@ -21,13 +20,20 @@ class DataOHLCV
     protected const RESOLUTIONS = RESOLUTIONS;
 
     /** @var array */
-    protected $current;
+    protected $current = [];
+    /** @var array */
     protected $timestamps = [];
+    /** @var array */
     protected $opens = [];
+    /** @var array */
     protected $highs = [];
+    /** @var array */
     protected $lows = [];
+    /** @var array */
     protected $closes = [];
+    /** @var array */
     protected $volumes = [];
+    /** @var array */
     protected $proxies = [];
 
     /** @var int */
@@ -68,75 +74,93 @@ class DataOHLCV
         $multiplier =
             (int)bounds($multiplier ?? self::DEFAULT_PERIOD_MULTIPLIER, 1, self::MAX_PERIOD_MULTIPLIER);
 
-        return isset($this->timestamps[$resolution]) && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
+        return
+            isset($this->timestamps[$resolution])
+            && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
     }
 
-    public function addTrade(int $timestamp,
-                             string $side, // reserved for future
-                             float $price,
-                             float $amount): void
+    public function addTrade(int $timestamp, int $side, float $price, float $amount): void
     {
-        $this->addOHLCV($timestamp, $price, $price, $price, $price, $amount);
+        $this->addOHLCV($timestamp, $price, $price, $price, $price, $amount, $side);
     }
 
-    public function addOHLCV(int $timestamp,
-                             float $open,
-                             float $high,
-                             float $low,
-                             float $close,
-                             float $volume,
-                             int $resolution = RESOLUTION_01min): void
-    {
+    public function addOHLCV(
+        int $timestamp,
+        float $open,
+        float $high,
+        float $low,
+        float $close,
+        float $volume,
+        int $side,
+        int $resolution = RESOLUTION_01MIN
+    ): void {
         $ts = base_timestamp($timestamp, $resolution);
         if (isset($this->current[$resolution])) {
             if ($ts > $this->current[$resolution]['timestamp']) {
-
-                $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
-                $this->opens[$resolution][] = $this->current[$resolution]['opens'];
-                $this->highs[$resolution][] = $this->current[$resolution]['high'];
-                $this->lows[$resolution][] = $this->current[$resolution]['low'];
-                $this->closes[$resolution][] = $this->current[$resolution]['close'];
-                $this->volumes[$resolution][] = $this->current[$resolution]['volume'];
-
-                $this->current[$resolution]['timestamp'] = $ts;
-                $this->current[$resolution]['opens'] = $open;
-                $this->current[$resolution]['high'] = $high;
-                $this->current[$resolution]['low'] = $low;
-                $this->current[$resolution]['close'] = $close;
-                $this->current[$resolution]['volume'] = $volume;
-
+                $this->updateLast($resolution);
+                $this->setCurrent($resolution, $ts, $open, $high, $low, $close, $volume);
             } elseif ($ts === $this->current[$resolution]['timestamp']) {
-
-                if ($high > $this->current[$resolution]['high']) {
-                    $this->current[$resolution]['high'] = $high;
-                }
-                if ($low < $this->current[$resolution]['low']) {
-                    $this->current[$resolution]['low'] = $low;
-                }
-
-                $this->current[$resolution]['close'] = $close;
-                $this->current[$resolution]['volume'] =
-                    (float)BC::add((string)$this->current[$resolution]['volume'], (string)$volume, NORMAL_SCALE);
-
+                $this->updateCurrent($resolution, $high, $low, $close, $volume);
             } elseif ($ts < $this->current[$resolution]['timestamp']) {
                 throw new \RuntimeException(
                     'Incoming data are in unsorted order. Current timestamp is greater then incoming data\'s.' .
                     ' (' . $ts . ' < ' . $this->current[$resolution]['timestamp'] . ')'
                 );
             }
+            $this->trim($resolution);
         } else {
-            $this->current[$resolution]['timestamp'] = $ts;
-            $this->current[$resolution]['opens'] = $open;
-            $this->current[$resolution]['high'] = $high;
-            $this->current[$resolution]['low'] = $low;
-            $this->current[$resolution]['close'] = $close;
-            $this->current[$resolution]['volume'] = $volume;
+            $this->setCurrent($resolution, $ts, $open, $high, $low, $close, $volume);
         }
 
-        $this->trim($resolution);
         if ($nextResolution = $this->nextResolution($resolution)) {
-            $this->addOHLCV($timestamp, $open, $high, $low, $close, $volume, $nextResolution);
+            $this->addOHLCV($timestamp, $open, $high, $low, $close, $volume, $side, $nextResolution);
         }
+    }
+
+    private function updateLast(int $resolution): void
+    {
+        $this->timestamps[$resolution][] = $this->current[$resolution]['timestamp'];
+        $this->opens[$resolution][] = $this->current[$resolution]['opens'];
+        $this->highs[$resolution][] = $this->current[$resolution]['high'];
+        $this->lows[$resolution][] = $this->current[$resolution]['low'];
+        $this->closes[$resolution][] = $this->current[$resolution]['close'];
+        $this->volumes[$resolution][] = $this->current[$resolution]['volume'];
+    }
+
+    private function setCurrent(
+        int $resolution,
+        int $timestamp,
+        float $open,
+        float $high,
+        float $low,
+        float $close,
+        float $volume
+    ): void {
+        $this->current[$resolution]['timestamp'] = $timestamp;
+        $this->current[$resolution]['opens'] = $open;
+        $this->current[$resolution]['high'] = $high;
+        $this->current[$resolution]['low'] = $low;
+        $this->current[$resolution]['close'] = $close;
+        $this->current[$resolution]['volume'] = $volume;
+    }
+
+    private function updateCurrent(
+        int $resolution,
+        float $high,
+        float $low,
+        float $close,
+        float $volume
+    ): void {
+        if ($high > $this->current[$resolution]['high']) {
+            $this->current[$resolution]['high'] = $high;
+        }
+        if ($low < $this->current[$resolution]['low']) {
+            $this->current[$resolution]['low'] = $low;
+        }
+
+        $this->current[$resolution]['close'] = $close;
+        $this->current[$resolution]['volume'] =
+            (float)BC::add((string)$this->current[$resolution]['volume'], (string)$volume, NORMAL_SCALE);
     }
 
     private function trim(int $resolution): void
@@ -151,7 +175,7 @@ class DataOHLCV
         }
     }
 
-    private function nextResolution($resolution): ?int
+    private function nextResolution(int $resolution): ?int
     {
         $key = array_search($resolution, static::RESOLUTIONS, true);
         if ($key !== false && array_key_exists(++$key, static::RESOLUTIONS)) {
@@ -224,6 +248,23 @@ class DataOHLCV
             $this->lastElement($this->highs[$resolution] ?? [], $useCoefficient);
     }
 
+    /**
+     * @param array $element
+     * @param bool $useCoefficient
+     * @return null|float
+     */
+    private function lastElement(array $element, bool $useCoefficient = false): ?float
+    {
+        if (false !== $lastElement = end($element)) {
+            return
+                $this->mul(
+                    $lastElement,
+                    $useCoefficient
+                );
+        }
+        return null;
+    }
+
     private function mul(float $value, bool $useCoefficient): float
     {
         if ($useCoefficient && $this->coefficient !== 1) {
@@ -269,7 +310,6 @@ class DataOHLCV
                 $this->closes[$resolution] ?? [],
                 $useCoefficient
             );
-
     }
 
     /**
@@ -303,17 +343,19 @@ class DataOHLCV
             $pair = $this->getPair();
             foreach (static::RESOLUTIONS as $resolution) {
                 $count = \count($this->timestamps[$resolution] ?? []);
-                $result[] = sprintf('%s [%s] %s %s %s %s %s %s %s',
-                    $this->current[$resolution]['timestamp'],
-                    RESOLUTION_ALIASES[$resolution],
-                    $count,
-                    $pair,
-                    $this->current[$resolution]['opens'],
-                    $this->current[$resolution]['high'],
-                    $this->current[$resolution]['low'],
-                    $this->current[$resolution]['close'],
-                    $this->current[$resolution]['volume']
-                );
+                $result[] =
+                    sprintf(
+                        '%s [%s] %s %s %s %s %s %s %s',
+                        $this->current[$resolution]['timestamp'],
+                        RESOLUTION_ALIASES[$resolution],
+                        $count,
+                        $pair,
+                        $this->current[$resolution]['opens'],
+                        $this->current[$resolution]['high'],
+                        $this->current[$resolution]['low'],
+                        $this->current[$resolution]['close'],
+                        $this->current[$resolution]['volume']
+                    );
             }
             dump($result);
         }
@@ -325,22 +367,5 @@ class DataOHLCV
     public function getPair(): string
     {
         return $this->pair;
-    }
-
-    /**
-     * @param array $element
-     * @param bool $useCoefficient
-     * @return null|float
-     */
-    private function lastElement(array $element, bool $useCoefficient = false): ?float
-    {
-        if (false !== $lastElement = end($element)) {
-            return
-                $this->mul(
-                    $lastElement,
-                    $useCoefficient
-                );
-        }
-        return null;
     }
 }

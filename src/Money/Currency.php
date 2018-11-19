@@ -7,7 +7,6 @@
 
 namespace AlecRabbit\Money;
 
-
 use AlecRabbit\Money\Contracts\CurrencyInterface;
 
 class Currency implements CurrencyInterface, \JsonSerializable
@@ -20,11 +19,8 @@ class Currency implements CurrencyInterface, \JsonSerializable
     /**
      * @param string $code
      */
-    public function __construct($code)
+    public function __construct(string $code)
     {
-        if (!\is_string($code)) {
-            throw new \InvalidArgumentException('Currency code must be string.');
-        }
         if (\strlen($code) > static::_CODE_LENGTH) {
             throw new \InvalidArgumentException('Currency code must be not longer then ' . static::_CODE_LENGTH);
         }

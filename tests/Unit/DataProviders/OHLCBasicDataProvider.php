@@ -50,7 +50,7 @@ class OHLCBasicDataProvider
             new Circular(
                 [10000.0022, 10000.0001, 10000.2022, 10000.0505]
             );
-        static::$type = new Circular(['ask', 'bid']);
+        static::$type = new Circular([T_ASK, T_BID]);
         static::$amount = new Circular([0.001, 0.0001, 0.00001, 0.000001]);
         static::$initialized = true;
     }

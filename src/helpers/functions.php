@@ -64,7 +64,8 @@ if (!function_exists('c_array_div')) {
                     return
                         $v / $divider;
                 },
-                $arr);
+                $arr
+            );
     }
 }
 

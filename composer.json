@@ -6,22 +6,27 @@
   "require": {
     "php": ">=7.2",
     "ext-bcmath": "*",
-    "ext-event": "*",
     "ext-intl": "*",
     "ext-json": "*",
-    "ext-trader": "*",
     "alecrabbit/accessories": "^0",
     "alecrabbit/php-helpers": "^0",
     "krowinski/bcmath-extended": "^4.1",
-    "nesbot/carbon": "^2.3",
-    "phpstan/phpstan": "^0.10.5"
+    "nesbot/carbon": "^2.5"
   },
   "require-dev": {
-    "alecrabbit/php-output-a": "^0.0.1",
-    "moneyphp/money": "dev-master",
+    "alecrabbit/php-output-a": "^0",
     "nunomaduro/collision": "^2.0",
+    "phpmetrics/phpmetrics": "^2.4",
+    "phpstan/phpstan": "^0.10.5",
     "phpunit/phpunit": "^7.4",
-    "symfony/var-dumper": "^4.1"
+    "squizlabs/php_codesniffer": "^3.3",
+    "symfony/var-dumper": "^4.1",
+    "vimeo/psalm": "^2.0",
+    "symfony/phpunit-bridge": "^4.1",
+    "symfony/stopwatch": "^4.1"
+  },
+  "suggest": {
+    "ext-event": "Needed to improve performance"
   },
   "autoload": {
     "psr-4": {

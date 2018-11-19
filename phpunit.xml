@@ -6,7 +6,7 @@
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnFailure="true"
+         stopOnFailure="false"
          bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="Feature">
@@ -30,7 +30,8 @@
         </whitelist>
     </filter>
     <listeners>
-        <listener class="NunoMaduro\Collision\Adapters\Phpunit\Listener" />
+        <listener class="\NunoMaduro\Collision\Adapters\Phpunit\Listener" />
+        <listener class="\Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>
     <logging>
         <log type="testdox-html" target="./tmp/testdox.html"/>

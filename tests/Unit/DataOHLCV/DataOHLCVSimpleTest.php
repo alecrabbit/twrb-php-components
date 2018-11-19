@@ -28,22 +28,22 @@ class DataOHLCVSimpleTest extends TestCase
     public function simpleData(): array
     {
         return [
-            [1512570380, 'bid', 12820.7, 0.0538594],
-            [1512571380, 'bid', 12820.7, 0.00596801],
-            [1512572380, 'bid', 12821.3, 0.19551],
-            [1512573380, 'bid', 12807.6, 0.0464246],
-            [1512574380, 'bid', 12793, 0.0538914],
-            [1512575380, 'ask', 12792, 0.0475634],
-            [1512576380, 'bid', 12793, 0.0499],
-            [1512577380, 'bid', 12810.2, 0.171179],
-            [1512578380, 'bid', 12810.2, 0.0223277],
-            [1512579380, 'bid', 12818.5, 0.00210018],
-            [1512585380, 'ask', 12792, 0.0475634],
-            [1512586380, 'bid', 12793, 0.0499],
-            [1512587380, 'bid', 12810.2, 0.171179],
-            [1512588380, 'bid', 12810.2, 0.0223277],
-            [1512589380, 'bid', 12818.5, 0.00210018],
-            [1513589380, 'bid', 12818.5, 0.00210018],
+            [1512570380, T_BID, 12820.7, 0.0538594],
+            [1512571380, T_BID, 12820.7, 0.00596801],
+            [1512572380, T_BID, 12821.3, 0.19551],
+            [1512573380, T_BID, 12807.6, 0.0464246],
+            [1512574380, T_BID, 12793, 0.0538914],
+            [1512575380, T_ASK, 12792, 0.0475634],
+            [1512576380, T_BID, 12793, 0.0499],
+            [1512577380, T_BID, 12810.2, 0.171179],
+            [1512578380, T_BID, 12810.2, 0.0223277],
+            [1512579380, T_BID, 12818.5, 0.00210018],
+            [1512585380, T_ASK, 12792, 0.0475634],
+            [1512586380, T_BID, 12793, 0.0499],
+            [1512587380, T_BID, 12810.2, 0.171179],
+            [1512588380, T_BID, 12810.2, 0.0223277],
+            [1512589380, T_BID, 12818.5, 0.00210018],
+            [1513589380, T_BID, 12818.5, 0.00210018],
         ];
     }
 
@@ -79,7 +79,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512588360,
                     1512589380,
                 ],
-                RESOLUTION_01min
+                RESOLUTION_01MIN
             ],
             [
                 [
@@ -99,7 +99,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512588240,
                     1512589320,
                 ],
-                RESOLUTION_03min
+                RESOLUTION_03MIN
             ],
             [
                 [
@@ -119,7 +119,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512588300,
                     1512589200,
                 ],
-                RESOLUTION_05min
+                RESOLUTION_05MIN
             ],
             [
                 [
@@ -139,7 +139,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512587700,
                     1512588600,
                 ],
-                RESOLUTION_15min
+                RESOLUTION_15MIN
             ],
             [
                 [
@@ -153,7 +153,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512586800,
                     1512588600,
                 ],
-                RESOLUTION_30min
+                RESOLUTION_30MIN
             ],
             [
                 [
@@ -165,7 +165,7 @@ class DataOHLCVSimpleTest extends TestCase
                     1512585900,
                     1512588600,
                 ],
-                RESOLUTION_45min
+                RESOLUTION_45MIN
             ],
             [
                 [
@@ -175,12 +175,12 @@ class DataOHLCVSimpleTest extends TestCase
                     1512583200,
                     1512586800,
                 ],
-                RESOLUTION_01hour
+                RESOLUTION_01HOUR
             ],
-            [[1512568800, 1512576000,1512583200], RESOLUTION_02hour],
-            [[1512561600, 1512572400,1512583200], RESOLUTION_03hour],
-            [[1512561600,1512576000], RESOLUTION_04hour],
-            [[1512518400], RESOLUTION_01day],
+            [[1512568800, 1512576000,1512583200], RESOLUTION_02HOUR],
+            [[1512561600, 1512572400,1512583200], RESOLUTION_03HOUR],
+            [[1512561600,1512576000], RESOLUTION_04HOUR],
+            [[1512518400], RESOLUTION_01DAY],
         ];
     }
 
