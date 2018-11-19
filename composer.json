@@ -26,7 +26,7 @@
     "symfony/stopwatch": "^4.1"
   },
   "suggest": {
-    "ext-event": "Needed to improve perfomance"
+    "ext-event": "Needed to improve performance"
   },
   "autoload": {
     "psr-4": {
