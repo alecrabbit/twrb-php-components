@@ -8,7 +8,7 @@
 namespace Tests\Unit\Counters;
 
 use AlecRabbit\Circular;
-use AlecRabbit\Counters\VolumeCounterDeprecated;
+use AlecRabbit\Counters\VolumeCounter;
 use AlecRabbit\Rewindable;
 use AlecRabbit\Structures\Trade;
 use AlecRabbit\Structures\Volume;
@@ -20,7 +20,7 @@ class VolumeCounterTest extends TestCase
     /** @var Rewindable */
     private static $data;
 
-    /** @var VolumeCounterDeprecated */
+    /** @var VolumeCounter */
     private $counter;
 
     public static function setUpBeforeClass()
@@ -40,117 +40,213 @@ class VolumeCounterTest extends TestCase
     /** @test */
     public function instance(): void
     {
-        $this->counter = new VolumeCounterDeprecated();
-        $this->assertInstanceOf(VolumeCounterDeprecated::class, $this->counter);
-        $expected =
-            (new Volume())
-                ->setTotal(0)
-                ->setSell(0)
-                ->setBuy(0);
-        $this->assertEquals($expected, $this->counter->getCalculatedVolumes());
+        $this->counter = new VolumeCounter();
+        $this->assertInstanceOf(VolumeCounter::class, $this->counter);
+        $this->assertEquals(DEFAULT_NAME, $this->counter->getName());
+        $this->assertEquals([], $this->counter->getVolumeArray());
     }
 
     /** @test */
-    public function getVolumes(): void
+    public function instanceWithSimpleAdd(): void
     {
-        $this->counter = new VolumeCounterDeprecated();
+        $this->counter = new VolumeCounter();
         $this->counter->enableRelativeMode();
-        $expected =
-            [[], [], []];
-        $this->assertEquals($expected, $this->counter->getVolumes());
         $this->counter->addTrade(
-            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1542739823)
+            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1514764800)
         );
-        $expected =
-            [[1542739823 => 0.001], [1542739823 => 0.001], []];
-        $this->assertEquals($expected, $this->counter->getVolumes());
         $this->counter->addTrade(
-            new Trade(T_BUY, 'btc_usd', 10000, 0.001, 1542739823)
+            new Trade(T_SELL, 'btc_usd', 10000, 0.011, 1514764800)
         );
-        $expected =
-            [[1542739823 => 0.002], [1542739823 => 0.001], [1542739823 => 0.001]];
-        $this->assertEquals($expected, $this->counter->getVolumes());
+        $this->counter->addTrade(
+            new Trade(T_BUY, 'btc_usd', 10000, 0.04, 1514764800)
+        );
+        $expected = [
+            STR_TOTAL => [
+                P_01MIN => 0.052,
+                P_03MIN => 0.052,
+                P_05MIN => 0.052,
+                P_15MIN => 0.052,
+                P_30MIN => 0.052,
+                P_45MIN => 0.052,
+                P_01HOUR => 0.052,
+                P_02HOUR => 0.052,
+                P_03HOUR => 0.052,
+                P_04HOUR => 0.052,
+                P_01DAY => 0.052,
+            ],
+            STR_SELL => [
+                P_01MIN => 0.012,
+                P_03MIN => 0.012,
+                P_05MIN => 0.012,
+                P_15MIN => 0.012,
+                P_30MIN => 0.012,
+                P_45MIN => 0.012,
+                P_01HOUR => 0.012,
+                P_02HOUR => 0.012,
+                P_03HOUR => 0.012,
+                P_04HOUR => 0.012,
+                P_01DAY => 0.012,
+            ],
+            STR_BUY => [
+                P_01MIN => 0.04,
+                P_03MIN => 0.04,
+                P_05MIN => 0.04,
+                P_15MIN => 0.04,
+                P_30MIN => 0.04,
+                P_45MIN => 0.04,
+                P_01HOUR => 0.04,
+                P_02HOUR => 0.04,
+                P_03HOUR => 0.04,
+                P_04HOUR => 0.04,
+                P_01DAY => 0.04,
+            ],
+        ];
+        $this->assertEquals($expected, $this->counter->getVolumeArray());
+        $expected = [
+            STR_TOTAL => [
+                P_01MIN => 3,
+                P_03MIN => 3,
+                P_05MIN => 3,
+                P_15MIN => 3,
+                P_30MIN => 3,
+                P_45MIN => 3,
+                P_01HOUR => 3,
+                P_02HOUR => 3,
+                P_03HOUR => 3,
+                P_04HOUR => 3,
+                P_01DAY => 3,
+            ],
+            STR_SELL => [
+                P_01MIN => 2,
+                P_03MIN => 2,
+                P_05MIN => 2,
+                P_15MIN => 2,
+                P_30MIN => 2,
+                P_45MIN => 2,
+                P_01HOUR => 2,
+                P_02HOUR => 2,
+                P_03HOUR => 2,
+                P_04HOUR => 2,
+                P_01DAY => 2,
+            ],
+            STR_BUY => [
+                P_01MIN => 1,
+                P_03MIN => 1,
+                P_05MIN => 1,
+                P_15MIN => 1,
+                P_30MIN => 1,
+                P_45MIN => 1,
+                P_01HOUR => 1,
+                P_02HOUR => 1,
+                P_03HOUR => 1,
+                P_04HOUR => 1,
+                P_01DAY => 1,
+            ],
+        ];
+        $this->assertEquals($expected, $this->counter->getEventsArray());
     }
 
-    /** @test */
-    public function getVolumesInCurrentTIme(): void
-    {
-        $this->counter = new VolumeCounterDeprecated();
-        $this->counter->disableRelativeMode();
-        $timestamp = time();
-        $expected =
-            [[], [], []];
-        $this->assertEquals($expected, $this->counter->getVolumes());
-        $this->counter->addTrade(
-            new Trade(T_SELL, 'btc_usd', 10000, 0.001, $timestamp)
-        );
-        $expected =
-            [[$timestamp => 0.001], [$timestamp => 0.001], []];
-        $this->assertEquals($expected, $this->counter->getVolumes());
-        $this->counter->addTrade(
-            new Trade(T_BUY, 'btc_usd', 10000, 0.001, $timestamp)
-        );
-        $expected =
-            [[$timestamp => 0.002], [$timestamp => 0.001], [$timestamp => 0.001]];
-        $this->assertEquals($expected, $this->counter->getVolumes());
-    }
-
-    /** @test */
-    public function getVolumesGrouped(): void
-    {
-        $this->counter = new VolumeCounterDeprecated(null, P_01MIN);
-        $this->counter->enableRelativeMode();
-        $expected =
-            [[], [], []];
-        $this->assertEquals($expected, $this->counter->getVolumes());
-        $this->counter->addTrade(
-            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1542739823)
-        );
-        $this->counter->addTrade(
-            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1542739893)
-        );
-        $expected =
-            [[1542739800 => 0.001, 1542739860 => 0.001], [1542739800 => 0.001, 1542739860 => 0.001], []];
-        $this->assertEquals($expected, $this->counter->getVolumes());
-        $this->counter->addTrade(
-            new Trade(T_BUY, 'btc_usd', 10000, 0.001, 1542739823)
-        );
-        $this->counter->addTrade(
-            new Trade(T_BUY, 'btc_usd', 10000, 0.001, 1542739893)
-        );
-        $expected =
-            [
-                [1542739800 => 0.002, 1542739860 => 0.002],
-                [1542739800 => 0.001, 1542739860 => 0.001],
-                [1542739800 => 0.001, 1542739860 => 0.001]
-            ];
-        $this->assertEquals($expected, $this->counter->getVolumes());
-    }
-
-    /**
-     * @test
-     * @dataProvider dataForFillByProvider
-     * @param $expected
-     * @param $length
-     * @param $groupBy
-     */
-    public function fillByProvider($expected, $length, $groupBy): void
-    {
-        $this->counter = new VolumeCounterDeprecated($length, $groupBy);
-        $this->counter->setRelativeMode();
-
-        foreach (static::$data as $trade) {
-            $this->counter->addTrade($trade);
-        }
-        $this->assertEquals($expected, $this->counter->getCalculatedVolumes(true));
-        $expected =
-            (new Volume())
-                ->setTotal(0)
-                ->setSell(0)
-                ->setBuy(0);
-        $this->assertEquals($expected, $this->counter->getCalculatedVolumes());
-    }
-
+//    /** @test */
+//    public function getVolumes(): void
+//    {
+//        $this->counter = new VolumeCounter();
+//        $this->counter->enableRelativeMode();
+//        $expected =
+//            [[], [], []];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//        $this->counter->addTrade(
+//            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1542739823)
+//        );
+//        $expected =
+//            [[1542739823 => 0.001], [1542739823 => 0.001], []];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//        $this->counter->addTrade(
+//            new Trade(T_BUY, 'btc_usd', 10000, 0.001, 1542739823)
+//        );
+//        $expected =
+//            [[1542739823 => 0.002], [1542739823 => 0.001], [1542739823 => 0.001]];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//    }
+//
+//    /** @test */
+//    public function getVolumesInCurrentTIme(): void
+//    {
+//        $this->counter = new VolumeCounter();
+//        $this->counter->disableRelativeMode();
+//        $timestamp = time();
+//        $expected =
+//            [[], [], []];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//        $this->counter->addTrade(
+//            new Trade(T_SELL, 'btc_usd', 10000, 0.001, $timestamp)
+//        );
+//        $expected =
+//            [[$timestamp => 0.001], [$timestamp => 0.001], []];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//        $this->counter->addTrade(
+//            new Trade(T_BUY, 'btc_usd', 10000, 0.001, $timestamp)
+//        );
+//        $expected =
+//            [[$timestamp => 0.002], [$timestamp => 0.001], [$timestamp => 0.001]];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//    }
+//
+//    /** @test */
+//    public function getVolumesGrouped(): void
+//    {
+//        $this->counter = new VolumeCounter(null, P_01MIN);
+//        $this->counter->enableRelativeMode();
+//        $expected =
+//            [[], [], []];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//        $this->counter->addTrade(
+//            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1542739823)
+//        );
+//        $this->counter->addTrade(
+//            new Trade(T_SELL, 'btc_usd', 10000, 0.001, 1542739893)
+//        );
+//        $expected =
+//            [[1542739800 => 0.001, 1542739860 => 0.001], [1542739800 => 0.001, 1542739860 => 0.001], []];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//        $this->counter->addTrade(
+//            new Trade(T_BUY, 'btc_usd', 10000, 0.001, 1542739823)
+//        );
+//        $this->counter->addTrade(
+//            new Trade(T_BUY, 'btc_usd', 10000, 0.001, 1542739893)
+//        );
+//        $expected =
+//            [
+//                [1542739800 => 0.002, 1542739860 => 0.002],
+//                [1542739800 => 0.001, 1542739860 => 0.001],
+//                [1542739800 => 0.001, 1542739860 => 0.001]
+//            ];
+//        $this->assertEquals($expected, $this->counter->getVolumes());
+//    }
+//
+//    /**
+//     * @test
+//     * @dataProvider dataForFillByProvider
+//     * @param $expected
+//     * @param $length
+//     * @param $groupBy
+//     */
+//    public function fillByProvider($expected, $length, $groupBy): void
+//    {
+//        $this->counter = new VolumeCounter($length, $groupBy);
+//        $this->counter->setRelativeMode();
+//
+//        foreach (static::$data as $trade) {
+//            $this->counter->addTrade($trade);
+//        }
+//        $this->assertEquals($expected, $this->counter->getCalculatedVolumes(true));
+//        $expected =
+//            (new Volume())
+//                ->setTotal(0)
+//                ->setSell(0)
+//                ->setBuy(0);
+//        $this->assertEquals($expected, $this->counter->getCalculatedVolumes());
+//    }
+//
     public function dataForFillByProvider(): array
     {
         return

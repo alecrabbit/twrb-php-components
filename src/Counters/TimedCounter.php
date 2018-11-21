@@ -78,7 +78,7 @@ class TimedCounter
     /**
      * @param int $period
      */
-    private function trim(int $period): void
+    protected function trim(int $period): void
     {
         if (null !== ($key = array_key_first($this->data[$period]))
             && ($key <= $this->getThreshold($period))) {
@@ -123,6 +123,9 @@ class TimedCounter
         return $r;
     }
 
+    /**
+     * Resets all data
+     */
     protected function reset(): void
     {
         $this->data = [];

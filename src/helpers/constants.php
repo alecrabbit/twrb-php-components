@@ -5,6 +5,13 @@
  * Time: 15:25
  */
 
+// String constants
+define('DEFAULT_NAME', 'default');
+define('STR_EVENTS', 'events');
+define('STR_TOTAL', 'total');
+define('STR_SELL', 'sell');
+define('STR_BUY', 'buy');
+
 // Trade constants
 define('T_SELL', 100);
 define('T_BUY', -100);
@@ -114,6 +121,3 @@ define(
 // Math constants
 define('NORMAL_SCALE', 9);
 define('EXTENDED_SCALE', 14);
-
-// String constants
-define('DEFAULT_NAME', 'default');
