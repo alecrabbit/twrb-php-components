@@ -12,58 +12,145 @@ use AlecRabbit\Traits\Nameable;
 
 class TimedCounter
 {
-    protected const DEFAULT_NAME = 'default';
-    protected const DEFAULT_LENGTH = 3600;
-    protected const DEFAULT_GROUP_BY = 60;
-
     use Nameable;
-
-    /** @var int */
-    protected $length;
-
-    /** @var int|null */
-    protected $groupBy;
 
     /** @var int */
     protected $lastTimestamp;
 
+    /** @var array */
+    protected $data = [];
+
     /** @var bool */
-    protected $relativeMode;
+    protected $relativeMode = false;
+
+    /** @var array */
+    protected $periods;
 
     /**
      * BasicCounter constructor.
-     * @param int|null $length
-     * @param int|null $groupBy
-     * @param bool|null $relativeMode
+     * @param array|null $periods
      */
-    public function __construct(?int $length = null, ?int $groupBy = null, ?bool $relativeMode = null)
+    public function __construct(?array $periods = null)
     {
-        $this->name = static::DEFAULT_NAME;
-
-        $this->length = $length ?? static::DEFAULT_LENGTH;
-        $this->groupBy = $groupBy;
-        $this->relativeMode = $relativeMode ?? false;
+        $this->setName(DEFAULT_NAME);
         $this->lastTimestamp = 0;
+        $this->periods = $periods ?? PERIODS;
     }
 
     /**
-     * Set to this mode to count by timestamps.
-     *
-     * @param bool $relative
+     * Enables relative time mode
      * @return self
      */
-    public function setRelativeMode(bool $relative = true): self
+    public function enableRelativeMode(): self
     {
-        $this->relativeMode = $relative;
+        $this->relativeMode = true;
         return $this;
     }
 
-    protected function getTime(?int $timestamp = null): int
+    /**
+     * @param int|null $time
+     */
+    public function add(?int $time = null): void
+    {
+        $baseTimes = $this->getBaseTimes($time);
+        foreach ($baseTimes as $period => $timestamp) {
+            $this->data[$period][$timestamp] =
+                $this->data[$period][$timestamp] ?? 0;
+            $this->data[$period][$timestamp]++;
+            $this->trim($period);
+        }
+    }
+
+    /**
+     * @param int|null $timestamp
+     * @return array
+     */
+    protected function getBaseTimes(?int $timestamp = null): array
     {
         $this->lastTimestamp = $time = $timestamp ?? time();
-        if (null !== $this->groupBy) {
-            $time = base_timestamp($time, $this->groupBy);
+        $baseTimes = [];
+        foreach ($this->periods as $period => $groupBy) {
+            $baseTimes[$period] = base_timestamp($time, $groupBy);
         }
-        return $time;
+        return $baseTimes;
+    }
+
+    /**
+     * @param int $period
+     */
+    private function trim(int $period): void
+    {
+        if (null !== ($key = array_key_first($this->data[$period]))
+            && ($key <= $this->getThreshold($period))) {
+            unset($this->data[$period][$key]);
+        }
+    }
+
+    /**
+     * @param int $period
+     * @return int
+     */
+    protected function getThreshold(int $period): int
+    {
+        return
+            $this->getTime() - $period;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getTime(): int
+    {
+        return
+            $this->relativeMode ? $this->lastTimestamp : time();
+    }
+
+    /**
+     * @param bool|null $reset
+     * @return array
+     */
+    public function getDataArray(?bool $reset = null): array
+    {
+        $r = [];
+        foreach ($this->periods as $period => $groupBy) {
+            if (0 < ($sum = array_sum($this->data[$period] ?? []))) {
+                $r[$period] = $sum;
+            }
+        }
+        if ($reset) {
+            $this->reset();
+        }
+        return $r;
+    }
+
+    protected function reset(): void
+    {
+        $this->data = [];
+    }
+
+    /**
+     * @param bool|null $reset
+     * @return object
+     */
+    public function getDataObject(?bool $reset = null): object
+    {
+        $r = new \stdClass();
+        foreach ($this->periods as $period => $groupBy) {
+            if (0 < ($sum = array_sum($this->data[$period] ?? []))) {
+                $r->{$period} = $sum;
+            }
+        }
+        if ($reset) {
+            $this->reset();
+        }
+        return $r;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRawData(): array
+    {
+        return $this->data;
     }
 }

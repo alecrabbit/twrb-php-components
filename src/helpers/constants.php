@@ -21,7 +21,7 @@ define(
     ]
 );
 
-
+// Time constants
 define('ONE_SECOND', 1);
 
 define('SECONDS_IN_01MIN', 60);
@@ -79,8 +79,8 @@ define(
 
 define(
     'PERIODS',
-    [
-        P_01MIN => P_01MIN,
+    [ // Period => GroupBy
+        P_01MIN => ONE_SECOND,
         P_03MIN => P_01MIN,
         P_05MIN => P_01MIN,
         P_15MIN => P_05MIN,
@@ -111,5 +111,9 @@ define(
     ]
 );
 
+// Math constants
 define('NORMAL_SCALE', 9);
 define('EXTENDED_SCALE', 14);
+
+// String constants
+define('DEFAULT_NAME', 'default');

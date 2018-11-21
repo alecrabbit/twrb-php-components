@@ -8,57 +8,51 @@
 namespace Unit;
 
 
+use AlecRabbit\Circular;
 use AlecRabbit\DataOHLCV;
-use AlecRabbit\Structures\Trade;
+use AlecRabbit\Rewindable;
 use PHPUnit\Framework\TestCase;
-use Unit\DataProviders\OHLCBasicDataProvider;
+use Tests\Unit\DataProviders\CommonTrades;
 
 class DataOHLCVWithDataProviderTest extends TestCase
 {
     /** @var DataOHLCV */
-    protected $ohlcv;
+    protected static $object;
+    /** @var Rewindable */
+    private static $data;
 
-    public function setUp()
+    public static function setUpBeforeClass()
     {
         $pair = 'btc_usd';
-        $this->ohlcv = new DataOHLCV($pair, 1440);
-        foreach (OHLCBasicDataProvider::data() as $item) {
-            [$timestamp, $type, $price, $amount] = $item;
-            $this->ohlcv->addTrade(new Trade($type, $pair, $price, $amount, $timestamp));
+
+        static::$data = new Rewindable(
+            [CommonTrades::class, 'generator'],
+            new Circular([T_ASK, T_BID]),
+            new Circular([$pair]),
+            new Circular(
+                [10000.0022, 10000.0001, 10000.2022, 10000.0505]
+            ),
+            new Circular([0.001, 0.0001, 0.00001, 0.000001])
+        );
+
+        static::$object = new DataOHLCV($pair, 1440);
+        foreach (static::$data as $trade) {
+            static::$object->addTrade($trade);
         }
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        static::$object = null;
     }
 
     /**
      * @test
      */
-    public function check(): void
+    public function checkVolumes(): void
     {
         foreach ($this->dataToCheckVolumes() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getVolumes($resolution));
-        }
-        foreach ($this->dataToCheckOpens() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getOpens($resolution));
-        }
-        foreach ($this->dataToCheckHighs() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getHighs($resolution));
-        }
-        foreach ($this->dataToCheckLows() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getLows($resolution));
-        }
-        foreach ($this->dataToCheckCloses() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getCloses($resolution));
-        }
-        foreach ($this->dataToCheckHasPeriods() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->hasPeriods($resolution, 1));
-        }
-        foreach ($this->dataToCheckLastHigh() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getLastHigh($resolution), "Resolution: {$resolution}");
-        }
-        foreach ($this->dataToCheckLastLow() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getLastLow($resolution), "Resolution: {$resolution}");
-        }
-        foreach ($this->dataToCheckLastClose() as $resolution => $expected) {
-            $this->assertEquals($expected, $this->ohlcv->getLastClose($resolution), "Resolution: {$resolution}");
+            $this->assertEquals($expected, static::$object->getVolumes($resolution));
         }
     }
 
@@ -79,6 +73,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     */
+    public function checkOpens(): void
+    {
+        foreach ($this->dataToCheckOpens() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getOpens($resolution));
+        }
+    }
+
     private function dataToCheckOpens(): array
     {
         return [
@@ -94,6 +98,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
             RESOLUTION_04HOUR => array_fill(0, 5, 10000.0022),
             RESOLUTION_01DAY => array_fill(0, 0, 10000.0022),
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function checkHighs(): void
+    {
+        foreach ($this->dataToCheckHighs() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getHighs($resolution));
+        }
     }
 
     private function dataToCheckHighs(): array
@@ -113,6 +127,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     */
+    public function checkLows(): void
+    {
+        foreach ($this->dataToCheckLows() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getLows($resolution));
+        }
+    }
+
     private function dataToCheckLows(): array
     {
         return [
@@ -128,6 +152,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
             RESOLUTION_04HOUR => array_fill(0, 5, 10000.0001),
             RESOLUTION_01DAY => array_fill(0, 0, 10000.0001),
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function checkCloses(): void
+    {
+        foreach ($this->dataToCheckCloses() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getCloses($resolution));
+        }
     }
 
     private function dataToCheckCloses(): array
@@ -147,6 +181,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     */
+    public function checkHasPeriods(): void
+    {
+        foreach ($this->dataToCheckHasPeriods() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->hasPeriods($resolution, 1));
+        }
+    }
+
     private function dataToCheckHasPeriods(): array
     {
         return [
@@ -162,6 +206,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
             RESOLUTION_04HOUR => true,
             RESOLUTION_01DAY => false,
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function checkLastHigh(): void
+    {
+        foreach ($this->dataToCheckLastHigh() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getLastHigh($resolution), "Resolution: {$resolution}");
+        }
     }
 
     private function dataToCheckLastHigh(): array
@@ -181,6 +235,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
         ];
     }
 
+    /**
+     * @test
+     */
+    public function checkLastLow(): void
+    {
+        foreach ($this->dataToCheckLastLow() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getLastLow($resolution), "Resolution: {$resolution}");
+        }
+    }
+
     private function dataToCheckLastLow(): array
     {
         return [
@@ -196,6 +260,16 @@ class DataOHLCVWithDataProviderTest extends TestCase
             RESOLUTION_04HOUR => 10000.0001,
             RESOLUTION_01DAY => null,
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function checkLastClose(): void
+    {
+        foreach ($this->dataToCheckLastClose() as $resolution => $expected) {
+            $this->assertEquals($expected, static::$object->getLastClose($resolution), "Resolution: {$resolution}");
+        }
     }
 
     private function dataToCheckLastClose(): array
@@ -214,10 +288,4 @@ class DataOHLCVWithDataProviderTest extends TestCase
             RESOLUTION_01DAY => null,
         ];
     }
-
-    protected function tearDown()
-    {
-        unset($this->ohlcv);
-    }
-
 }

@@ -7,7 +7,7 @@
 
 namespace AlecRabbit;
 
-use AlecRabbit\Event\EventCounter;
+use AlecRabbit\Event\EventCounterDeprecated;
 use AlecRabbit\Structures\Trade;
 
 class TradesCounter
@@ -17,7 +17,7 @@ class TradesCounter
     /** @var string */
     private $pair;
 
-    /**@var EventCounter[] */
+    /**@var EventCounterDeprecated[] */
     private $counters = [];
 
     /**
@@ -27,7 +27,7 @@ class TradesCounter
     public function __construct(string $pair)
     {
         foreach (PERIODS as $length => $groupBy) {
-            $this->counters[$length] = new EventCounter($length, $groupBy);
+            $this->counters[$length] = new EventCounterDeprecated($length, $groupBy);
         }
         $this->pair = $pair;
     }

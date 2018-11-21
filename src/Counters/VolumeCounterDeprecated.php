@@ -11,7 +11,7 @@ namespace AlecRabbit\Counters;
 use AlecRabbit\Structures\Trade;
 use AlecRabbit\Structures\Volume;
 
-class VolumeCounter extends TimedCounter
+class VolumeCounterDeprecated extends TimedCounterDeprecated
 {
     /** @var array */
     protected $volumesTotal = [];
@@ -22,7 +22,7 @@ class VolumeCounter extends TimedCounter
 
     public function addTrade(Trade $trade): void
     {
-        $time = $this->getTime($trade->timestamp);
+        $time = $this->getBaseTime($trade->timestamp);
         $this->volumesTotal[$time] = $this->volumesTotal[$time] ?? 0;
         $this->volumesTotal[$time] += $trade->amount;
         if ($trade->side === T_SELL) {

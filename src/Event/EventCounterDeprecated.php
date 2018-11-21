@@ -8,9 +8,9 @@ declare(strict_types=1);
 
 namespace AlecRabbit\Event;
 
-use AlecRabbit\Counters\TimedCounter;
+use AlecRabbit\Counters\TimedCounterDeprecated;
 
-class EventCounter extends TimedCounter
+class EventCounterDeprecated extends TimedCounterDeprecated
 {
     /** @var array */
     protected $events = [];
@@ -20,7 +20,7 @@ class EventCounter extends TimedCounter
      */
     public function addEvent(?int $time = null): void
     {
-        $time = $this->getTime($time);
+        $time = $this->getBaseTime($time);
         // Is there any event during [$time] period? If not initialize with 0
         $this->events[$time] = $this->events[$time] ?? 0;
         $this->events[$time]++;
@@ -29,9 +29,8 @@ class EventCounter extends TimedCounter
 
     private function trim(): void
     {
-        $time = $this->relativeMode ? $this->lastTimestamp : time();
-        $threshold = $time - $this->length;
-        if (null !== ($key = array_key_first($this->events)) && ($key <= $threshold)) {
+        if (null !== ($key = array_key_first($this->events))
+            && ($key <= $this->getThreshold())) {
             unset($this->events[$key]);
         }
     }
@@ -47,15 +46,20 @@ class EventCounter extends TimedCounter
             $r = $sum;
         }
         if ($reset) {
-            $this->events = [];
+            $this->reset();
         }
         return $r;
+    }
+
+    protected function reset(): void
+    {
+        $this->events = [];
     }
 
     /**
      * @return array
      */
-    public function getEvents(): array
+    public function getRawEventsData(): array
     {
         return $this->events;
     }

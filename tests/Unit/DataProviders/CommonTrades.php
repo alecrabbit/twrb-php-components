@@ -10,22 +10,22 @@ namespace Tests\Unit\DataProviders;
 use AlecRabbit\Circular;
 use AlecRabbit\Structures\Trade;
 
-class VolumeCounterDataProvider
+class CommonTrades
 {
-    public static function tradesGenerator(
+    public static function generator(
         Circular $type,
+        Circular $pair,
         Circular $price,
         Circular $amount,
-        $lines = 5760,
-        $pair = 'btc_usd',
+        $quantity = 5760,
         int $timestamp = 1514764800,
         int $step = 15
     ): ?\Generator {
-        while ($lines-- > 0) {
+        while ($quantity-- > 0) {
             yield
             new Trade(
                 $type->getElement(),
-                $pair,
+                $pair->getElement(),
                 $price->getElement(),
                 $amount->getElement(),
                 $timestamp
