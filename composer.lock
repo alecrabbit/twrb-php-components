@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b76c4d90d8b9e067211bf28b33601400",
+    "content-hash": "1c33a69f9384d3a781683bb036259f12",
     "packages": [
         {
             "name": "alecrabbit/accessories",
-            "version": "0.0.14",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/alecrabbit/accessories.git",
-                "reference": "fdc5a72e36b4e9935a76dca3a750f4bdde6f0d75"
+                "reference": "757597042d8dfc6e3789beb5581ad66097334a56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/fdc5a72e36b4e9935a76dca3a750f4bdde6f0d75",
-                "reference": "fdc5a72e36b4e9935a76dca3a750f4bdde6f0d75",
+                "url": "https://api.github.com/repos/alecrabbit/accessories/zipball/757597042d8dfc6e3789beb5581ad66097334a56",
+                "reference": "757597042d8dfc6e3789beb5581ad66097334a56",
                 "shasum": ""
             },
             "require": {
@@ -42,7 +42,7 @@
                 "MIT"
             ],
             "description": "PHP accessories Classes etc.",
-            "time": "2018-11-14T17:58:28+00:00"
+            "time": "2018-11-20T15:34:49+00:00"
         },
         {
             "name": "alecrabbit/php-helpers",
@@ -4074,7 +4074,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "alecrabbit/accessories": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

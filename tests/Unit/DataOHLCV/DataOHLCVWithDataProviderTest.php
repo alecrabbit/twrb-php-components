@@ -9,6 +9,7 @@ namespace Unit;
 
 
 use AlecRabbit\DataOHLCV;
+use AlecRabbit\Structures\Trade;
 use PHPUnit\Framework\TestCase;
 use Unit\DataProviders\OHLCBasicDataProvider;
 
@@ -19,10 +20,11 @@ class DataOHLCVWithDataProviderTest extends TestCase
 
     public function setUp()
     {
-        $this->ohlcv = new DataOHLCV('btc_usd', 1440);
+        $pair = 'btc_usd';
+        $this->ohlcv = new DataOHLCV($pair, 1440);
         foreach (OHLCBasicDataProvider::data() as $item) {
             [$timestamp, $type, $price, $amount] = $item;
-            $this->ohlcv->addTrade($timestamp, $type, $price, $amount);
+            $this->ohlcv->addTrade(new Trade($type, $pair, $price, $amount, $timestamp));
         }
     }
 

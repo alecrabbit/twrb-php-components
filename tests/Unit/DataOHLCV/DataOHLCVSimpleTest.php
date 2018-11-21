@@ -9,6 +9,7 @@ namespace Unit;
 
 
 use AlecRabbit\DataOHLCV;
+use AlecRabbit\Structures\Trade;
 use PHPUnit\Framework\TestCase;
 
 class DataOHLCVSimpleTest extends TestCase
@@ -18,10 +19,11 @@ class DataOHLCVSimpleTest extends TestCase
 
     public function setUp()
     {
-        $this->ohlcv = new DataOHLCV('btc_usd', 500);
+        $pair = 'btc_usd';
+        $this->ohlcv = new DataOHLCV($pair, 500);
         foreach ($this->simpleData() as $item) {
             [$timestamp, $type, $price, $amount] = $item;
-            $this->ohlcv->addTrade($timestamp, $type, $price, $amount);
+            $this->ohlcv->addTrade(new Trade($type, $pair, $price, $amount, $timestamp));
         }
     }
 
@@ -58,7 +60,7 @@ class DataOHLCVSimpleTest extends TestCase
         $this->assertEquals($expected, $this->ohlcv->getTimestamps($resolution));
     }
 
-    public function simpleDataProvider():array
+    public function simpleDataProvider(): array
     {
         return [
             [
@@ -177,9 +179,9 @@ class DataOHLCVSimpleTest extends TestCase
                 ],
                 RESOLUTION_01HOUR
             ],
-            [[1512568800, 1512576000,1512583200], RESOLUTION_02HOUR],
-            [[1512561600, 1512572400,1512583200], RESOLUTION_03HOUR],
-            [[1512561600,1512576000], RESOLUTION_04HOUR],
+            [[1512568800, 1512576000, 1512583200], RESOLUTION_02HOUR],
+            [[1512561600, 1512572400, 1512583200], RESOLUTION_03HOUR],
+            [[1512561600, 1512576000], RESOLUTION_04HOUR],
             [[1512518400], RESOLUTION_01DAY],
         ];
     }

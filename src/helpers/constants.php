@@ -14,13 +14,15 @@ define('T_BID', T_BUY);
 define(
     'T_ALIASES',
     [
-        'sell'  => T_SELL,
-        'buy'  => T_BUY,
-        'ask'  => T_ASK,
-        'bid'  => T_BID,
+        'sell' => T_SELL,
+        'buy' => T_BUY,
+        'ask' => T_ASK,
+        'bid' => T_BID,
     ]
 );
 
+
+define('ONE_SECOND', 1);
 
 define('SECONDS_IN_01MIN', 60);
 define('SECONDS_IN_03MIN', 180);
@@ -46,6 +48,18 @@ define('RESOLUTION_03HOUR', SECONDS_IN_03HOUR);
 define('RESOLUTION_04HOUR', SECONDS_IN_04HOUR);
 define('RESOLUTION_01DAY', SECONDS_IN_01DAY);
 
+define('P_01MIN', SECONDS_IN_01MIN);
+define('P_03MIN', SECONDS_IN_03MIN);
+define('P_05MIN', SECONDS_IN_05MIN);
+define('P_15MIN', SECONDS_IN_15MIN);
+define('P_30MIN', SECONDS_IN_30MIN);
+define('P_45MIN', SECONDS_IN_45MIN);
+define('P_01HOUR', SECONDS_IN_01HOUR);
+define('P_02HOUR', SECONDS_IN_02HOUR);
+define('P_03HOUR', SECONDS_IN_03HOUR);
+define('P_04HOUR', SECONDS_IN_04HOUR);
+define('P_01DAY', SECONDS_IN_01DAY);
+
 define(
     'RESOLUTIONS',
     [
@@ -60,6 +74,23 @@ define(
         RESOLUTION_03HOUR,
         RESOLUTION_04HOUR,
         RESOLUTION_01DAY,
+    ]
+);
+
+define(
+    'PERIODS',
+    [
+        P_01MIN => P_01MIN,
+        P_03MIN => P_01MIN,
+        P_05MIN => P_01MIN,
+        P_15MIN => P_05MIN,
+        P_30MIN => P_05MIN,
+        P_45MIN => P_05MIN,
+        P_01HOUR => P_15MIN,
+        P_02HOUR => P_15MIN,
+        P_03HOUR => P_15MIN,
+        P_04HOUR => P_15MIN,
+        P_01DAY => P_01HOUR,
     ]
 );
 
