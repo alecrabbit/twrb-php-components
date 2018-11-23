@@ -44,6 +44,5 @@ class ConstantsTest extends TestCase
             ],
             RESOLUTION_ALIASES
         );
-
     }
 }

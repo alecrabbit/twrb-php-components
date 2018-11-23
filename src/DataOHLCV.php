@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
-use AlecRabbit\Statistics\Statistics;
 use AlecRabbit\Structures\Trade;
 use BCMathExtended\BC;
 
@@ -20,8 +19,6 @@ class DataOHLCV
     protected const MAX_SIZE = 1440;
     protected const MIN_SIZE = 10;
     protected const RESOLUTIONS = RESOLUTIONS;
-    /** @var Statistics */
-    public $statistics;
     /** @var array */
     protected $current = [];
     /** @var array */
@@ -50,13 +47,11 @@ class DataOHLCV
      * @param string $pair
      * @param int|null $size
      * @param int|null $coefficient
-     * @param Statistics $statistics
      */
     public function __construct(
         string $pair,
         ?int $size = null,
-        ?int $coefficient = null,
-        Statistics $statistics = null
+        ?int $coefficient = null
     ) {
         $this->size =
             (int)bounds(
@@ -66,7 +61,6 @@ class DataOHLCV
             );
         $this->pair = $pair;
         $this->coefficient = $coefficient ?? 1;
-        $this->statistics = $statistics ?? new Statistics();
     }
 
     /**
@@ -89,8 +83,6 @@ class DataOHLCV
 
     public function addTrade(Trade $trade): void
     {
-        $this->statistics->countTrade($trade);
-
         $this->addOHLCV(
             $trade->timestamp,
             $trade->price,

@@ -14,6 +14,7 @@ define('STR_AVG_PRICE', 'avg_price_');
 
 define('STR_EVENTS', 'events');
 define('STR_VOLUMES', 'volumes');
+define('STR_AVERAGES', 'averages');
 
 define('STR_TOTAL', 'total');
 define('STR_SELL', 'sell');

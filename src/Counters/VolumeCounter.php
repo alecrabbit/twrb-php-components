@@ -33,11 +33,13 @@ class VolumeCounter extends EventsCounter
         $volumePrice = $trade->amount * $trade->price;
         foreach ($baseTimes as $period => $timestamp) {
             $this->processPart(STR_TOTAL, $period, $timestamp, $volumePrice, $trade);
-            if ($trade->side === T_SELL) {
-                $this->processPart(STR_SELL, $period, $timestamp, $volumePrice, $trade);
-            } else {
-                $this->processPart(STR_BUY, $period, $timestamp, $volumePrice, $trade);
-            }
+            $this->processPart(
+                $trade->side === T_SELL ? STR_SELL : STR_BUY,
+                $period,
+                $timestamp,
+                $volumePrice,
+                $trade
+            );
             $this->trim($period);
         }
     }
@@ -93,42 +95,47 @@ class VolumeCounter extends EventsCounter
      */
     public function getVolumeArray(?bool $reset = null): array
     {
-        $volume = [];
+        $volumes = [];
         foreach (static::DOMAINS as $domain) {
             foreach ($this->periods as $period => $groupBy) {
                 if (0 < ($sum = array_sum($this->volumes[$domain][$period] ?? []))) {
-                    $volume[$domain][$period] = $sum;
+                    $volumes[$domain][$period] = $sum;
                 }
             }
         }
         $events = $this->getEventsArray();
+        $averages = [];
         foreach ($this->periods as $period => $groupBy) {
-            if (isset($volume[STR_VP_TOTAL][$period], $volume[STR_TOTAL][$period])) {
-                $volume[STR_VWAP_TOTAL][$period] = $volume[STR_VP_TOTAL][$period] / $volume[STR_TOTAL][$period];
+            if (isset($volumes[STR_VP_TOTAL][$period], $volumes[STR_TOTAL][$period])) {
+                $averages[STR_VWAP_TOTAL][$period] = $volumes[STR_VP_TOTAL][$period] / $volumes[STR_TOTAL][$period];
             }
-            if (isset($volume[STR_VP_SELL][$period], $volume[STR_SELL][$period])) {
-                $volume[STR_VWAP_SELL][$period] = $volume[STR_VP_SELL][$period] / $volume[STR_SELL][$period];
+            if (isset($volumes[STR_VP_SELL][$period], $volumes[STR_SELL][$period])) {
+                $averages[STR_VWAP_SELL][$period] = $volumes[STR_VP_SELL][$period] / $volumes[STR_SELL][$period];
             }
-            if (isset($volume[STR_VP_BUY][$period], $volume[STR_BUY][$period])) {
-                $volume[STR_VWAP_BUY][$period] = $volume[STR_VP_BUY][$period] / $volume[STR_BUY][$period];
+            if (isset($volumes[STR_VP_BUY][$period], $volumes[STR_BUY][$period])) {
+                $averages[STR_VWAP_BUY][$period] = $volumes[STR_VP_BUY][$period] / $volumes[STR_BUY][$period];
             }
-            if (isset($volume[STR_P_SUM_TOTAL][$period], $events[STR_TOTAL][$period])) {
-                $volume[STR_AVG_PRICE_TOTAL][$period] =
-                    $volume[STR_P_SUM_TOTAL][$period] / $events[STR_TOTAL][$period];
+            if (isset($volumes[STR_P_SUM_TOTAL][$period], $events[STR_TOTAL][$period])) {
+                $averages[STR_AVG_PRICE_TOTAL][$period] =
+                    $volumes[STR_P_SUM_TOTAL][$period] / $events[STR_TOTAL][$period];
             }
-            if (isset($volume[STR_P_SUM_SELL][$period], $events[STR_SELL][$period])) {
-                $volume[STR_AVG_PRICE_SELL][$period] =
-                    $volume[STR_P_SUM_SELL][$period] / $events[STR_SELL][$period];
+            if (isset($volumes[STR_P_SUM_SELL][$period], $events[STR_SELL][$period])) {
+                $averages[STR_AVG_PRICE_SELL][$period] =
+                    $volumes[STR_P_SUM_SELL][$period] / $events[STR_SELL][$period];
             }
-            if (isset($volume[STR_P_SUM_BUY][$period], $events[STR_BUY][$period])) {
-                $volume[STR_AVG_PRICE_BUY][$period] =
-                    $volume[STR_P_SUM_BUY][$period] / $events[STR_BUY][$period];
+            if (isset($volumes[STR_P_SUM_BUY][$period], $events[STR_BUY][$period])) {
+                $averages[STR_AVG_PRICE_BUY][$period] =
+                    $volumes[STR_P_SUM_BUY][$period] / $events[STR_BUY][$period];
             }
         }
         if ($reset) {
             $this->reset();
         }
-        return $volume;
+        return [
+            STR_VOLUMES => $volumes,
+            STR_AVERAGES => $averages,
+            STR_EVENTS => $events
+        ];
     }
 
     /**
