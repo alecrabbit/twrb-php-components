@@ -24,9 +24,6 @@ class VolumeCounter extends EventsCounter
         STR_P_SUM_BUY,
     ];
 
-    /** @var array */
-    protected $volumes = [];
-
     public function addTrade(Trade $trade): void
     {
         $baseTimes = $this->getBaseTimes($trade->timestamp);
@@ -58,19 +55,21 @@ class VolumeCounter extends EventsCounter
         float $volumePrice,
         Trade $trade
     ): void {
-        $this->volumes[STR_VP . $subdomain][$period][$timestamp] =
-            $this->volumes[STR_VP . $subdomain][$period][$timestamp] ?? 0;
-        $this->volumes[STR_VP . $subdomain][$period][$timestamp] += $volumePrice;
+        $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] =
+            $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] ?? 0;
+        $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] += $volumePrice;
 
-        $this->volumes[STR_P_SUM . $subdomain][$period][$timestamp] =
-            $this->volumes[STR_P_SUM . $subdomain][$period][$timestamp] ?? 0;
-        $this->volumes[STR_P_SUM . $subdomain][$period][$timestamp] += $trade->price;
+        $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] =
+            $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] ?? 0;
+        $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] += $trade->price;
 
-        $this->volumes[$subdomain][$period][$timestamp] = $this->volumes[$subdomain][$period][$timestamp] ?? 0;
-        $this->volumes[$subdomain][$period][$timestamp] += $trade->amount;
+        $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] =
+            $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] ?? 0;
+        $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] += $trade->amount;
 
-        $this->data[$subdomain][$period][$timestamp] = $this->data[$subdomain][$period][$timestamp] ?? 0;
-        $this->data[$subdomain][$period][$timestamp]++;
+        $this->data[STR_EVENTS][$subdomain][$period][$timestamp] =
+            $this->data[STR_EVENTS][$subdomain][$period][$timestamp] ?? 0;
+        $this->data[STR_EVENTS][$subdomain][$period][$timestamp]++;
     }
 
     /**
@@ -80,11 +79,13 @@ class VolumeCounter extends EventsCounter
     {
         $threshold = $this->getThreshold($period);
         foreach (static::DOMAINS as $domain) {
-            if (null !== ($key = array_key_first($this->data[$domain][$period] ?? [])) && ($key <= $threshold)) {
-                unset($this->data[$domain][$period][$key]);
+            if (null !== ($key = array_key_first($this->data[STR_EVENTS][$domain][$period] ?? []))
+                && ($key <= $threshold)) {
+                unset($this->data[STR_EVENTS][$domain][$period][$key]);
             }
-            if (null !== ($key = array_key_first($this->volumes[$domain][$period] ?? [])) && ($key <= $threshold)) {
-                unset($this->volumes[$domain][$period][$key]);
+            if (null !== ($key = array_key_first($this->data[STR_VOLUMES][$domain][$period] ?? []))
+                && ($key <= $threshold)) {
+                unset($this->data[STR_VOLUMES][$domain][$period][$key]);
             }
         }
     }
@@ -98,12 +99,13 @@ class VolumeCounter extends EventsCounter
         $volumes = [];
         foreach (static::DOMAINS as $domain) {
             foreach ($this->periods as $period => $groupBy) {
-                if (0 < ($sum = array_sum($this->volumes[$domain][$period] ?? []))) {
+                if (0 < ($sum = array_sum($this->data[STR_VOLUMES][$domain][$period] ?? []))) {
                     $volumes[$domain][$period] = $sum;
                 }
             }
         }
         $events = $this->getEventsArray();
+//        dump(STR_VOLUMES, $volumes, STR_EVENTS, $events);
         $averages = [];
         foreach ($this->periods as $period => $groupBy) {
             if (isset($volumes[STR_VP_TOTAL][$period], $volumes[STR_TOTAL][$period])) {
@@ -146,7 +148,7 @@ class VolumeCounter extends EventsCounter
         $events = [];
         foreach (static::DOMAINS as $domain) {
             foreach ($this->periods as $period => $groupBy) {
-                if (0 < ($sum = array_sum($this->data[$domain][$period] ?? []))) {
+                if (0 < ($sum = array_sum($this->data[STR_EVENTS][$domain][$period] ?? []))) {
                     $events[$domain][$period] = $sum;
                 }
             }
@@ -157,22 +159,4 @@ class VolumeCounter extends EventsCounter
         return $events;
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function reset(): void
-    {
-        $this->data = [];
-        $this->volumes = [];
-    }
-
-    /** @return array */
-    public function getRawData(): array
-    {
-        return
-            [
-                STR_VOLUMES => $this->volumes,
-                STR_EVENTS => parent::getRawData(),
-            ];
-    }
 }
