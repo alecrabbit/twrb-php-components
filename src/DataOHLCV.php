@@ -8,7 +8,6 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
-use AlecRabbit\Statistics\Statistics;
 use AlecRabbit\Structures\Trade;
 use BCMathExtended\BC;
 
@@ -20,8 +19,6 @@ class DataOHLCV
     protected const MAX_SIZE = 1440;
     protected const MIN_SIZE = 10;
     protected const RESOLUTIONS = RESOLUTIONS;
-    /** @var Statistics */
-    public $statistics;
     /** @var array */
     protected $current = [];
     /** @var array */
