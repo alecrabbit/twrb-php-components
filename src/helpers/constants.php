@@ -7,10 +7,33 @@
 
 // String constants
 define('DEFAULT_NAME', 'default');
+define('STR_VP', 'vp_');
+define('STR_P_SUM', 'p_sum_');
+define('STR_VWAP', 'vwap_');
+define('STR_AVG_PRICE', 'avg_price_');
+
 define('STR_EVENTS', 'events');
+define('STR_VOLUMES', 'volumes');
+
 define('STR_TOTAL', 'total');
 define('STR_SELL', 'sell');
 define('STR_BUY', 'buy');
+
+define('STR_P_SUM_TOTAL', STR_P_SUM . STR_TOTAL);
+define('STR_P_SUM_SELL', STR_P_SUM . STR_SELL);
+define('STR_P_SUM_BUY', STR_P_SUM . STR_BUY);
+
+define('STR_VWAP_TOTAL', STR_VWAP . STR_TOTAL);
+define('STR_VWAP_SELL', STR_VWAP . STR_SELL);
+define('STR_VWAP_BUY', STR_VWAP . STR_BUY);
+
+define('STR_AVG_PRICE_TOTAL', STR_AVG_PRICE . STR_TOTAL);
+define('STR_AVG_PRICE_SELL', STR_AVG_PRICE . STR_SELL);
+define('STR_AVG_PRICE_BUY', STR_AVG_PRICE . STR_BUY);
+
+define('STR_TOTAL_VP', STR_VP . STR_TOTAL);
+define('STR_SELL_VP', STR_VP . STR_SELL);
+define('STR_BUY_VP', STR_VP . STR_BUY);
 
 // Trade constants
 define('T_SELL', 100);

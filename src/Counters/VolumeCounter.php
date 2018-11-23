@@ -12,7 +12,7 @@ use AlecRabbit\Structures\Trade;
 
 class VolumeCounter extends EventsCounter
 {
-    protected const DOMAINS = [STR_TOTAL, STR_SELL, STR_BUY,];
+    protected const DOMAINS = [STR_TOTAL, STR_SELL, STR_BUY, STR_TOTAL_VP, STR_SELL_VP, STR_BUY_VP,];
 
     /** @var array */
     protected $volumes = [];
@@ -20,18 +20,43 @@ class VolumeCounter extends EventsCounter
     public function addTrade(Trade $trade): void
     {
         $baseTimes = $this->getBaseTimes($trade->timestamp);
+        $volumePrice = $trade->amount * $trade->price;
         foreach ($baseTimes as $period => $timestamp) {
+            $this->volumes[STR_TOTAL_VP][$period][$timestamp] = $this->volumes[STR_TOTAL_VP][$period][$timestamp] ?? 0;
+            $this->volumes[STR_TOTAL_VP][$period][$timestamp] += $volumePrice;
+
+            $this->volumes[STR_P_SUM_TOTAL][$period][$timestamp] =
+                $this->volumes[STR_P_SUM_TOTAL][$period][$timestamp] ?? 0;
+            $this->volumes[STR_P_SUM_TOTAL][$period][$timestamp] += $trade->price;
+
             $this->volumes[STR_TOTAL][$period][$timestamp] = $this->volumes[STR_TOTAL][$period][$timestamp] ?? 0;
             $this->volumes[STR_TOTAL][$period][$timestamp] += $trade->amount;
+
             $this->data[STR_TOTAL][$period][$timestamp] = $this->data[STR_TOTAL][$period][$timestamp] ?? 0;
             $this->data[STR_TOTAL][$period][$timestamp]++;
 
             if ($trade->side === T_SELL) {
+                $this->volumes[STR_SELL_VP][$period][$timestamp] =
+                    $this->volumes[STR_SELL_VP][$period][$timestamp] ?? 0;
+                $this->volumes[STR_SELL_VP][$period][$timestamp] += $volumePrice;
+
+                $this->volumes[STR_P_SUM_SELL][$period][$timestamp] =
+                    $this->volumes[STR_P_SUM_SELL][$period][$timestamp] ?? 0;
+                $this->volumes[STR_P_SUM_SELL][$period][$timestamp] += $trade->price;
+
                 $this->volumes[STR_SELL][$period][$timestamp] = $this->volumes[STR_SELL][$period][$timestamp] ?? 0;
                 $this->volumes[STR_SELL][$period][$timestamp] += $trade->amount;
                 $this->data[STR_SELL][$period][$timestamp] = $this->data[STR_SELL][$period][$timestamp] ?? 0;
                 $this->data[STR_SELL][$period][$timestamp]++;
             } else {
+                $this->volumes[STR_BUY_VP][$period][$timestamp] =
+                    $this->volumes[STR_BUY_VP][$period][$timestamp] ?? 0;
+                $this->volumes[STR_BUY_VP][$period][$timestamp] += $volumePrice;
+
+                $this->volumes[STR_P_SUM_BUY][$period][$timestamp] =
+                    $this->volumes[STR_P_SUM_BUY][$period][$timestamp] ?? 0;
+                $this->volumes[STR_P_SUM_BUY][$period][$timestamp] += $trade->price;
+
                 $this->volumes[STR_BUY][$period][$timestamp] = $this->volumes[STR_BUY][$period][$timestamp] ?? 0;
                 $this->volumes[STR_BUY][$period][$timestamp] += $trade->amount;
                 $this->data[STR_BUY][$period][$timestamp] = $this->data[STR_BUY][$period][$timestamp] ?? 0;
@@ -54,25 +79,6 @@ class VolumeCounter extends EventsCounter
         }
     }
 
-//    /**
-//     * @param bool|null $reset
-//     * @return Volume
-//     */
-//    public function getVolumeObject(?bool $reset = null): Volume
-//    {
-//        $volume = new Volume();
-//        if (0 < ($sum = array_sum($this->volumes[STR_TOTAL]))) {
-//            $volume
-//                ->setTotal($sum)
-//                ->setSell(array_sum($this->volumes[STR_SELL]))
-//                ->setBuy(array_sum($this->volumes[STR_BUY]));
-//        }
-//        if ($reset) {
-//            $this->reset();
-//        }
-//        return $volume;
-//    }
-
     /**
      * @param bool|null $reset
      * @return array
@@ -87,6 +93,25 @@ class VolumeCounter extends EventsCounter
                 }
             }
         }
+        $events = $this->getEventsArray();
+        dump($events);
+        foreach ($this->periods as $period => $groupBy) {
+            if (isset($volume[STR_TOTAL_VP][$period], $volume[STR_TOTAL][$period])) {
+                $volume[STR_VWAP_TOTAL][$period] = $volume[STR_TOTAL_VP][$period] / $volume[STR_TOTAL][$period];
+            }
+            if (isset($volume[STR_SELL_VP][$period], $volume[STR_SELL][$period])) {
+                $volume[STR_VWAP_SELL][$period] = $volume[STR_SELL_VP][$period] / $volume[STR_SELL][$period];
+            }
+            if (isset($volume[STR_BUY_VP][$period], $volume[STR_BUY][$period])) {
+                $volume[STR_VWAP_BUY][$period] = $volume[STR_BUY_VP][$period] / $volume[STR_BUY][$period];
+            }
+//            dump(isset($events[STR_TOTAL][$period]));
+//            dump(isset($volume[STR_P_SUM_TOTAL][$period]));
+            if (isset($volume[STR_P_SUM_TOTAL][$period], $events[STR_TOTAL][$period])) {
+                $volume[STR_AVG_PRICE_TOTAL][$period] =
+                    $volume[STR_P_SUM_TOTAL][$period] / $events[STR_TOTAL][$period];
+            }
+        }
         if ($reset) {
             $this->reset();
         }
@@ -98,7 +123,7 @@ class VolumeCounter extends EventsCounter
      */
     protected function reset(): void
     {
-        parent::reset();
+        $this->data = [];
         $this->volumes = [];
     }
 
@@ -125,7 +150,10 @@ class VolumeCounter extends EventsCounter
     public function getRawData(): array
     {
         return
-            array_merge($this->volumes, parent::getRawData());
+            [
+                STR_VOLUMES => $this->volumes,
+                STR_EVENTS => parent::getRawData(),
+            ];
     }
 
 
