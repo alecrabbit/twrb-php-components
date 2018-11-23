@@ -1,18 +1,31 @@
 <?php
 /**
  * User: alec
- * Date: 19.11.18
- * Time: 17:08
+ * Date: 05.11.18
+ * Time: 17:05
  */
+declare(strict_types=1);
 
 namespace AlecRabbit;
 
 use AlecRabbit\Event\EventCounterDeprecated;
 use AlecRabbit\Structures\Trade;
 
-class TradesCounter
+class TradesAggregator
 {
-    protected const VOLUME = 'volume';
+    private const PERIODS = [
+        P_01MIN => P_01MIN,
+        P_03MIN => P_01MIN,
+        P_05MIN => P_01MIN,
+        P_15MIN => P_05MIN,
+        P_30MIN => P_05MIN,
+        P_45MIN => P_05MIN,
+        P_01HOUR => P_15MIN,
+        P_02HOUR => P_15MIN,
+        P_03HOUR => P_15MIN,
+        P_04HOUR => P_15MIN,
+        P_01DAY => P_01HOUR,
+    ];
 
     /** @var string */
     private $pair;
@@ -26,7 +39,7 @@ class TradesCounter
      */
     public function __construct(string $pair)
     {
-        foreach (PERIODS as $length => $groupBy) {
+        foreach (static::PERIODS as $length => $groupBy) {
             $this->counters[$length] = new EventCounterDeprecated($length, $groupBy);
         }
         $this->pair = $pair;
@@ -37,11 +50,9 @@ class TradesCounter
         if ($this->pair !== $trade->pair) {
             throw new \RuntimeException('DataInconsistency'); // todo update message
         }
-        foreach (PERIODS as $length => $groupBy) {
+        foreach (static::PERIODS as $length => $groupBy) {
             $this->counters[$length]->addEvent($trade->timestamp);
         }
-//        $this->counters[static::VOLUME]->addTrade($trade);
-
         return $trade;
     }
 

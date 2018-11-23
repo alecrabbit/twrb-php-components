@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
+use AlecRabbit\Statistics\Statistics;
+use AlecRabbit\Structures\Trade;
 use BCMathExtended\BC;
 
 class DataOHLCV
@@ -18,7 +20,8 @@ class DataOHLCV
     protected const MAX_SIZE = 1440;
     protected const MIN_SIZE = 10;
     protected const RESOLUTIONS = RESOLUTIONS;
-
+    /** @var Statistics */
+    public $statistics;
     /** @var array */
     protected $current = [];
     /** @var array */
@@ -35,7 +38,6 @@ class DataOHLCV
     protected $volumes = [];
     /** @var array */
     protected $proxies = [];
-
     /** @var int */
     private $size;
     /** @var int */
@@ -46,11 +48,16 @@ class DataOHLCV
     /**
      * DataOHLCV constructor.
      * @param string $pair
-     * @param integer $size
-     * @param int $coefficient
+     * @param int|null $size
+     * @param int|null $coefficient
+     * @param Statistics $statistics
      */
-    public function __construct(string $pair, ?int $size = null, int $coefficient = 1)
-    {
+    public function __construct(
+        string $pair,
+        ?int $size = null,
+        ?int $coefficient = null,
+        Statistics $statistics = null
+    ) {
         $this->size =
             (int)bounds(
                 $size ?? static::DEFAULT_SIZE,
@@ -58,7 +65,8 @@ class DataOHLCV
                 static::MAX_SIZE
             );
         $this->pair = $pair;
-        $this->coefficient = $coefficient;
+        $this->coefficient = $coefficient ?? 1;
+        $this->statistics = $statistics ?? new Statistics();
     }
 
     /**
@@ -79,9 +87,19 @@ class DataOHLCV
             && (\count($this->timestamps[$resolution]) >= ($periods * $multiplier));
     }
 
-    public function addTrade(int $timestamp, int $side, float $price, float $amount): void
+    public function addTrade(Trade $trade): void
     {
-        $this->addOHLCV($timestamp, $price, $price, $price, $price, $amount, $side);
+        $this->statistics->countTrade($trade);
+
+        $this->addOHLCV(
+            $trade->timestamp,
+            $trade->price,
+            $trade->price,
+            $trade->price,
+            $trade->price,
+            $trade->amount,
+            $trade->side
+        );
     }
 
     public function addOHLCV(

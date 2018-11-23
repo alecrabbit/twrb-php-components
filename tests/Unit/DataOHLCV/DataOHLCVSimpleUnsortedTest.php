@@ -9,6 +9,7 @@ namespace Unit;
 
 
 use AlecRabbit\DataOHLCV;
+use AlecRabbit\Structures\Trade;
 use PHPUnit\Framework\TestCase;
 
 class DataOHLCVSimpleUnsortedTest extends TestCase
@@ -21,12 +22,12 @@ class DataOHLCVSimpleUnsortedTest extends TestCase
      */
     public function simpleDataCheck(): void
     {
-        $this->ohlcv = new DataOHLCV('btc_usd', 500);
-
-        $this->expectException(\RuntimeException::class);
+        $pair = 'btc_usd';
+        $this->ohlcv = new DataOHLCV($pair, 500);
+        $this->expectException(\RuntimeException::class); // Unsorted data
         foreach ($this->simpleData() as $item) {
             [$timestamp, $type, $price, $amount] = $item;
-            $this->ohlcv->addTrade($timestamp, $type, $price, $amount);
+            $this->ohlcv->addTrade(new Trade($type, $pair, $price, $amount, $timestamp));
         }
     }
 
@@ -51,16 +52,18 @@ class DataOHLCVSimpleUnsortedTest extends TestCase
             [1513589380, T_BID, 12818.5, 0.00210018],
         ];
     }
+
     /**
      * @test
      */
     public function simpleDataTrimCheck(): void
     {
-        $this->ohlcv = new DataOHLCV('btc_usd', 10);
+        $pair = 'btc_usd';
+        $this->ohlcv = new DataOHLCV($pair, 10);
 
         foreach ($this->simpleTrimData() as $item) {
             [$timestamp, $type, $price, $amount] = $item;
-            $this->ohlcv->addTrade($timestamp, $type, $price, $amount);
+            $this->ohlcv->addTrade(new Trade($type, $pair, $price, $amount, $timestamp));
         }
         $this->assertEquals(10, $this->ohlcv->getSize());
     }
@@ -69,7 +72,7 @@ class DataOHLCVSimpleUnsortedTest extends TestCase
     {
         $n = 1000;
         $timestamp = 1512570380;
-        for($i = 0; $i< $n; $i++) {
+        for ($i = 0; $i < $n; $i++) {
             yield [$timestamp, T_BID, 10000.0, 0.0001];
             $timestamp += 6400;
         }
