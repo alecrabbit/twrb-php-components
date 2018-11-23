@@ -32,54 +32,23 @@ class VolumeCounter extends EventsCounter
         $baseTimes = $this->getBaseTimes($trade->timestamp);
         $volumePrice = $trade->amount * $trade->price;
         foreach ($baseTimes as $period => $timestamp) {
-//            $this->volumes[STR_VP_TOTAL][$period][$timestamp] =
-//                $this->volumes[STR_VP_TOTAL][$period][$timestamp] ?? 0;
-//            $this->volumes[STR_VP_TOTAL][$period][$timestamp] += $volumePrice;
-//
-//            $this->volumes[STR_P_SUM_TOTAL][$period][$timestamp] =
-//                $this->volumes[STR_P_SUM_TOTAL][$period][$timestamp] ?? 0;
-//            $this->volumes[STR_P_SUM_TOTAL][$period][$timestamp] += $trade->price;
-//
-//            $this->volumes[STR_TOTAL][$period][$timestamp] = $this->volumes[STR_TOTAL][$period][$timestamp] ?? 0;
-//            $this->volumes[STR_TOTAL][$period][$timestamp] += $trade->amount;
-//
-//            $this->data[STR_TOTAL][$period][$timestamp] = $this->data[STR_TOTAL][$period][$timestamp] ?? 0;
-//            $this->data[STR_TOTAL][$period][$timestamp]++;
             $this->processPart(STR_TOTAL, $period, $timestamp, $volumePrice, $trade);
-
             if ($trade->side === T_SELL) {
-//                $this->volumes[STR_VP_SELL][$period][$timestamp] =
-//                    $this->volumes[STR_VP_SELL][$period][$timestamp] ?? 0;
-//                $this->volumes[STR_VP_SELL][$period][$timestamp] += $volumePrice;
-//
-//                $this->volumes[STR_P_SUM_SELL][$period][$timestamp] =
-//                    $this->volumes[STR_P_SUM_SELL][$period][$timestamp] ?? 0;
-//                $this->volumes[STR_P_SUM_SELL][$period][$timestamp] += $trade->price;
-//
-//                $this->volumes[STR_SELL][$period][$timestamp] = $this->volumes[STR_SELL][$period][$timestamp] ?? 0;
-//                $this->volumes[STR_SELL][$period][$timestamp] += $trade->amount;
-//                $this->data[STR_SELL][$period][$timestamp] = $this->data[STR_SELL][$period][$timestamp] ?? 0;
-//                $this->data[STR_SELL][$period][$timestamp]++;
                 $this->processPart(STR_SELL, $period, $timestamp, $volumePrice, $trade);
             } else {
-//                $this->volumes[STR_VP_BUY][$period][$timestamp] =
-//                    $this->volumes[STR_VP_BUY][$period][$timestamp] ?? 0;
-//                $this->volumes[STR_VP_BUY][$period][$timestamp] += $volumePrice;
-//
-//                $this->volumes[STR_P_SUM_BUY][$period][$timestamp] =
-//                    $this->volumes[STR_P_SUM_BUY][$period][$timestamp] ?? 0;
-//                $this->volumes[STR_P_SUM_BUY][$period][$timestamp] += $trade->price;
-//
-//                $this->volumes[STR_BUY][$period][$timestamp] = $this->volumes[STR_BUY][$period][$timestamp] ?? 0;
-//                $this->volumes[STR_BUY][$period][$timestamp] += $trade->amount;
-//                $this->data[STR_BUY][$period][$timestamp] = $this->data[STR_BUY][$period][$timestamp] ?? 0;
-//                $this->data[STR_BUY][$period][$timestamp]++;
                 $this->processPart(STR_BUY, $period, $timestamp, $volumePrice, $trade);
             }
             $this->trim($period);
         }
     }
 
+    /**
+     * @param string $subdomain
+     * @param int $period
+     * @param int $timestamp
+     * @param float $volumePrice
+     * @param Trade $trade
+     */
     protected function processPart(
         string $subdomain,
         int $period,
@@ -102,6 +71,9 @@ class VolumeCounter extends EventsCounter
         $this->data[$subdomain][$period][$timestamp]++;
     }
 
+    /**
+     * @param int $period
+     */
     protected function trim(int $period): void
     {
         $threshold = $this->getThreshold($period);
