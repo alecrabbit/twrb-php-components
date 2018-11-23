@@ -964,9 +964,13 @@ class VolumeCounterTest extends TestCase
                         86400 => 10001.5,
                     ),
             );
-        $this->assertEquals($expected, $this->counter->getVolumeArray());
+        $this->assertEquals($expected, $this->counter->getVolumeArray(true));
+        $expected = [
+            STR_VOLUMES => [],
+            STR_EVENTS => [],
+        ];
+        $this->assertEquals($expected, $this->counter->getRawData());
     }
-
 
     protected function tearDown()
     {
