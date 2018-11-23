@@ -31,9 +31,9 @@ define('STR_AVG_PRICE_TOTAL', STR_AVG_PRICE . STR_TOTAL);
 define('STR_AVG_PRICE_SELL', STR_AVG_PRICE . STR_SELL);
 define('STR_AVG_PRICE_BUY', STR_AVG_PRICE . STR_BUY);
 
-define('STR_TOTAL_VP', STR_VP . STR_TOTAL);
-define('STR_SELL_VP', STR_VP . STR_SELL);
-define('STR_BUY_VP', STR_VP . STR_BUY);
+define('STR_VP_TOTAL', STR_VP . STR_TOTAL);
+define('STR_VP_SELL', STR_VP . STR_SELL);
+define('STR_VP_BUY', STR_VP . STR_BUY);
 
 // Trade constants
 define('T_SELL', 100);

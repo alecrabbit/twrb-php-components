@@ -18,8 +18,8 @@ class CommonTrades
         Circular $price,
         Circular $amount,
         $quantity = 5760,
-        int $timestamp = 1514764800,
-        int $step = 15
+        int $step = 15,
+        int $timestamp = 1514764800
     ): ?\Generator {
         while ($quantity-- > 0) {
             yield
