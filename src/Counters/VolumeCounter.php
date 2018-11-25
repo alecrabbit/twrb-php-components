@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace AlecRabbit\Counters;
 
+use AlecRabbit\Money\CalculatorFactory as Factory;
+use AlecRabbit\Money\Contracts\CalculatorInterface;
 use AlecRabbit\Structures\Trade;
 
 class VolumeCounter extends EventsCounter
@@ -24,10 +26,26 @@ class VolumeCounter extends EventsCounter
         STR_P_SUM_BUY,
     ];
 
+    /** @var CalculatorInterface */
+    protected $calculator;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(?array $periods = null)
+    {
+        parent::__construct($periods);
+        $this->calculator = Factory::getCalculator();
+    }
+
     public function addTrade(Trade $trade): void
     {
         $baseTimes = $this->getBaseTimes($trade->timestamp);
-        $volumePrice = $trade->amount * $trade->price;
+        if ($this->precisionMode) {
+            $volumePrice = $this->calculator->multiply((string)$trade->amount, $trade->price);
+        } else {
+            $volumePrice = $trade->amount * $trade->price;
+        }
         foreach ($baseTimes as $period => $timestamp) {
             $this->processPart(STR_TOTAL, $period, $timestamp, $volumePrice, $trade);
             $this->processPart(
@@ -45,31 +63,54 @@ class VolumeCounter extends EventsCounter
      * @param string $subdomain
      * @param int $period
      * @param int $timestamp
-     * @param float $volumePrice
+     * @param float|string $volumePrice
      * @param Trade $trade
      */
     protected function processPart(
         string $subdomain,
         int $period,
         int $timestamp,
-        float $volumePrice,
+        $volumePrice,
         Trade $trade
     ): void {
         $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] =
             $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] ?? 0;
-        $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] += $volumePrice;
 
         $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] =
             $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] ?? 0;
-        $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] += $trade->price;
 
         $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] =
             $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] ?? 0;
-        $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] += $trade->amount;
 
         $this->data[STR_EVENTS][$subdomain][$period][$timestamp] =
             $this->data[STR_EVENTS][$subdomain][$period][$timestamp] ?? 0;
+
         $this->data[STR_EVENTS][$subdomain][$period][$timestamp]++;
+
+        if ($this->precisionMode) {
+            $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] =
+                (float)
+                $this->calculator->add(
+                    $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp],
+                    $volumePrice
+                );
+            $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] =
+                (float)
+                $this->calculator->add(
+                    $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp],
+                    $trade->price
+                );
+            $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] =
+                (float)
+                $this->calculator->add(
+                    $this->data[STR_VOLUMES][$subdomain][$period][$timestamp],
+                    $trade->amount
+                );
+        } else {
+            $this->data[STR_VOLUMES][STR_VP . $subdomain][$period][$timestamp] += $volumePrice;
+            $this->data[STR_VOLUMES][STR_P_SUM . $subdomain][$period][$timestamp] += $trade->price;
+            $this->data[STR_VOLUMES][$subdomain][$period][$timestamp] += $trade->amount;
+        }
     }
 
     /**
@@ -79,13 +120,13 @@ class VolumeCounter extends EventsCounter
     {
         $threshold = $this->getThreshold($period);
         foreach (static::DOMAINS as $domain) {
-            if (null !== ($key = array_key_first($this->data[STR_EVENTS][$domain][$period] ?? []))
-                && ($key <= $threshold)) {
-                unset($this->data[STR_EVENTS][$domain][$period][$key]);
+            if (null !== ($timestamp = array_key_first($this->data[STR_EVENTS][$domain][$period] ?? []))
+                && ($timestamp <= $threshold)) {
+                unset($this->data[STR_EVENTS][$domain][$period][$timestamp]);
             }
-            if (null !== ($key = array_key_first($this->data[STR_VOLUMES][$domain][$period] ?? []))
-                && ($key <= $threshold)) {
-                unset($this->data[STR_VOLUMES][$domain][$period][$key]);
+            if (null !== ($timestamp = array_key_first($this->data[STR_VOLUMES][$domain][$period] ?? []))
+                && ($timestamp <= $threshold)) {
+                unset($this->data[STR_VOLUMES][$domain][$period][$timestamp]);
             }
         }
     }
@@ -96,40 +137,9 @@ class VolumeCounter extends EventsCounter
      */
     public function getVolumeArray(?bool $reset = null): array
     {
-        $volumes = [];
-        foreach (static::DOMAINS as $domain) {
-            foreach ($this->periods as $period => $groupBy) {
-                if (0 < ($sum = array_sum($this->data[STR_VOLUMES][$domain][$period] ?? []))) {
-                    $volumes[$domain][$period] = $sum;
-                }
-            }
-        }
+        $volumes = $this->calcVolumes();
         $events = $this->getEventsArray();
-//        dump(STR_VOLUMES, $volumes, STR_EVENTS, $events);
-        $averages = [];
-        foreach ($this->periods as $period => $groupBy) {
-            if (isset($volumes[STR_VP_TOTAL][$period], $volumes[STR_TOTAL][$period])) {
-                $averages[STR_VWAP_TOTAL][$period] = $volumes[STR_VP_TOTAL][$period] / $volumes[STR_TOTAL][$period];
-            }
-            if (isset($volumes[STR_VP_SELL][$period], $volumes[STR_SELL][$period])) {
-                $averages[STR_VWAP_SELL][$period] = $volumes[STR_VP_SELL][$period] / $volumes[STR_SELL][$period];
-            }
-            if (isset($volumes[STR_VP_BUY][$period], $volumes[STR_BUY][$period])) {
-                $averages[STR_VWAP_BUY][$period] = $volumes[STR_VP_BUY][$period] / $volumes[STR_BUY][$period];
-            }
-            if (isset($volumes[STR_P_SUM_TOTAL][$period], $events[STR_TOTAL][$period])) {
-                $averages[STR_AVG_PRICE_TOTAL][$period] =
-                    $volumes[STR_P_SUM_TOTAL][$period] / $events[STR_TOTAL][$period];
-            }
-            if (isset($volumes[STR_P_SUM_SELL][$period], $events[STR_SELL][$period])) {
-                $averages[STR_AVG_PRICE_SELL][$period] =
-                    $volumes[STR_P_SUM_SELL][$period] / $events[STR_SELL][$period];
-            }
-            if (isset($volumes[STR_P_SUM_BUY][$period], $events[STR_BUY][$period])) {
-                $averages[STR_AVG_PRICE_BUY][$period] =
-                    $volumes[STR_P_SUM_BUY][$period] / $events[STR_BUY][$period];
-            }
-        }
+        $averages = $this->calcAverages($volumes, $events);
         if ($reset) {
             $this->reset();
         }
@@ -159,4 +169,53 @@ class VolumeCounter extends EventsCounter
         return $events;
     }
 
+    /**
+     * @param array $volumes
+     * @param array $events
+     * @return array
+     */
+    private function calcAverages(array $volumes, array $events): array
+    {
+        $averages = [];
+        foreach ($this->periods as $period => $groupBy) {
+            if (isset($volumes[STR_VP_TOTAL][$period], $volumes[STR_TOTAL][$period])) {
+                $averages[STR_VWAP_TOTAL][$period] = $volumes[STR_VP_TOTAL][$period] / $volumes[STR_TOTAL][$period];
+            }
+            if (isset($volumes[STR_VP_SELL][$period], $volumes[STR_SELL][$period])) {
+                $averages[STR_VWAP_SELL][$period] = $volumes[STR_VP_SELL][$period] / $volumes[STR_SELL][$period];
+            }
+            if (isset($volumes[STR_VP_BUY][$period], $volumes[STR_BUY][$period])) {
+                $averages[STR_VWAP_BUY][$period] = $volumes[STR_VP_BUY][$period] / $volumes[STR_BUY][$period];
+            }
+            if (isset($volumes[STR_P_SUM_TOTAL][$period], $events[STR_TOTAL][$period])) {
+                $averages[STR_AVG_PRICE_TOTAL][$period] =
+                    $volumes[STR_P_SUM_TOTAL][$period] / $events[STR_TOTAL][$period];
+            }
+            if (isset($volumes[STR_P_SUM_SELL][$period], $events[STR_SELL][$period])) {
+                $averages[STR_AVG_PRICE_SELL][$period] =
+                    $volumes[STR_P_SUM_SELL][$period] / $events[STR_SELL][$period];
+            }
+            if (isset($volumes[STR_P_SUM_BUY][$period], $events[STR_BUY][$period])) {
+                $averages[STR_AVG_PRICE_BUY][$period] =
+                    $volumes[STR_P_SUM_BUY][$period] / $events[STR_BUY][$period];
+            }
+        }
+        return $averages;
+    }
+
+    /**
+     * @return array
+     */
+    private function calcVolumes(): array
+    {
+        $volumes = [];
+        foreach (static::DOMAINS as $domain) {
+            foreach ($this->periods as $period => $groupBy) {
+                if (0 < ($sum = array_sum($this->data[STR_VOLUMES][$domain][$period] ?? []))) {
+                    $volumes[$domain][$period] = $sum;
+                }
+            }
+        }
+        return $volumes;
+    }
 }
