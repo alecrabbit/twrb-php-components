@@ -23,6 +23,9 @@ class TimedCounter
     /** @var bool */
     protected $relativeMode = false;
 
+    /** @var bool */
+    protected $precisionMode = false;
+
     /** @var array */
     protected $periods;
 
@@ -44,6 +47,15 @@ class TimedCounter
     public function enableRelativeMode(): self
     {
         $this->relativeMode = true;
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    public function enablePrecisionMode(): self
+    {
+        $this->precisionMode = true;
         return $this;
     }
 

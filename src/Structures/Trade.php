@@ -19,7 +19,7 @@ class Trade
     public $amount;
     /** @var float */
     public $price;
-    /** @var int|null */
+    /** @var int */
     public $timestamp;
 
     public function __construct(
@@ -27,7 +27,7 @@ class Trade
         string $pair,
         float $price,
         float $amount,
-        ?int $timestamp = null,
+        int $timestamp,
         int $id = 0
     ) {
         $this->side = $side;
