@@ -11,7 +11,8 @@
     "alecrabbit/accessories": "dev-master",
     "alecrabbit/php-helpers": "^0",
     "krowinski/bcmath-extended": "^4.1",
-    "nesbot/carbon": "^2.6"
+    "nesbot/carbon": "^2.6",
+    "brick/math": "^0.8.2"
   },
   "require-dev": {
     "alecrabbit/php-output-a": "^0",

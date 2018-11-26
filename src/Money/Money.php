@@ -18,7 +18,8 @@ use AlecRabbit\Money\Contracts\MoneyInterface;
  */
 class Money implements MoneyInterface, \JsonSerializable
 {
-    use MoneyFactory;
+    use MoneyFactory,
+        MoneyFunctions;
 
     /** @var CalculatorInterface */
     private $calculator;
@@ -49,6 +50,9 @@ class Money implements MoneyInterface, \JsonSerializable
         $this->setCurrency($currency);
     }
 
+    /**
+     * @param string $amount
+     */
     private function setAmount(string $amount): void
     {
         $this->amount = trim_zeros($amount);
@@ -64,34 +68,17 @@ class Money implements MoneyInterface, \JsonSerializable
 
 
     /**
-     * @param Money $first
-     * @param Money ...$collection
-     *
-     * @return Money
-     */
-    public static function min(Money $first, Money ...$collection): Money
-    {
-        $min = $first;
-
-        foreach ($collection as $money) {
-            if ($money->lessThan($min)) {
-                $min = $money;
-            }
-        }
-
-        return $min;
-    }
-
-    /**
-     * Checks whether the value represented by this object is less than the other.
+     * Asserts that a Money has the same currency as this.
      *
      * @param Money $other
      *
-     * @return bool
+     * @throws \InvalidArgumentException If $other has a different currency
      */
-    public function lessThan(Money $other): bool
+    private function assertSameCurrency(Money $other): void
     {
-        return $this->compare($other) === -1;
+        if (!$this->isSameCurrency($other)) {
+            throw new \InvalidArgumentException('Currencies must be identical.');
+        }
     }
 
     /**
@@ -111,20 +98,6 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Asserts that a Money has the same currency as this.
-     *
-     * @param Money $other
-     *
-     * @throws \InvalidArgumentException If $other has a different currency
-     */
-    private function assertSameCurrency(Money $other): void
-    {
-        if (!$this->isSameCurrency($other)) {
-            throw new \InvalidArgumentException('Currencies must be identical.');
-        }
-    }
-
-    /**
      * Checks whether a Money has the same Currency as this.
      *
      * @param Money $other
@@ -134,48 +107,6 @@ class Money implements MoneyInterface, \JsonSerializable
     public function isSameCurrency(Money $other): bool
     {
         return $this->currency->equals($other->currency);
-    }
-
-    /**
-     * @param Money $first
-     * @param Money ...$collection
-     *
-     * @return Money
-     */
-    public static function max(Money $first, Money ...$collection): Money
-    {
-        $max = $first;
-
-        foreach ($collection as $money) {
-            if ($money->greaterThan($max)) {
-                $max = $money;
-            }
-        }
-
-        return $max;
-    }
-
-    /**
-     * Checks whether the value represented by this object is greater than the other.
-     *
-     * @param Money $other
-     *
-     * @return bool
-     */
-    public function greaterThan(Money $other): bool
-    {
-        return $this->compare($other) === 1;
-    }
-
-    /**
-     * @param Money $first
-     * @param Money ...$collection
-     *
-     * @return Money
-     */
-    public static function sum(Money $first, Money ...$collection): Money
-    {
-        return $first->add(...$collection);
     }
 
     /**
@@ -486,16 +417,6 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Checks if the value represented by this object is negative.
-     *
-     * @return bool
-     */
-    public function isNegative(): bool
-    {
-        return $this->calculator->compare($this->amount, '0') === -1;
-    }
-
-    /**
      * Checks if the value represented by this object is not negative.
      *
      * @return bool
@@ -504,6 +425,16 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         return
             !$this->isNegative();
+    }
+
+    /**
+     * Checks if the value represented by this object is negative.
+     *
+     * @return bool
+     */
+    public function isNegative(): bool
+    {
+        return $this->calculator->compare($this->amount, '0') === -1;
     }
 
     /**
