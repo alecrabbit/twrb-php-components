@@ -30,20 +30,28 @@ class Money implements MoneyInterface, \JsonSerializable
      * @param null|int|float|string $amount
      * @param Currency $currency
      *
-     * @throws \InvalidArgumentException If amount is not integer
+     * @throws \InvalidArgumentException If amount is not numeric
      */
     public function __construct($amount, Currency $currency)
+    {
+        $this->setAmount($this->assertAmount($amount));
+        $this->setCurrency($currency);
+        $this->calculator = Factory::getCalculator();
+    }
+
+    /**
+     * @param null|int|float|string $amount
+     * @return string
+     */
+    private function assertAmount($amount): string
     {
         if (null === $amount) {
             $amount = 0;
         }
         if (!\is_numeric($amount)) {
-            throw new \InvalidArgumentException('Amount must be int|float|string');
+            throw new \InvalidArgumentException('Amount must be type of int|float|string or NULL');
         }
-        $this->calculator = Factory::getCalculator();
-
-        $this->setAmount((string)$amount);
-        $this->setCurrency($currency);
+        return (string)$amount;
     }
 
     /**
@@ -69,7 +77,7 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         $this->assertSameCurrency($other);
 
-        return $this->calculator->compare($this->amount, $other->amount);
+        return $this->calculator->compare($this->amount, $other->getAmount());
     }
 
     /**
@@ -120,6 +128,38 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
+     * Allocate the money among N targets.
+     *
+     * @param int $n
+     *
+     * @param int|null $precision
+     * @return Money[]
+     *
+     */
+    public function allocateTo(int $n, ?int $precision = null): array
+    {
+        if ($n <= 0) {
+            throw new \InvalidArgumentException('Number to allocateTo must be greater than zero.');
+        }
+
+        return $this->allocate(array_fill(0, $n, 1), $precision);
+    }
+
+    /**
+     * Allocate the money according to a list of ratios.
+     *
+     * @param array $ratios
+     *
+     * @param int|null $precision
+     * @return Money[]
+     */
+    public function allocate(array $ratios, ?int $precision = null): array
+    {
+        return
+            (new AllocationCalculator($this))->compute($ratios, $precision);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function assertOperand($operand): void
@@ -135,16 +175,28 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Returns a new Money instance based on the current one using the Currency.
-     *
-     * @param int|string|float|null $amount
-     *
-     * @return Money
-     *
-     * @throws \InvalidArgumentException
+     * {@inheritdoc}
      */
-    private function newInstance($amount): Money
+    protected function newInstance($amount): Money
     {
         return new Money($amount, $this->currency);
+    }
+
+    /**
+     * @return Money
+     */
+    public function absolute(): Money
+    {
+        return
+            $this->newInstance($this->calculator->absolute($this->getAmount()));
+    }
+
+    /**
+     * @return Money
+     */
+    public function negative(): Money
+    {
+        return
+            $this->newInstance(0)->subtract($this);
     }
 }

@@ -12,7 +12,7 @@ use AlecRabbit\Money\Contracts\CalculatorInterface;
 trait MoneyFunctions
 {
     /** @var CalculatorInterface */
-    private $calculator;
+    protected $calculator;
 
     /**
      * @param Money $first
@@ -149,7 +149,7 @@ trait MoneyFunctions
      */
     public function equals(Money $other): bool
     {
-        return $this->isSameCurrency($other) && $this->getAmount() === $other->amount;
+        return $this->isSameCurrency($other) && $this->getAmount() === $other->getAmount();
     }
 
     /**
@@ -184,10 +184,10 @@ trait MoneyFunctions
     {
         $this->assertOperand($multiplier);
 
-        $product = $this->calculator->multiply($this->getAmount(), $multiplier);
+        $result = $this->calculator->multiply($this->getAmount(), $multiplier);
 
         return
-            $this->newInstance($product);
+            $this->newInstance($result);
     }
 
     /**
@@ -203,80 +203,9 @@ trait MoneyFunctions
     {
         $this->assertSameCurrency($divisor);
 
-        return new Money($this->calculator->mod($this->getAmount(), $divisor->amount), $this->getCurrency());
-    }
-
-    /**
-     * Allocate the money among N targets.
-     *
-     * @param int $n
-     *
-     * @param int|null $precision
-     * @return Money[]
-     *
-     */
-    public function allocateTo(int $n, ?int $precision = null): array
-    {
-        if ($n <= 0) {
-            throw new \InvalidArgumentException('Number to allocateTo must be greater than zero.');
-        }
-
-        return $this->allocate(array_fill(0, $n, 1), $precision);
-    }
-
-    /**
-     * Allocate the money according to a list of ratios.
-     *
-     * @param array $ratios
-     *
-     * @param int|null $precision
-     * @return Money[]
-     */
-    public function allocate(array $ratios, ?int $precision = null): array
-    {
-        $precision = $precision ?? 2;
-        if (0 === $allocations = \count($ratios)) {
-            throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array.');
-        }
-        if (0 >= $total = array_sum($ratios)) {
-            throw new \InvalidArgumentException('Sum of ratios must be greater than zero.');
-        }
-
-        $remainder = $amount = $this->getAmount();
-        $results = [];
-
-        foreach ($ratios as $ratio) {
-            if ($ratio < 0) {
-                throw new \InvalidArgumentException('Ratio must be zero or positive.');
-            }
-
-            $share = $this->calculator->share($amount, $ratio, $total, $precision);
-            $results[] = $this->newInstance($share);
-            $remainder = $this->calculator->subtract($remainder, $share);
-        }
-        switch ($this->calculator->compare($remainder, '0')) {
-            case -1:
-                for ($i = $allocations - 1; $i >= 0; $i--) {
-                    if (!$ratios[$i]) {
-                        continue;
-                    }
-                    $results[$i]->setAmount($this->calculator->add($results[$i]->amount, $remainder));
-                    break;
-                }
-                break;
-            case 1:
-                for ($i = 0; $i < $allocations; $i++) {
-                    if (!$ratios[$i]) {
-                        continue;
-                    }
-                    $results[$i]->setAmount($this->calculator->add($results[$i]->amount, $remainder));
-                    break;
-                }
-                break;
-            default:
-                break;
-        }
-        return $results;
+        $mod = $this->calculator->mod($this->getAmount(), $divisor->getAmount());
+        return
+            $this->newInstance($mod);
     }
 
     /**
@@ -290,7 +219,7 @@ trait MoneyFunctions
             throw new \InvalidArgumentException('Cannot calculate a ratio of zero.');
         }
 
-        return $this->calculator->divide($this->getAmount(), $money->amount);
+        return $this->calculator->divide($this->getAmount(), $money->getAmount());
     }
 
     /**
@@ -301,22 +230,6 @@ trait MoneyFunctions
     public function isZero(): bool
     {
         return $this->calculator->compare($this->getAmount(), '0') === 0;
-    }
-
-    /**
-     * @return Money
-     */
-    public function absolute(): Money
-    {
-        return $this->newInstance($this->calculator->absolute($this->getAmount()));
-    }
-
-    /**
-     * @return Money
-     */
-    public function negative(): Money
-    {
-        return $this->newInstance(0)->subtract($this);
     }
 
     /**
@@ -335,7 +248,7 @@ trait MoneyFunctions
         foreach ($subtrahends as $subtrahend) {
             $this->assertSameCurrency($subtrahend);
 
-            $amount = $calculator->subtract($amount, $subtrahend->amount);
+            $amount = $calculator->subtract($amount, $subtrahend->getAmount());
         }
 
         return new Money($amount, $this->getCurrency());
@@ -446,5 +359,14 @@ trait MoneyFunctions
      */
     abstract protected function assertOperand($operand): void;
 
-
+    /**
+     * Returns a new Money instance based on the current one using the Currency.
+     *
+     * @param int|string|float|null $amount
+     *
+     * @return Money
+     *
+     * @throws \InvalidArgumentException
+     */
+    abstract protected function newInstance($amount): Money;
 }
