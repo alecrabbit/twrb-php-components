@@ -199,5 +199,4 @@ class Money implements MoneyInterface, \JsonSerializable
         return
             $this->newInstance(0)->subtract($this);
     }
-
 }

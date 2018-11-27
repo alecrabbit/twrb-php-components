@@ -369,5 +369,4 @@ trait MoneyFunctions
      * @throws \InvalidArgumentException
      */
     abstract protected function newInstance($amount): Money;
-
 }
