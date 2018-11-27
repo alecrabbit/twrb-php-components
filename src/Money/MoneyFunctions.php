@@ -98,15 +98,15 @@ trait MoneyFunctions
      */
     public function add(Money ...$addends): Money
     {
-        $amount = $this->amount;
+        $amount = $this->getAmount();
         $calculator = $this->calculator;
 
         foreach ($addends as $addend) {
             $this->assertSameCurrency($addend);
 
-            $amount = $calculator->add($amount, $addend->amount);
+            $amount = $calculator->add($amount, $addend->getAmount());
         }
-        return new Money($amount, $this->currency);
+        return new Money($amount, $this->getCurrency());
     }
 
     /**
@@ -136,7 +136,7 @@ trait MoneyFunctions
             throw new \InvalidArgumentException('Division by zero.');
         }
 
-        $quotient = $this->calculator->divide($this->amount, $divisor);
+        $quotient = $this->calculator->divide($this->getAmount(), $divisor);
         return
             $this->newInstance($quotient);
     }
@@ -150,7 +150,7 @@ trait MoneyFunctions
      */
     public function equals(Money $other): bool
     {
-        return $this->isSameCurrency($other) && $this->amount === $other->amount;
+        return $this->isSameCurrency($other) && $this->getAmount() === $other->amount;
     }
 
     /**
@@ -185,7 +185,7 @@ trait MoneyFunctions
     {
         $this->assertOperand($multiplier);
 
-        $product = $this->calculator->multiply($this->amount, $multiplier);
+        $product = $this->calculator->multiply($this->getAmount(), $multiplier);
 
         return
             $this->newInstance($product);
@@ -204,7 +204,7 @@ trait MoneyFunctions
     {
         $this->assertSameCurrency($divisor);
 
-        return new Money($this->calculator->mod($this->amount, $divisor->amount), $this->currency);
+        return new Money($this->calculator->mod($this->getAmount(), $divisor->amount), $this->getCurrency());
     }
 
     /**
@@ -240,7 +240,7 @@ trait MoneyFunctions
             throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array.');
         }
 
-        $remainder = $this->amount;
+        $remainder = $this->getAmount();
         $results = [];
         $total = array_sum($ratios);
 
@@ -253,7 +253,7 @@ trait MoneyFunctions
                 throw new \InvalidArgumentException('Ratio must be zero or positive.');
             }
 
-            $share = $this->calculator->share($this->amount, $ratio, $total, $precision);
+            $share = $this->calculator->share($this->getAmount(), $ratio, $total, $precision);
             $results[] = $this->newInstance($share);
             $remainder = $this->calculator->subtract($remainder, $share);
         }
@@ -293,7 +293,7 @@ trait MoneyFunctions
             throw new \InvalidArgumentException('Cannot calculate a ratio of zero.');
         }
 
-        return $this->calculator->divide($this->amount, $money->amount);
+        return $this->calculator->divide($this->getAmount(), $money->amount);
     }
 
     /**
@@ -303,7 +303,7 @@ trait MoneyFunctions
      */
     public function isZero(): bool
     {
-        return $this->calculator->compare($this->amount, '0') === 0;
+        return $this->calculator->compare($this->getAmount(), '0') === 0;
     }
 
     /**
@@ -311,7 +311,7 @@ trait MoneyFunctions
      */
     public function absolute(): Money
     {
-        return $this->newInstance($this->calculator->absolute($this->amount));
+        return $this->newInstance($this->calculator->absolute($this->getAmount()));
     }
 
     /**
@@ -332,7 +332,7 @@ trait MoneyFunctions
      */
     public function subtract(Money ...$subtrahends): Money
     {
-        $amount = $this->amount;
+        $amount = $this->getAmount();
         $calculator = $this->calculator;
 
         foreach ($subtrahends as $subtrahend) {
@@ -341,7 +341,7 @@ trait MoneyFunctions
             $amount = $calculator->subtract($amount, $subtrahend->amount);
         }
 
-        return new Money($amount, $this->currency);
+        return new Money($amount, $this->getCurrency());
     }
 
     /**
@@ -362,7 +362,7 @@ trait MoneyFunctions
      */
     public function isNegative(): bool
     {
-        return $this->calculator->compare($this->amount, '0') === -1;
+        return $this->calculator->compare($this->getAmount(), '0') === -1;
     }
 
     /**
@@ -394,7 +394,7 @@ trait MoneyFunctions
      */
     public function isPositive(): bool
     {
-        return $this->calculator->compare($this->amount, '0') === 1;
+        return $this->calculator->compare($this->getAmount(), '0') === 1;
     }
 
     abstract public function compare(Money $other): int;
