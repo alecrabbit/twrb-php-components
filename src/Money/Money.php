@@ -21,10 +21,10 @@ class Money implements MoneyInterface, \JsonSerializable
         MoneyFunctions;
 
     /** @var string */
-    private $amount;
+    protected $amount;
 
     /** @var Currency */
-    private $currency;
+    protected $currency;
 
     /**
      * @param null|int|float|string $amount
@@ -85,7 +85,7 @@ class Money implements MoneyInterface, \JsonSerializable
      *
      * @throws \InvalidArgumentException If $other has a different currency
      */
-    private function assertSameCurrency(Money $other): void
+    protected function assertSameCurrency(Money $other): void
     {
         if (!$this->isSameCurrency($other)) {
             throw new \InvalidArgumentException('Currencies must be identical.');
@@ -144,13 +144,15 @@ class Money implements MoneyInterface, \JsonSerializable
      *
      * @throws \InvalidArgumentException If $operand is neither integer nor float
      */
-    private function assertOperand($operand): void
+    protected function assertOperand($operand): void
     {
         if (!\is_numeric($operand)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Operand should be a numeric value, "%s" given.',
-                \is_object($operand) ? \get_class($operand) : \gettype($operand)
-            ));
+            throw new \InvalidArgumentException(
+                sprintf(
+                    'Operand should be a numeric value, "%s" given.',
+                    typeOf($operand)
+                )
+            );
         }
     }
 
@@ -167,5 +169,4 @@ class Money implements MoneyInterface, \JsonSerializable
     {
         return new Money($amount, $this->currency);
     }
-
 }

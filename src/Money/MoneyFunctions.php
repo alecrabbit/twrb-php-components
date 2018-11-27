@@ -399,4 +399,9 @@ trait MoneyFunctions
 
     abstract public function compare(Money $other): int;
 
+    abstract public function isSameCurrency(Money $other): bool;
+
+    abstract protected function assertSameCurrency(Money $other): void;
+
+    abstract protected function assertOperand($operand): void;
 }
