@@ -117,33 +117,34 @@ class AllocationCalculator
 
     /**
      * @param array $ratios
+     */
+    private function allocateRemainder(array $ratios): void
+    {
+        foreach ($this->indexRange() as $index) {
+            if (!$ratios[$index]) {
+                continue;
+            }
+            $this->updateAllocated($index);
+            break;
+        }
+    }
+
+    /**
      * @return array
      */
-    private function allocateRemainder(array $ratios): array
+    private function indexRange(): array
     {
-        switch ($this->calculator->compare($this->remainder, '0')) {
-            case -1:
-                for ($i = $this->allocations - 1; $i >= 0; $i--) {
-                    if (!$ratios[$i]) {
-                        continue;
-                    }
-                    $this->updateAllocated($i);
-                    break;
-                }
-                break;
-            case 1:
-                for ($i = 0; $i < $this->allocations; $i++) {
-                    if (!$ratios[$i]) {
-                        continue;
-                    }
-                    $this->updateAllocated($i);
-                    break;
-                }
-                break;
-            default:
-                break;
-        }
-        return $this->allocated;
+        return
+            $this->calculator->compare($this->remainder, '0') < 0 ?
+                range($this->allocations - 1, 0) : range(0, $this->allocations);
+    }
+
+    /**
+     * @param int $index
+     */
+    private function updateAllocated(int $index): void
+    {
+        $this->allocated[$index] = $this->calculator->add($this->allocated[$index], $this->remainder);
     }
 
     /**
@@ -156,13 +157,5 @@ class AllocationCalculator
             $computed[] = new Money($amount, $this->currency);
         }
         return $computed;
-    }
-
-    /**
-     * @param int $index
-     */
-    private function updateAllocated(int $index): void
-    {
-        $this->allocated[$index] = $this->calculator->add($this->allocated[$index], $this->remainder);
     }
 }

@@ -49,7 +49,7 @@ class Money implements MoneyInterface, \JsonSerializable
             $amount = 0;
         }
         if (!\is_numeric($amount)) {
-            throw new \InvalidArgumentException('Amount must be int|float|string');
+            throw new \InvalidArgumentException('Amount must be type of int|float|string or NULL');
         }
         return (string)$amount;
     }
