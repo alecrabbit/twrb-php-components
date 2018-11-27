@@ -207,39 +207,6 @@ trait MoneyFunctions
     }
 
     /**
-     * Allocate the money among N targets.
-     *
-     * @param int $n
-     *
-     * @param int|null $precision
-     * @return Money[]
-     *
-     */
-    public function allocateTo(int $n, ?int $precision = null): array
-    {
-        if ($n <= 0) {
-            throw new \InvalidArgumentException('Number to allocateTo must be greater than zero.');
-        }
-
-        return $this->allocate(array_fill(0, $n, 1), $precision);
-    }
-
-    /**
-     * Allocate the money according to a list of ratios.
-     *
-     * @param array $ratios
-     *
-     * @param int|null $precision
-     * @return Money[]
-     */
-    public function allocate(array $ratios, ?int $precision = null): array
-    {
-        return
-            (new AllocationCalculator($this))->compute($ratios, $precision);
-
-    }
-
-    /**
      * @param Money $money
      *
      * @return string
@@ -405,6 +372,4 @@ trait MoneyFunctions
      * @throws \InvalidArgumentException If $operand is neither integer nor float
      */
     abstract protected function assertOperand($operand): void;
-
-
 }
