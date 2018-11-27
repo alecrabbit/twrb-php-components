@@ -14,7 +14,6 @@ trait MoneyFunctions
     /** @var CalculatorInterface */
     private $calculator;
 
-
     /**
      * @param Money $first
      * @param Money ...$collection
@@ -239,21 +238,19 @@ trait MoneyFunctions
         if (0 === $allocations = \count($ratios)) {
             throw new \InvalidArgumentException('Cannot allocate to none, ratios cannot be an empty array.');
         }
-
-        $remainder = $this->getAmount();
-        $results = [];
-        $total = array_sum($ratios);
-
-        if ($total <= 0) {
+        if (0 >= $total = array_sum($ratios)) {
             throw new \InvalidArgumentException('Sum of ratios must be greater than zero.');
         }
+
+        $remainder = $amount = $this->getAmount();
+        $results = [];
 
         foreach ($ratios as $ratio) {
             if ($ratio < 0) {
                 throw new \InvalidArgumentException('Ratio must be zero or positive.');
             }
 
-            $share = $this->calculator->share($this->getAmount(), $ratio, $total, $precision);
+            $share = $this->calculator->share($amount, $ratio, $total, $precision);
             $results[] = $this->newInstance($share);
             $remainder = $this->calculator->subtract($remainder, $share);
         }
@@ -397,11 +394,57 @@ trait MoneyFunctions
         return $this->calculator->compare($this->getAmount(), '0') === 1;
     }
 
+    /**
+     * Returns an integer less than, equal to, or greater than zero
+     * if the value of this object is considered to be respectively
+     * less than, equal to, or greater than the other.
+     *
+     * @param Money $other
+     *
+     * @return int
+     */
     abstract public function compare(Money $other): int;
 
+    /**
+     * Checks whether a Money has the same Currency as this.
+     *
+     * @param Money $other
+     *
+     * @return bool
+     */
     abstract public function isSameCurrency(Money $other): bool;
 
+    /**
+     * Returns the value represented by this object.
+     *
+     * @return string
+     */
+    abstract public function getAmount(): string;
+
+    /**
+     * Returns the currency of this object.
+     *
+     * @return Currency
+     */
+    abstract public function getCurrency(): Currency;
+
+    /**
+     * Asserts that a Money has the same currency as this.
+     *
+     * @param Money $other
+     *
+     * @throws \InvalidArgumentException If $other has a different currency
+     */
     abstract protected function assertSameCurrency(Money $other): void;
 
+    /**
+     * Asserts that the operand is integer or float.
+     *
+     * @param float|int|string|object $operand
+     *
+     * @throws \InvalidArgumentException If $operand is neither integer nor float
+     */
     abstract protected function assertOperand($operand): void;
+
+
 }

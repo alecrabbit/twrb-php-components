@@ -63,13 +63,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Returns an integer less than, equal to, or greater than zero
-     * if the value of this object is considered to be respectively
-     * less than, equal to, or greater than the other.
-     *
-     * @param Money $other
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function compare(Money $other): int
     {
@@ -79,11 +73,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Asserts that a Money has the same currency as this.
-     *
-     * @param Money $other
-     *
-     * @throws \InvalidArgumentException If $other has a different currency
+     * {@inheritdoc}
      */
     protected function assertSameCurrency(Money $other): void
     {
@@ -93,11 +83,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Checks whether a Money has the same Currency as this.
-     *
-     * @param Money $other
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isSameCurrency(Money $other): bool
     {
@@ -105,9 +91,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Returns the value represented by this object.
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getAmount(): string
     {
@@ -115,9 +99,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Returns the currency of this object.
-     *
-     * @return Currency
+     * {@inheritdoc}
      */
     public function getCurrency(): Currency
     {
@@ -138,11 +120,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * Asserts that the operand is integer or float.
-     *
-     * @param float|int|string|object $operand
-     *
-     * @throws \InvalidArgumentException If $operand is neither integer nor float
+     * {@inheritdoc}
      */
     protected function assertOperand($operand): void
     {
