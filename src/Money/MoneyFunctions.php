@@ -149,7 +149,7 @@ trait MoneyFunctions
      */
     public function equals(Money $other): bool
     {
-        return $this->isSameCurrency($other) && $this->getAmount() === $other->amount;
+        return $this->isSameCurrency($other) && $this->getAmount() === $other->getAmount();
     }
 
     /**
@@ -184,10 +184,10 @@ trait MoneyFunctions
     {
         $this->assertOperand($multiplier);
 
-        $product = $this->calculator->multiply($this->getAmount(), $multiplier);
+        $result = $this->calculator->multiply($this->getAmount(), $multiplier);
 
         return
-            $this->newInstance($product);
+            $this->newInstance($result);
     }
 
     /**
@@ -203,7 +203,9 @@ trait MoneyFunctions
     {
         $this->assertSameCurrency($divisor);
 
-        return new Money($this->calculator->mod($this->getAmount(), $divisor->amount), $this->getCurrency());
+        $mod = $this->calculator->mod($this->getAmount(), $divisor->getAmount());
+        return
+            $this->newInstance($mod);
     }
 
     /**
@@ -217,7 +219,7 @@ trait MoneyFunctions
             throw new \InvalidArgumentException('Cannot calculate a ratio of zero.');
         }
 
-        return $this->calculator->divide($this->getAmount(), $money->amount);
+        return $this->calculator->divide($this->getAmount(), $money->getAmount());
     }
 
     /**
@@ -228,22 +230,6 @@ trait MoneyFunctions
     public function isZero(): bool
     {
         return $this->calculator->compare($this->getAmount(), '0') === 0;
-    }
-
-    /**
-     * @return Money
-     */
-    public function absolute(): Money
-    {
-        return $this->newInstance($this->calculator->absolute($this->getAmount()));
-    }
-
-    /**
-     * @return Money
-     */
-    public function negative(): Money
-    {
-        return $this->newInstance(0)->subtract($this);
     }
 
     /**
@@ -262,7 +248,7 @@ trait MoneyFunctions
         foreach ($subtrahends as $subtrahend) {
             $this->assertSameCurrency($subtrahend);
 
-            $amount = $calculator->subtract($amount, $subtrahend->amount);
+            $amount = $calculator->subtract($amount, $subtrahend->getAmount());
         }
 
         return new Money($amount, $this->getCurrency());
@@ -372,4 +358,16 @@ trait MoneyFunctions
      * @throws \InvalidArgumentException If $operand is neither integer nor float
      */
     abstract protected function assertOperand($operand): void;
+
+    /**
+     * Returns a new Money instance based on the current one using the Currency.
+     *
+     * @param int|string|float|null $amount
+     *
+     * @return Money
+     *
+     * @throws \InvalidArgumentException
+     */
+    abstract protected function newInstance($amount): Money;
+
 }
