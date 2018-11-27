@@ -40,7 +40,7 @@ class Money implements MoneyInterface, \JsonSerializable
     }
 
     /**
-     * @param int|float|string $amount
+     * @param null|int|float|string $amount
      * @return string
      */
     private function assertAmount($amount): string
