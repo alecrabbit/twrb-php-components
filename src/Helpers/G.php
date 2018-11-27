@@ -19,45 +19,17 @@ class G
      */
     public static function range(int $start, int $stop, int $step = 1): \Generator
     {
-        if ($start < $stop) {
-            return self::rangeForward($start, $stop, $step);
+        if ($step <= 0) {
+            throw new \LogicException('Step has to be greater than zero');
         }
-        return self::rangeBackwards($start, $stop, $step);
-    }
-
-    /**
-     * @param int $start
-     * @param int $stop
-     * @param int $step
-     * @return \Generator
-     */
-    private static function rangeForward(int $start, int $stop, int $step): \Generator
-    {
         $i = $start;
+        $direction = $stop <=> $start;
+        $step = $direction * $step;
         $halt = false;
         while (!$halt) {
             yield $i;
             $i += $step;
-            if ($i > $stop) {
-                $halt = true;
-            }
-        }
-    }
-
-    /**
-     * @param int $start
-     * @param int $stop
-     * @param int $step
-     * @return \Generator
-     */
-    private static function rangeBackwards(int $start, int $stop, int $step): \Generator
-    {
-        $i = $start;
-        $halt = false;
-        while (!$halt) {
-            yield $i;
-            $i -= $step;
-            if ($i < $stop) {
+            if ((($i - $stop) <=> 0) === $direction) {
                 $halt = true;
             }
         }
