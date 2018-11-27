@@ -31,6 +31,12 @@ class AllocationCalculator
     /** @var string */
     private $remainder;
 
+    /** @var int */
+    private $precision;
+
+    /** @var float|int */
+    private $total;
+
     /**
      * AllocationCalculator constructor.
      * @param Money $param
@@ -45,13 +51,24 @@ class AllocationCalculator
 
     public function compute(array $ratios, ?int $precision): array
     {
-        $precision = $this->filterPrecision($precision);
+        $this->processArguments($ratios, $precision);
 
-        $this->allocate($ratios, $precision);
+        $this->allocate($ratios);
 
         $this->allocateRemainder($ratios);
         return
             $this->prepareInstances();
+    }
+
+    /**
+     * @param array $ratios
+     * @param int|null $precision
+     */
+    private function processArguments(array $ratios, ?int $precision): void
+    {
+        $this->precision = $precision ?? self::PRECISION;
+        $this->computeAllocations($ratios);
+        $this->computeTotal($ratios);
     }
 
     /**
@@ -66,18 +83,30 @@ class AllocationCalculator
 
     /**
      * @param array $ratios
-     * @return float|int
      */
-    private function getTotal(array $ratios)
+    private function computeTotal(array $ratios): void
     {
-        if (0 >= $total = array_sum($ratios)) {
+        if (0 >= $this->total = array_sum($ratios)) {
             throw new \InvalidArgumentException('Sum of ratios must be greater than zero.');
         }
-        return $total;
     }
 
     /**
-     * @param $ratio
+     * @param array $ratios
+     */
+    private function allocate(array $ratios): void
+    {
+        foreach ($ratios as $ratio) {
+            $this->checkRatio($ratio);
+
+            $share = $this->calculator->share($this->amount, $ratio, $this->total, $this->precision);
+            $this->allocated[] = $share;
+            $this->remainder = $this->calculator->subtract($this->remainder, $share);
+        }
+    }
+
+    /**
+     * @param float|int $ratio
      */
     private function checkRatio($ratio): void
     {
@@ -92,15 +121,13 @@ class AllocationCalculator
      */
     private function allocateRemainder(array $ratios): array
     {
-        $this->computeAllocations($ratios);
-
         switch ($this->calculator->compare($this->remainder, '0')) {
             case -1:
                 for ($i = $this->allocations - 1; $i >= 0; $i--) {
                     if (!$ratios[$i]) {
                         continue;
                     }
-                    $this->allocated[$i] = $this->calculator->add($this->allocated[$i], $this->remainder);
+                    $this->updateAllocated($i);
                     break;
                 }
                 break;
@@ -109,7 +136,7 @@ class AllocationCalculator
                     if (!$ratios[$i]) {
                         continue;
                     }
-                    $this->allocated[$i] = $this->calculator->add($this->allocated[$i], $this->remainder);
+                    $this->updateAllocated($i);
                     break;
                 }
                 break;
@@ -132,28 +159,10 @@ class AllocationCalculator
     }
 
     /**
-     * @param array $ratios
-     * @param int $precision
+     * @param int $index
      */
-    private function allocate(array $ratios, int $precision): void
+    private function updateAllocated(int $index): void
     {
-        $total = $this->getTotal($ratios);
-        foreach ($ratios as $ratio) {
-            $this->checkRatio($ratio);
-
-            $share = $this->calculator->share($this->amount, $ratio, $total, $precision);
-            $this->allocated[] = $share;
-            $this->remainder = $this->calculator->subtract($this->remainder, $share);
-        }
-    }
-
-    /**
-     * @param int|null $precision
-     * @return int
-     */
-    private function filterPrecision(?int $precision): int
-    {
-        $precision = $precision ?? self::PRECISION;
-        return $precision;
+        $this->allocated[$index] = $this->calculator->add($this->allocated[$index], $this->remainder);
     }
 }

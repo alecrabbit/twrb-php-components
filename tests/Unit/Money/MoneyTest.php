@@ -361,11 +361,27 @@ class MoneyTest extends TestCase
         $this->assertInstanceOf(Money::class, new Money(PHP_INT_MAX, new Currency('EUR')));
         $this->assertEquals(
             PHP_INT_MAX,
-            (new Money(PHP_INT_MAX, new Currency('EUR')))->add($one)->add($one)->subtract($one)->subtract($one)->getAmount()
+            (new Money(
+                PHP_INT_MAX,
+                new Currency('EUR')
+            ))
+                ->add($one)
+                ->add($one)
+                ->subtract($one)
+                ->subtract($one)
+                ->getAmount()
         );
         $this->assertEquals(
             PHP_INT_MAX,
-            (new Money(PHP_INT_MAX, new Currency('EUR')))->add($ten)->add($one)->subtract($ten)->subtract($one)->getAmount()
+            (new Money(
+                PHP_INT_MAX,
+                new Currency('EUR')
+            ))
+                ->add($ten)
+                ->add($one)
+                ->subtract($ten)
+                ->subtract($one)
+                ->getAmount()
         );
     }
 
