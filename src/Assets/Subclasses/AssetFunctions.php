@@ -5,22 +5,24 @@
  * Time: 14:35
  */
 
-namespace AlecRabbit\Money;
+namespace AlecRabbit\Assets\Subclasses;
 
+use AlecRabbit\Assets\Asset;
+use AlecRabbit\Currency\Currency;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 
-trait MoneyFunctions
+trait AssetFunctions
 {
     /** @var CalculatorInterface */
     protected $calculator;
 
     /**
-     * @param Money $first
-     * @param Money ...$collection
+     * @param Asset $first
+     * @param Asset ...$collection
      *
-     * @return Money
+     * @return Asset
      */
-    public static function min(Money $first, Money ...$collection): Money
+    public static function min(Asset $first, Asset ...$collection): Asset
     {
         $min = $first;
 
@@ -36,22 +38,22 @@ trait MoneyFunctions
     /**
      * Checks whether the value represented by this object is less than the other.
      *
-     * @param Money $other
+     * @param Asset $other
      *
      * @return bool
      */
-    public function lessThan(Money $other): bool
+    public function lessThan(Asset $other): bool
     {
         return $this->compare($other) === -1;
     }
 
     /**
-     * @param Money $first
-     * @param Money ...$collection
+     * @param Asset $first
+     * @param Asset ...$collection
      *
-     * @return Money
+     * @return Asset
      */
-    public static function max(Money $first, Money ...$collection): Money
+    public static function max(Asset $first, Asset ...$collection): Asset
     {
         $max = $first;
 
@@ -67,22 +69,22 @@ trait MoneyFunctions
     /**
      * Checks whether the value represented by this object is greater than the other.
      *
-     * @param Money $other
+     * @param Asset $other
      *
      * @return bool
      */
-    public function greaterThan(Money $other): bool
+    public function greaterThan(Asset $other): bool
     {
         return $this->compare($other) === 1;
     }
 
     /**
-     * @param Money $first
-     * @param Money ...$collection
+     * @param Asset $first
+     * @param Asset ...$collection
      *
-     * @return Money
+     * @return Asset
      */
-    public static function sum(Money $first, Money ...$collection): Money
+    public static function sum(Asset $first, Asset ...$collection): Asset
     {
         return $first->add(...$collection);
     }
@@ -91,11 +93,11 @@ trait MoneyFunctions
      * Returns a new Money object that represents
      * the sum of this and an other Money object.
      *
-     * @param Money ...$addends
+     * @param Asset ...$addends
      *
-     * @return Money
+     * @return Asset
      */
-    public function add(Money ...$addends): Money
+    public function add(Asset ...$addends): Asset
     {
         $amount = $this->getAmount();
         $calculator = $this->calculator;
@@ -105,16 +107,16 @@ trait MoneyFunctions
 
             $amount = $calculator->add($amount, $addend->getAmount());
         }
-        return new Money($amount, $this->getCurrency());
+        return new Asset($amount, $this->getCurrency());
     }
 
     /**
-     * @param Money $first
-     * @param Money ...$collection
+     * @param Asset $first
+     * @param Asset ...$collection
      *
-     * @return Money
+     * @return Asset
      */
-    public static function avg(Money $first, Money ...$collection): Money
+    public static function avg(Asset $first, Asset ...$collection): Asset
     {
         return $first->add(...$collection)->divide(\func_num_args());
     }
@@ -125,9 +127,9 @@ trait MoneyFunctions
      *
      * @param float|int|string $divisor
      *
-     * @return Money
+     * @return Asset
      */
-    public function divide($divisor): Money
+    public function divide($divisor): Asset
     {
         $this->assertOperand($divisor);
 
@@ -143,31 +145,31 @@ trait MoneyFunctions
     /**
      * Checks whether the value represented by this object equals to the other.
      *
-     * @param Money $other
+     * @param Asset $other
      *
      * @return bool
      */
-    public function equals(Money $other): bool
+    public function equals(Asset $other): bool
     {
         return $this->isSameCurrency($other) && $this->getAmount() === $other->getAmount();
     }
 
     /**
-     * @param Money $other
+     * @param Asset $other
      *
      * @return bool
      */
-    public function greaterThanOrEqual(Money $other): bool
+    public function greaterThanOrEqual(Asset $other): bool
     {
         return $this->compare($other) >= 0;
     }
 
     /**
-     * @param Money $other
+     * @param Asset $other
      *
      * @return bool
      */
-    public function lessThanOrEqual(Money $other): bool
+    public function lessThanOrEqual(Asset $other): bool
     {
         return $this->compare($other) <= 0;
     }
@@ -178,9 +180,9 @@ trait MoneyFunctions
      *
      * @param float|int|string $multiplier
      *
-     * @return Money
+     * @return Asset
      */
-    public function multiply($multiplier): Money
+    public function multiply($multiplier): Asset
     {
         $this->assertOperand($multiplier);
 
@@ -195,11 +197,11 @@ trait MoneyFunctions
      * the remainder after dividing the value by
      * the given factor.
      *
-     * @param Money $divisor
+     * @param Asset $divisor
      *
-     * @return Money
+     * @return Asset
      */
-    public function mod(Money $divisor): Money
+    public function mod(Asset $divisor): Asset
     {
         $this->assertSameCurrency($divisor);
 
@@ -209,11 +211,11 @@ trait MoneyFunctions
     }
 
     /**
-     * @param Money $money
+     * @param Asset $money
      *
      * @return string
      */
-    public function ratioOf(Money $money): string
+    public function ratioOf(Asset $money): string
     {
         if ($money->isZero()) {
             throw new \InvalidArgumentException('Cannot calculate a ratio of zero.');
@@ -236,11 +238,11 @@ trait MoneyFunctions
      * Returns a new Money object that represents
      * the difference of this and an other Money object.
      *
-     * @param Money ...$subtrahends
+     * @param Asset ...$subtrahends
      *
-     * @return Money
+     * @return Asset
      */
-    public function subtract(Money ...$subtrahends): Money
+    public function subtract(Asset ...$subtrahends): Asset
     {
         $amount = $this->getAmount();
         $calculator = $this->calculator;
@@ -251,7 +253,7 @@ trait MoneyFunctions
             $amount = $calculator->subtract($amount, $subtrahend->getAmount());
         }
 
-        return new Money($amount, $this->getCurrency());
+        return new Asset($amount, $this->getCurrency());
     }
 
     /**
@@ -312,20 +314,20 @@ trait MoneyFunctions
      * if the value of this object is considered to be respectively
      * less than, equal to, or greater than the other.
      *
-     * @param Money $other
+     * @param Asset $other
      *
      * @return int
      */
-    abstract public function compare(Money $other): int;
+    abstract public function compare(Asset $other): int;
 
     /**
      * Checks whether a Money has the same Currency as this.
      *
-     * @param Money $other
+     * @param Asset $other
      *
      * @return bool
      */
-    abstract public function isSameCurrency(Money $other): bool;
+    abstract public function isSameCurrency(Asset $other): bool;
 
     /**
      * Returns the value represented by this object.
@@ -344,11 +346,11 @@ trait MoneyFunctions
     /**
      * Asserts that a Money has the same currency as this.
      *
-     * @param Money $other
+     * @param Asset $other
      *
      * @throws \InvalidArgumentException If $other has a different currency
      */
-    abstract protected function assertSameCurrency(Money $other): void;
+    abstract protected function assertSameCurrency(Asset $other): void;
 
     /**
      * Asserts that the operand is integer or float.
@@ -364,9 +366,9 @@ trait MoneyFunctions
      *
      * @param int|string|float|null $amount
      *
-     * @return Money
+     * @return Asset
      *
      * @throws \InvalidArgumentException
      */
-    abstract protected function newInstance($amount): Money;
+    abstract protected function newInstance($amount): Asset;
 }

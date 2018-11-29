@@ -5,9 +5,9 @@
  * Time: 20:27
  */
 
-namespace AlecRabbit\Money;
+namespace AlecRabbit\Currency;
 
-use AlecRabbit\Money\Contracts\CurrencyInterface;
+use AlecRabbit\Currency\Contracts\CurrencyInterface;
 
 class Currency implements CurrencyInterface, \JsonSerializable
 {

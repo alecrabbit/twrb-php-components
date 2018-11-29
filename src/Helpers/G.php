@@ -14,14 +14,12 @@ class G
     /**
      * @param int $start
      * @param int $stop
-     * @param int $step
+     * @param int|float $step
      * @return \Generator
      */
-    public static function range(int $start, int $stop, int $step = 1): \Generator
+    public static function range(int $start, int $stop, $step = 1): \Generator
     {
-        if ($step <= 0) {
-            throw new \LogicException('Step has to be greater than zero');
-        }
+        static::assertArguments($start, $stop, $step);
         $i = $start;
         $direction = $stop <=> $start;
         $step = $direction * $step;
@@ -33,6 +31,15 @@ class G
                 $halt = true;
             }
         }
+    }
+
+    protected static function assertArguments(&$start, &$stop, &$step): void
+    {
+        if ($step <= 0) {
+            throw new \LogicException('Step has to be greater than zero');
+        }
+//        if (typeOf($step) === 'double' && (typeOf($start) === 'string' || typeOf($stop) === 'string')) {
+//        }
     }
 
     /**

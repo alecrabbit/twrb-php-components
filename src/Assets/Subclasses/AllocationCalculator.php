@@ -5,8 +5,11 @@
  * Time: 13:33
  */
 
-namespace AlecRabbit\Money;
+namespace AlecRabbit\Assets\Subclasses;
 
+use AlecRabbit\Assets\Asset;
+use AlecRabbit\Currency\Currency;
+use AlecRabbit\Money\CalculatorFactory;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 
 class AllocationCalculator
@@ -39,9 +42,9 @@ class AllocationCalculator
 
     /**
      * AllocationCalculator constructor.
-     * @param Money $param
+     * @param Asset $param
      */
-    public function __construct(Money $param)
+    public function __construct(Asset $param)
     {
         $this->amount = $param->getAmount();
         $this->currency = $param->getCurrency();
@@ -154,7 +157,7 @@ class AllocationCalculator
     {
         $computed = [];
         foreach ($this->allocated as $amount) {
-            $computed[] = new Money($amount, $this->currency);
+            $computed[] = new Asset($amount, $this->currency);
         }
         return $computed;
     }
