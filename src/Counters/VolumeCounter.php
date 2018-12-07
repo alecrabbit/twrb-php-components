@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AlecRabbit\Counters;
 
+use function AlecRabbit\array_key_first;
 use AlecRabbit\Money\CalculatorFactory as Factory;
 use AlecRabbit\Money\Contracts\CalculatorInterface;
 use AlecRabbit\Structures\Trade;

@@ -11,6 +11,7 @@ namespace Unit\Money;
 
 use AlecRabbit\Money\Calculator\BcMathCalculator;
 use PHPUnit\Framework\TestCase;
+use function AlecRabbit\Helpers\trim_zeros;
 
 /**
  * @requires extension bcmath
@@ -66,7 +67,7 @@ class BcMathCalculatorTest extends TestCase
      * @param $expected
      * @param $scale
      */
-    public function it_adds_two_values($value1, $value2, $expected, $scale): void
+    public function itAddsTwoValues($value1, $value2, $expected, $scale): void
     {
         $this->assertEquals($expected, $this->getCalculator($scale)->add($value1, $value2));
     }
@@ -79,7 +80,7 @@ class BcMathCalculatorTest extends TestCase
      * @param $expected
      * @param $scale
      */
-    public function it_subtracts_a_value_from_another($value1, $value2, $expected, $scale): void
+    public function itSubtractsAValueFromAnother($value1, $value2, $expected, $scale): void
     {
         $this->assertEquals($expected, $this->getCalculator($scale)->subtract($value1, $value2));
     }
@@ -92,9 +93,12 @@ class BcMathCalculatorTest extends TestCase
      * @param $expected
      * @param $scale
      */
-    public function it_multiplies_a_value_by_another($value1, $value2, $expected, $scale): void
+    public function itMultipliesAValueByAnother($value1, $value2, $expected, $scale): void
     {
-        $this->assertEquals($expected, $this->getCalculator($scale)->multiply($value1, $value2));
+        // php 7.2 & 7.3 bcmath behavior fix
+        $expected = trim_zeros($expected);
+        $actual = trim_zeros($this->getCalculator($scale)->multiply($value1, $value2));
+        $this->assertEquals($expected, $actual);
     }
 
     /**
@@ -105,7 +109,7 @@ class BcMathCalculatorTest extends TestCase
      * @param $expected
      * @param $scale
      */
-    public function it_divides_a_value_by_another($value1, $value2, $expected, $scale): void
+    public function itDividesAValueByAnother($value1, $value2, $expected, $scale): void
     {
         $result = $this->getCalculator($scale)->divide($value1, $value2);
         $this->assertEquals(substr($expected, 0, \strlen($result)), $result);
@@ -119,7 +123,7 @@ class BcMathCalculatorTest extends TestCase
      * @param $expected
      * @param $scale
      */
-    public function it_divides_a_value_by_another_exact($value1, $value2, $expected, $scale): void
+    public function itDividesAValueByAnotherExact($value1, $value2, $expected, $scale): void
     {
         $this->assertEquals($expected, $this->getCalculator($scale)->divide($value1, $value2));
     }
@@ -131,7 +135,7 @@ class BcMathCalculatorTest extends TestCase
      * @param $expected
      * @param $scale
      */
-    public function it_ceil_a_value($value, $expected, $scale): void
+    public function itCeilAValue($value, $expected, $scale): void
     {
         $this->assertEquals($expected, $this->getCalculator($scale)->ceil($value));
     }
@@ -142,7 +146,7 @@ class BcMathCalculatorTest extends TestCase
      * @param $value
      * @param $expected
      */
-    public function it_floors_a_value($expected, $value): void
+    public function itFloorsAValue($expected, $value): void
     {
         $this->assertEquals($expected, $this->getCalculator()->floor($value));
     }
@@ -206,7 +210,7 @@ class BcMathCalculatorTest extends TestCase
      */
     public function it_shares_a_value($value, $ratio, $total, $expected, $precision): void
     {
-        $this->assertEquals($expected, $this->getCalculator($precision)->share($value, $ratio, $total,$precision));
+        $this->assertEquals($expected, $this->getCalculator($precision)->share($value, $ratio, $total, $precision));
     }
 
     /**
@@ -294,7 +298,7 @@ class BcMathCalculatorTest extends TestCase
             [100, 0.0029, '0.29', 2],
             [1000, 0.29, '290', 0],
             [1000, 0.029, '29', 0],
-            [0.2424, 0.029, '0.0070296', 8],
+            [0.2424, 0.029, '0.00702960', 8],
             [1000, 0.0029, '2.9', 1],
             [2000, 0.0029, '5.8', 1],
             ['1', 0.006597, '0.006597', 6],

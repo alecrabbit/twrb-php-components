@@ -12,6 +12,8 @@ use AlecRabbit\Assets\Subclasses\AllocationCalculator;
 use AlecRabbit\Assets\Subclasses\AssetFactory;
 use AlecRabbit\Assets\Subclasses\AssetFunctions;
 use AlecRabbit\Currency\Currency;
+use function AlecRabbit\Helpers\trim_zeros;
+use function AlecRabbit\typeOf;
 use AlecRabbit\Money\CalculatorFactory as Factory;
 
 /**
