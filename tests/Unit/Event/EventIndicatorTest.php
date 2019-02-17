@@ -1,6 +1,5 @@
 <?php
 /**
- * User: alec
  * Date: 18.11.18
  * Time: 16:39
  */

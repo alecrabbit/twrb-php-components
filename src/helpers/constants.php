@@ -1,10 +1,5 @@
 <?php
-/**
- * User: alec
- * Date: 31.10.18
- * Time: 15:25
- */
-
+// @codeCoverageIgnoreStart
 // String constants
 define('DEFAULT_NAME', 'default');
 define('STR_VP', 'vp_');
@@ -145,3 +140,4 @@ define(
 // Math constants
 define('NORMAL_SCALE', 9);
 define('EXTENDED_SCALE', 14);
+// @codeCoverageIgnoreEnd
