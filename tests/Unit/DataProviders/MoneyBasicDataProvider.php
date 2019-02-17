@@ -8,7 +8,7 @@
 namespace Unit\DataProviders;
 
 
-use AlecRabbit\Money\Money;
+use AlecRabbit\Assets\Asset;
 
 class MoneyBasicDataProvider
 {
@@ -174,41 +174,41 @@ class MoneyBasicDataProvider
     public static function sumDataProvider(): array
     {
         return [
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15)], Money::EUR(30.000)],
-            [[Money::EUR(-5), Money::EUR(-10.000), Money::EUR(-15)], Money::EUR(-30)],
-            [[Money::EUR(-5), Money::EUR(10.000), Money::EUR(-15)], Money::EUR(-10.0)],
-            [[Money::EUR(0)], Money::EUR(0)],
-            [[Money::EUR(0), Money::EUR(0), Money::EUR(0)], Money::EUR(0)],
-            [[Money::EUR(0), Money::EUR(0.001), Money::EUR(0)], Money::EUR('0.00100')],
+            [[Asset::EUR(5), Asset::EUR(10), Asset::EUR(15)], Asset::EUR(30.000)],
+            [[Asset::EUR(-5), Asset::EUR(-10.000), Asset::EUR(-15)], Asset::EUR(-30)],
+            [[Asset::EUR(-5), Asset::EUR(10.000), Asset::EUR(-15)], Asset::EUR(-10.0)],
+            [[Asset::EUR(0)], Asset::EUR(0)],
+            [[Asset::EUR(0), Asset::EUR(0), Asset::EUR(0)], Asset::EUR(0)],
+            [[Asset::EUR(0), Asset::EUR(0.001), Asset::EUR(0)], Asset::EUR('0.00100')],
         ];
     }
 
     public static function minDataProvider(): array
     {
         return [
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15.0032323000)], Money::EUR(5)],
-            [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-15)],
-            [[Money::EUR(0)], Money::EUR(0)],
+            [[Asset::EUR(5), Asset::EUR(10), Asset::EUR(15.0032323000)], Asset::EUR(5)],
+            [[Asset::EUR(-5), Asset::EUR(-10), Asset::EUR(-15)], Asset::EUR(-15)],
+            [[Asset::EUR(0)], Asset::EUR(0)],
         ];
     }
 
     public static function maxDataProvider(): array
     {
         return [
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15.0032323000)], Money::EUR('15.0032323')],
-            [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-5)],
-            [[Money::EUR(0)], Money::EUR(0)],
+            [[Asset::EUR(5), Asset::EUR(10), Asset::EUR(15.0032323000)], Asset::EUR('15.0032323')],
+            [[Asset::EUR(-5), Asset::EUR(-10), Asset::EUR(-15)], Asset::EUR(-5)],
+            [[Asset::EUR(0)], Asset::EUR(0)],
         ];
     }
 
     public static function avgDataProvider(): array
     {
         return [
-            [[Money::EUR(5), Money::EUR(1.5077), Money::EUR(8.2), Money::EUR(10), Money::EUR(15)], Money::EUR(7.94154)],
-            [[Money::EUR(5), Money::EUR(10), Money::EUR(15)], Money::EUR(10)],
-            [[Money::EUR(-5), Money::EUR(-10), Money::EUR(-15)], Money::EUR(-10)],
-            [[Money::EUR(0)], Money::EUR(0)],
-            [[Money::EUR(1)], Money::EUR(1)],
+            [[Asset::EUR(5), Asset::EUR(1.5077), Asset::EUR(8.2), Asset::EUR(10), Asset::EUR(15)], Asset::EUR(7.94154)],
+            [[Asset::EUR(5), Asset::EUR(10), Asset::EUR(15)], Asset::EUR(10)],
+            [[Asset::EUR(-5), Asset::EUR(-10), Asset::EUR(-15)], Asset::EUR(-10)],
+            [[Asset::EUR(0)], Asset::EUR(0)],
+            [[Asset::EUR(1)], Asset::EUR(1)],
         ];
     }
 

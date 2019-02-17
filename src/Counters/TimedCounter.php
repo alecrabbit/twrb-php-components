@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace AlecRabbit\Counters;
 
+use function AlecRabbit\base_timestamp;
+use function AlecRabbit\array_key_first;
 use AlecRabbit\Traits\Nameable;
 
 class TimedCounter

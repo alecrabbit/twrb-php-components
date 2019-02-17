@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AlecRabbit;
 
+use function AlecRabbit\Helpers\bounds;
 use AlecRabbit\Structures\Trade;
 use BCMathExtended\BC;
 

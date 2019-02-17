@@ -5,20 +5,26 @@
  * Time: 23:51
  */
 
-namespace AlecRabbit\Money;
+namespace AlecRabbit\Assets;
 
+use AlecRabbit\Assets\Contracts\AssetInterface;
+use AlecRabbit\Assets\Subclasses\AllocationCalculator;
+use AlecRabbit\Assets\Subclasses\AssetFactory;
+use AlecRabbit\Assets\Subclasses\AssetFunctions;
+use AlecRabbit\Currency\Currency;
+use function AlecRabbit\Helpers\trim_zeros;
+use function AlecRabbit\typeOf;
 use AlecRabbit\Money\CalculatorFactory as Factory;
-use AlecRabbit\Money\Contracts\MoneyInterface;
 
 /**
  * Money Value Object.
  *
  * @author Mathias Verraes
  */
-class Money implements MoneyInterface, \JsonSerializable
+class Asset implements AssetInterface, \JsonSerializable
 {
-    use MoneyFactory,
-        MoneyFunctions;
+    use AssetFactory,
+        AssetFunctions;
 
     /** @var string */
     protected $amount;
@@ -73,7 +79,7 @@ class Money implements MoneyInterface, \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    public function compare(Money $other): int
+    public function compare(Asset $other): int
     {
         $this->assertSameCurrency($other);
 
@@ -83,7 +89,7 @@ class Money implements MoneyInterface, \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    protected function assertSameCurrency(Money $other): void
+    protected function assertSameCurrency(Asset $other): void
     {
         if (!$this->isSameCurrency($other)) {
             throw new \InvalidArgumentException('Currencies must be identical.');
@@ -93,7 +99,7 @@ class Money implements MoneyInterface, \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    public function isSameCurrency(Money $other): bool
+    public function isSameCurrency(Asset $other): bool
     {
         return $this->currency->equals($other->currency);
     }
@@ -133,7 +139,7 @@ class Money implements MoneyInterface, \JsonSerializable
      * @param int $n
      *
      * @param int|null $precision
-     * @return Money[]
+     * @return Asset[]
      *
      */
     public function allocateTo(int $n, ?int $precision = null): array
@@ -151,7 +157,7 @@ class Money implements MoneyInterface, \JsonSerializable
      * @param array $ratios
      *
      * @param int|null $precision
-     * @return Money[]
+     * @return Asset[]
      */
     public function allocate(array $ratios, ?int $precision = null): array
     {
@@ -177,24 +183,24 @@ class Money implements MoneyInterface, \JsonSerializable
     /**
      * {@inheritdoc}
      */
-    protected function newInstance($amount): Money
+    protected function newInstance($amount): Asset
     {
-        return new Money($amount, $this->currency);
+        return new Asset($amount, $this->currency);
     }
 
     /**
-     * @return Money
+     * @return Asset
      */
-    public function absolute(): Money
+    public function absolute(): Asset
     {
         return
             $this->newInstance($this->calculator->absolute($this->getAmount()));
     }
 
     /**
-     * @return Money
+     * @return Asset
      */
-    public function negative(): Money
+    public function negative(): Asset
     {
         return
             $this->newInstance(0)->subtract($this);

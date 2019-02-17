@@ -3,6 +3,8 @@ COVERAGE=0
 PROPAGATE=0
 ANALYZE=0
 BEAUTY=0
+PHPUNIT=0
+METRICS=0
 EXEC=1
 HELP=0
 RESTART_CONTAINER=1
@@ -14,7 +16,7 @@ do
         --propagate)
             PROPAGATE=1
             ;;
-     esac
+    esac
 done
 
 for arg
@@ -32,6 +34,9 @@ do
             ;;
         --no-restart)
             RESTART_CONTAINER=0
+            ;;
+        --unit)
+            PHPUNIT=1
             ;;
         --analyze)
             ANALYZE=1
@@ -51,7 +56,11 @@ do
         --all)
             ANALYZE=1
             COVERAGE=1
+            PHPUNIT=1
             BEAUTY=1
+            ;;
+        --metrics)
+            METRICS=1
             ;;
         *)
             if [[ ${PROPAGATE} == 1 ]]
@@ -71,14 +80,24 @@ SOURCE_DIR="src"
 PHPSTAN_LEVEL=7
 PSALM_CONFIG="./../psalm.xml"
 PSALM_LEVEL=3
-PHPMETRICS_OUTPUT_DIR="./tests/phpmetrics"
-PHPUNIT_COVERAGE_HTML_REPORT="./tests/coverage/html"
-PHPUNIT_COVERAGE_CLOVER_REPORT="./tests/coverage/clover.xml"
+TESTS_DIR="tests"
+TMP_DIR_PARTIAL="tmp"
+TMP_DIR="${TESTS_DIR}/${TMP_DIR_PARTIAL}"
+PHPMETRICS_DIR="phpmetrics"
+COVERAGE_DIR="coverage"
+PHPMETRICS_OUTPUT_DIR="${TMP_DIR}/${PHPMETRICS_DIR}"
+PHPUNIT_COVERAGE_HTML_REPORT="${TMP_DIR}/${COVERAGE_DIR}/html"
+PHPUNIT_COVERAGE_CLOVER_REPORT="${TMP_DIR}/${COVERAGE_DIR}/clover.xml"
+XDEBUG_FILTER_FILE="${TMP_DIR}/xdebug-filter.php"
+TEST_REPORT_INDEX="./../${TESTS_DIR}/report.html"
+HEADER="$(basename $(dirname "$(pwd)"))"
 
 if [[ ${COVERAGE} == 1 ]]
 then
-  DOCKER_COMPOSE_FILE="./../docker-compose-xdebug.yml"
+  DOCKER_COMPOSE_FILE="./../docker-compose-debug.yml"
 else
   DOCKER_COMPOSE_FILE="./../docker-compose.yml"
 fi
+
+DOCKER_ENV_FILE="./../.env"
 

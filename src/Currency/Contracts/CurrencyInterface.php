@@ -5,7 +5,7 @@
  * Time: 15:57
  */
 
-namespace AlecRabbit\Money\Contracts;
+namespace AlecRabbit\Currency\Contracts;
 
 interface CurrencyInterface
 {

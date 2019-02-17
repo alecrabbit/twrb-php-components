@@ -8,8 +8,8 @@
 namespace Unit\Money;
 
 
-use AlecRabbit\Money\Currency;
-use AlecRabbit\Money\Money;
+use AlecRabbit\Assets\Asset;
+use AlecRabbit\Currency\Currency;
 use PHPUnit\Framework\TestCase;
 
 class MoneyTest extends TestCase
@@ -23,7 +23,7 @@ class MoneyTest extends TestCase
      */
     public function createsNewInstance($amount, $currency, $resulted_amount, $resulted_currency): void
     {
-        $money = new Money($amount, new Currency($currency));
+        $money = new Asset($amount, new Currency($currency));
         $this->assertEquals($resulted_amount, $money->getAmount());
         $this->assertEquals($resulted_currency, $money->getCurrency());
     }
@@ -36,7 +36,7 @@ class MoneyTest extends TestCase
     public function throwsWhenCreatesNewInstance($amount, $currency): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        new Money($amount, new Currency($currency));
+        new \AlecRabbit\Assets\Asset($amount, new Currency($currency));
     }
 
     /**
@@ -50,9 +50,9 @@ class MoneyTest extends TestCase
      */
     public function equalsToAnotherMoneyInstance($amount, $currency, $second_amount, $second_currency, $equality): void
     {
-        $money = new Money($amount, new Currency($currency));
+        $money = new Asset($amount, new Currency($currency));
 
-        $this->assertEquals($equality, $money->equals(new Money($second_amount, new Currency($second_currency))));
+        $this->assertEquals($equality, $money->equals(new Asset($second_amount, new \AlecRabbit\Currency\Currency($second_currency))));
     }
 
     /**
@@ -65,8 +65,8 @@ class MoneyTest extends TestCase
      */
     public function comparesTwoAmounts($expected, $amount, $currency, $second_amount): void
     {
-        $money = new Money($amount, new Currency($currency));
-        $other = new Money($second_amount, new Currency($currency));
+        $money = new \AlecRabbit\Assets\Asset($amount, new \AlecRabbit\Currency\Currency($currency));
+        $other = new \AlecRabbit\Assets\Asset($second_amount, new \AlecRabbit\Currency\Currency($currency));
 
         $this->assertEquals($expected, $money->compare($other));
         $this->assertEquals(1 === $expected, $money->greaterThan($other));
@@ -79,7 +79,7 @@ class MoneyTest extends TestCase
         } else {
             $this->assertNotEquals($money, $other);
         }
-        $other = new Money($second_amount, new Currency($currency . 'o'));
+        $other = new \AlecRabbit\Assets\Asset($second_amount, new Currency($currency . 'o'));
         $this->expectException(\InvalidArgumentException::class);
         $this->assertEquals($expected, $money->compare($other));
 
@@ -95,11 +95,11 @@ class MoneyTest extends TestCase
      */
     public function multipliesTheAmount($result, $amount, $multiplier): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new Asset($amount, new Currency('EUR'));
 
         $money = $money->multiply($multiplier);
 
-        $this->assertInstanceOf(Money::class, $money);
+        $this->assertInstanceOf(\AlecRabbit\Assets\Asset::class, $money);
         $this->assertEquals((string)$result, $money->getAmount());
     }
 
@@ -112,10 +112,10 @@ class MoneyTest extends TestCase
      */
     public function dividesTheAmount($result, $amount, $divisor): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new Asset($amount, new Currency('EUR'));
         $money = $money->divide($divisor);
 
-        $this->assertInstanceOf(Money::class, $money);
+        $this->assertInstanceOf(\AlecRabbit\Assets\Asset::class, $money);
         $this->assertEquals((string)$result, $money->getAmount());
     }
 
@@ -142,7 +142,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenOperandIsInvalidDuringMultiplication($operand): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new Asset(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->multiply($operand);
     }
@@ -154,7 +154,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenOperandIsInvalidDuringDivision($operand): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->divide($operand);
     }
@@ -164,7 +164,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenOperandIsZero(): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new Asset(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->divide(0);
     }
@@ -174,7 +174,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenRatioIsIsEmptyArray(): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->allocate([]);
     }
@@ -184,7 +184,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenRatioIsZero(): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->allocate([0]);
     }
@@ -194,7 +194,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenNumberIsNegative(): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset(1, new \AlecRabbit\Currency\Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->allocateTo(-1);
     }
@@ -204,7 +204,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenNumberIsZero(): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset(1, new Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->allocateTo(0);
     }
@@ -215,7 +215,7 @@ class MoneyTest extends TestCase
      */
     public function throwsAnExceptionWhenRatioIsNegative(): void
     {
-        $money = new Money(1, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset(1, new \AlecRabbit\Currency\Currency('EUR'));
         $this->expectException(\InvalidArgumentException::class);
         $money->allocate([2, -1]);
     }
@@ -230,11 +230,11 @@ class MoneyTest extends TestCase
      */
     public function allocatesAmount($amount, $ratios, $results, $precision): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset($amount, new Currency('EUR'));
         $allocated = $money->allocate($ratios, $precision);
-        /** @var Money $money */
+        /** @var Asset $money */
         foreach ($allocated as $key => $money) {
-            $compareTo = new Money($results[$key], $money->getCurrency());
+            $compareTo = new Asset($results[$key], $money->getCurrency());
             $this->assertEquals($compareTo, $money);
         }
     }
@@ -250,11 +250,11 @@ class MoneyTest extends TestCase
      */
     public function allocatesAmountToNTargets($amount, $target, $results, $precision): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset($amount, new Currency('EUR'));
 
         $allocated = $money->allocateTo($target, $precision);
         foreach ($allocated as $key => $money) {
-            $compareTo = new Money($results[$key], $money->getCurrency());
+            $compareTo = new Asset($results[$key], $money->getCurrency());
             $this->assertEquals($compareTo, $money);
         }
     }
@@ -269,7 +269,7 @@ class MoneyTest extends TestCase
      */
     public function hasComparators($amount, $isZero, $isPositive, $isNegative): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new \AlecRabbit\Assets\Asset($amount, new Currency('EUR'));
 
         $this->assertEquals($isZero, $money->isZero());
         $this->assertEquals($isPositive, $money->isPositive());
@@ -286,7 +286,7 @@ class MoneyTest extends TestCase
      */
     public function hasComparatorsTwo($amount, $isNotZero, $isNotPositive, $isNotNegative): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new Asset($amount, new Currency('EUR'));
 
         $this->assertEquals($isNotZero, $money->isNotZero());
         $this->assertEquals($isNotPositive, $money->isNotPositive());
@@ -301,7 +301,7 @@ class MoneyTest extends TestCase
      */
     public function calculatesTheAbsoluteAmount($expected, $amount): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new Asset($amount, new Currency('EUR'));
 
         $this->assertEquals($expected, $money->absolute()->getAmount());
     }
@@ -314,7 +314,7 @@ class MoneyTest extends TestCase
      */
     public function calculatesTheNegativeAmount($amount, $result): void
     {
-        $money = new Money($amount, new Currency('EUR'));
+        $money = new Asset($amount, new Currency('EUR'));
 
         $money = $money->negative();
 
@@ -330,12 +330,12 @@ class MoneyTest extends TestCase
      */
     public function calculatesTheModulusOfAnAmount($left, $right, $expected): void
     {
-        $money = new Money($left, new Currency('EUR'));
-        $rightMoney = new Money($right, new Currency('EUR'));
+        $money = new Asset($left, new Currency('EUR'));
+        $rightMoney = new \AlecRabbit\Assets\Asset($right, new Currency('EUR'));
 
         $money = $money->mod($rightMoney);
 
-        $this->assertInstanceOf(Money::class, $money);
+        $this->assertInstanceOf(\AlecRabbit\Assets\Asset::class, $money);
         $this->assertEquals($expected, $money->getAmount());
     }
 
@@ -346,7 +346,7 @@ class MoneyTest extends TestCase
     {
         $this->assertEquals(
             '{"amount":"350","currency":"EUR"}',
-            json_encode(Money::EUR(350))
+            json_encode(Asset::EUR(350))
         );
     }
 
@@ -355,13 +355,13 @@ class MoneyTest extends TestCase
      */
     public function supportsMaxInt(): void
     {
-        $one = new Money(1, new Currency('EUR'));
-        $ten = new Money(10, new Currency('EUR'));
+        $one = new \AlecRabbit\Assets\Asset(1, new Currency('EUR'));
+        $ten = new Asset(10, new Currency('EUR'));
 
-        $this->assertInstanceOf(Money::class, new Money(PHP_INT_MAX, new Currency('EUR')));
+        $this->assertInstanceOf(Asset::class, new Asset(PHP_INT_MAX, new Currency('EUR')));
         $this->assertEquals(
             PHP_INT_MAX,
-            (new Money(
+            (new \AlecRabbit\Assets\Asset(
                 PHP_INT_MAX,
                 new Currency('EUR')
             ))
@@ -373,9 +373,9 @@ class MoneyTest extends TestCase
         );
         $this->assertEquals(
             PHP_INT_MAX,
-            (new Money(
+            (new \AlecRabbit\Assets\Asset(
                 PHP_INT_MAX,
-                new Currency('EUR')
+                new \AlecRabbit\Currency\Currency('EUR')
             ))
                 ->add($ten)
                 ->add($one)
@@ -390,10 +390,10 @@ class MoneyTest extends TestCase
      */
     public function returnsRatioOf(): void
     {
-        $currency = new Currency('EUR');
-        $zero = new Money(0, $currency);
-        $three = new Money(3, $currency);
-        $six = new Money(6, $currency);
+        $currency = new \AlecRabbit\Currency\Currency('EUR');
+        $zero = new \AlecRabbit\Assets\Asset(0, $currency);
+        $three = new \AlecRabbit\Assets\Asset(3, $currency);
+        $six = new \AlecRabbit\Assets\Asset(6, $currency);
 
         $this->assertEquals(0, $zero->ratioOf($six));
         $this->assertEquals(0.5, $three->ratioOf($six));
@@ -409,8 +409,8 @@ class MoneyTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $currency = new Currency('EUR');
-        $zero = new Money(0, $currency);
-        $six = new Money(6, $currency);
+        $zero = new \AlecRabbit\Assets\Asset(0, $currency);
+        $six = new Asset(6, $currency);
 
         $six->ratioOf($zero);
     }
@@ -423,7 +423,7 @@ class MoneyTest extends TestCase
      */
     public function calculatesSum($values, $sum): void
     {
-        $this->assertEquals($sum, Money::sum(...$values));
+        $this->assertEquals($sum, \AlecRabbit\Assets\Asset::sum(...$values));
     }
 
     /**
@@ -434,7 +434,7 @@ class MoneyTest extends TestCase
      */
     public function calculatesMin($values, $min): void
     {
-        $this->assertEquals($min, Money::min(...$values));
+        $this->assertEquals($min, \AlecRabbit\Assets\Asset::min(...$values));
     }
 
     /**
@@ -445,7 +445,7 @@ class MoneyTest extends TestCase
      */
     public function calculatesMax($values, $max): void
     {
-        $this->assertEquals($max, Money::max(...$values));
+        $this->assertEquals($max, Asset::max(...$values));
     }
 
     /**
@@ -456,7 +456,7 @@ class MoneyTest extends TestCase
      */
     public function calculatesAvg($values, $avg): void
     {
-        $this->assertEquals($avg, Money::avg(...$values));
+        $this->assertEquals($avg, \AlecRabbit\Assets\Asset::avg(...$values));
     }
 
     /**
@@ -465,7 +465,7 @@ class MoneyTest extends TestCase
     public function throwsWhenCalculatingMinWithZeroArguments(): void
     {
         $this->expectException(\Throwable::class);
-        Money::min(...[]);
+        Asset::min(...[]);
     }
 
     /**
@@ -474,7 +474,7 @@ class MoneyTest extends TestCase
     public function throwsWhenCalculatingMaxWithZeroArguments(): void
     {
         $this->expectException(\Throwable::class);
-        Money::max(...[]);
+        \AlecRabbit\Assets\Asset::max(...[]);
     }
 
     /**
@@ -483,7 +483,7 @@ class MoneyTest extends TestCase
     public function throwsWhenCalculatingSumWithZeroArguments(): void
     {
         $this->expectException(\Throwable::class);
-        Money::sum(...[]);
+        \AlecRabbit\Assets\Asset::sum(...[]);
     }
 
     /**
@@ -492,6 +492,6 @@ class MoneyTest extends TestCase
     public function throwsWhenCalculatingAvgWithZeroArguments(): void
     {
         $this->expectException(\Throwable::class);
-        Money::avg(...[]);
+        \AlecRabbit\Assets\Asset::avg(...[]);
     }
 }

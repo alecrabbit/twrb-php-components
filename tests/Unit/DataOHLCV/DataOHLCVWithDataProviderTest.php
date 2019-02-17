@@ -1,16 +1,10 @@
 <?php
-/**
- * User: alec
- * Date: 31.10.18
- * Time: 16:33
- */
 
 namespace Unit;
 
-
-use AlecRabbit\Circular;
+use AlecRabbit\Accessories\Circular;
 use AlecRabbit\DataOHLCV;
-use AlecRabbit\Rewindable;
+use AlecRabbit\Accessories\Rewindable;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\DataProviders\CommonTrades;
 

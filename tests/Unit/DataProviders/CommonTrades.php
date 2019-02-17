@@ -7,7 +7,7 @@
 
 namespace Tests\Unit\DataProviders;
 
-use AlecRabbit\Circular;
+use AlecRabbit\Accessories\Circular;
 use AlecRabbit\Structures\Trade;
 
 class CommonTrades
@@ -24,10 +24,10 @@ class CommonTrades
         while ($quantity-- > 0) {
             yield
             new Trade(
-                $type->getElement(),
-                $pair->getElement(),
-                $price->getElement(),
-                $amount->getElement(),
+                $type->value(),
+                $pair->value(),
+                $price->value(),
+                $amount->value(),
                 $timestamp
             );
             $timestamp += $step;

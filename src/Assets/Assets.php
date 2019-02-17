@@ -7,19 +7,18 @@
 
 namespace AlecRabbit\Assets;
 
-use AlecRabbit\Money\Currency;
-use AlecRabbit\Money\Money;
+use AlecRabbit\Currency\Currency;
 
 class Assets
 {
-    /** @var Money[] */
+    /** @var Asset[] */
     private $assets = [];
 
     /**
      * Assets constructor.
-     * @param Money ...$assets
+     * @param Asset ...$assets
      */
-    public function __construct(Money ...$assets)
+    public function __construct(Asset ...$assets)
     {
         foreach ($assets as $newAsset) {
             $this->add($newAsset);
@@ -27,10 +26,10 @@ class Assets
     }
 
     /**
-     * @param Money $money
-     * @return Money
+     * @param Asset $money
+     * @return Asset
      */
-    public function add(Money $money): Money
+    public function add(Asset $money): Asset
     {
         return
             ($asset = $this->assetOf($money))->isZero() ?
@@ -39,49 +38,49 @@ class Assets
     }
 
     /**
-     * @param Money $money
-     * @return Money
+     * @param Asset $money
+     * @return Asset
      */
-    private function assetOf(Money $money): Money
+    private function assetOf(Asset $money): Asset
     {
         return $this->getAsset($money->getCurrency());
     }
 
     /**
-     * @param Currency $currency
-     * @return Money
+     * @param \AlecRabbit\Currency\Currency $currency
+     * @return Asset
      */
-    public function getAsset(Currency $currency): Money
+    public function getAsset(Currency $currency): Asset
     {
         return
-            $this->assets[(string)$currency] ?? $this->setAsset(new Money(0, $currency));
+            $this->assets[(string)$currency] ?? $this->setAsset(new Asset(0, $currency));
     }
 
     /**
-     * @param Money $money
-     * @return Money
+     * @param Asset $money
+     * @return Asset
      */
-    private function setAsset(Money $money): Money
+    private function setAsset(Asset $money): Asset
     {
         return
             $this->assets[(string)$money->getCurrency()] = $money;
     }
 
     /**
-     * @param Money $money
+     * @param Asset $money
      * @return bool
      */
-    public function have(Money $money): bool
+    public function have(Asset $money): bool
     {
         return
             $money->subtract($this->assetOf($money))->isNotPositive();
     }
 
     /**
-     * @param Money $money
-     * @return Money
+     * @param Asset $money
+     * @return Asset
      */
-    public function take(Money $money): Money
+    public function take(Asset $money): Asset
     {
         $asset = $this->subtract($money);
         if ($asset->isNegative()) {
@@ -91,10 +90,10 @@ class Assets
     }
 
     /**
-     * @param Money $money
-     * @return Money
+     * @param Asset $money
+     * @return Asset
      */
-    public function subtract(Money $money): Money
+    public function subtract(Asset $money): Asset
     {
         return
             $this->add($money->negative());

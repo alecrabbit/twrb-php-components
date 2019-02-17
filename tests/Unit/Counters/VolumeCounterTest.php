@@ -7,9 +7,9 @@
 
 namespace Tests\Unit\Counters;
 
-use AlecRabbit\Circular;
+use AlecRabbit\Accessories\Circular;
 use AlecRabbit\Counters\VolumeCounter;
-use AlecRabbit\Rewindable;
+use AlecRabbit\Accessories\Rewindable;
 use AlecRabbit\Structures\Trade;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\DataProviders\CommonTrades;

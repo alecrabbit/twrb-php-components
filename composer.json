@@ -8,23 +8,20 @@
     "ext-bcmath": "*",
     "ext-intl": "*",
     "ext-json": "*",
-    "alecrabbit/accessories": "dev-master",
-    "alecrabbit/php-helpers": "^0",
+    "alecrabbit/php-accessories": "^0.4",
+    "alecrabbit/php-helpers": "^0.3",
+    "brick/math": "^0.8.2",
     "krowinski/bcmath-extended": "^4.1",
-    "nesbot/carbon": "^2.6",
-    "brick/math": "^0.8.2"
+    "nesbot/carbon": "^2.6"
   },
   "require-dev": {
     "alecrabbit/php-output-a": "^0",
+    "alecrabbit/php-simple-profiler": "^0.4",
     "nunomaduro/collision": "^2.0",
-    "phpmetrics/phpmetrics": "^2.4",
-    "phpstan/phpstan": "^0.10.5",
-    "phpunit/phpunit": "^7.4",
-    "squizlabs/php_codesniffer": "^3.3",
-    "symfony/var-dumper": "^4.1",
-    "vimeo/psalm": "^2.0",
+    "phpunit/phpunit": "^7.5",
     "symfony/phpunit-bridge": "^4.1",
-    "symfony/stopwatch": "^4.1"
+    "symfony/stopwatch": "^4.1",
+    "symfony/var-dumper": "^4.1"
   },
   "suggest": {
     "ext-event": "Needed to improve performance"
@@ -44,5 +41,5 @@
       "Unit\\": "tests/Unit"
     }
   },
-  "prefer-stable": true
+  "minimum-stability": "beta"
 }

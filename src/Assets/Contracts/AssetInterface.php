@@ -5,9 +5,9 @@
  * Time: 15:54
  */
 
-namespace AlecRabbit\Money\Contracts;
+namespace AlecRabbit\Assets\Contracts;
 
-interface MoneyInterface
+interface AssetInterface
 {
 
 }
