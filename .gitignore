@@ -1,12 +1,6 @@
-/.idea/*
-/vendor/*
-/docker/*
-/.eval/*
-/data/*
-/tmp/*
-/tests/coverage/*
-/tests/phpmetrics/*
-/.dockerignore
+.idea/
+vendor/
+docker/
+.eval/
+tests/tmp/*
 
-/docker-compose*
-/dev-commands.md

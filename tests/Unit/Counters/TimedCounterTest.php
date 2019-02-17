@@ -8,7 +8,7 @@
 namespace Unit\Counters;
 
 use AlecRabbit\Counters\TimedCounter;
-use AlecRabbit\Rewindable;
+use AlecRabbit\Accessories\Rewindable;
 use PHPUnit\Framework\TestCase;
 
 class TimedCounterTest extends TestCase

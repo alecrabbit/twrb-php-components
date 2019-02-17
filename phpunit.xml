@@ -10,31 +10,31 @@
          bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="Feature">
-            <directory suffix="Test.php">./tests/Feature</directory>
+            <directory suffix="Test.php">tests/Feature</directory>
         </testsuite>
 
         <testsuite name="Unit">
-            <directory suffix="Test.php">./tests/Unit</directory>
+            <directory suffix="Test.php">tests/Unit</directory>
         </testsuite>
 
         <testsuite name="Common">
-            <directory suffix="Test.php">./tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src/</directory>
+            <directory suffix=".php">src</directory>
             <exclude>
                 <file>src/helpers/constants.php</file>
             </exclude>
         </whitelist>
     </filter>
     <listeners>
-        <listener class="\NunoMaduro\Collision\Adapters\Phpunit\Listener" />
+        <listener class="NunoMaduro\Collision\Adapters\Phpunit\Listener"/>
         <listener class="\Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
     </listeners>
     <logging>
-        <log type="testdox-html" target="./tmp/testdox.html"/>
-        <log type="testdox-text" target="./tmp/testdox.txt"/>
+        <log type="testdox-html" target="./tests/tmp/testdox.html"/>
+        <log type="testdox-text" target="./tests/tmp/testdox.txt"/>
     </logging>
 </phpunit>
